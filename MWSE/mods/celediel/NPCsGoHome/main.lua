@@ -304,7 +304,7 @@ end
 
 -- todo: check cell contents to decide if it should be locked
 local function isIgnoredDoor(door, homeCellId)
-    -- don't lock non-cell change doors, and don't lock doors to outside
+    -- don't lock non-cell change doors
     if not door.destination then
         log(common.logLevels.large, "Non-Cell-change door %s, ignoring", door.id)
         return true
@@ -518,7 +518,7 @@ local function processDoors(cell)
 
     for door in cell:iterateReferences(tes3.objectType.door) do
         if not door.data.NPCsGoHome then door.data.NPCsGoHome = {} end
-        log(common.logLevels.large, "Door has destination? %s", door.destination ~= nil)
+        log(common.logLevels.large, "Door has destination: %s", door.destination and door.destination.cell.id or "none")
 
         if config.lockDoors and not isIgnoredDoor(door, cell.id) then
             log(common.logLevels.large, "It knows there's a door")
