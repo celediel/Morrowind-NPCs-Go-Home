@@ -83,7 +83,8 @@ end
 local function pickInnForNPC(npc, city)
     -- todo: pick in Inn intelligently ?
     -- high class inns for nobles and rich merchants and such
-    -- lower class inns for commoners and poor merchants
+    -- lower class inns for middle class npcs and merchants
+    -- temple for commoners and the poorest people
     -- ? pick based on barterGold and value of equipment for merchants ?
     -- ? for others, pick based on value of equipment
 
@@ -108,6 +109,7 @@ local function pickPublicHouseForNPC(npc, city)
         end
     end
 
+    -- temple members go to the temple
     if publicHouses[city] and publicHouses[city][publicHouseTypes.temples] then
         for _, data in pairs(publicHouses[city][publicHouseTypes.temples]) do
             if npc.object.faction == data.proprietor.object.faction then
@@ -206,23 +208,26 @@ local function isIgnoredNPC(npc)
         obj = npc.object
     end
 
-    -- ignore dead or attack on sight NPCs
+    -- ignore dead, attack on sight NPCs, and vampires
     local isDead = false
     local isHostile = false
+    local isVampire = false
     if npc.mobile then
         if npc.mobile.health.current <= 0 then isDead = true end
         if npc.mobile.fight > 70 then isHostile = true end
+        isVampire = tes3.isAffectedBy({reference = npc, effect = tes3.effect.vampirism})
     end
 
-    -- todo: non mwscript version of these
-    local isVampire = mwscript.getSpellEffects({reference = npc, spell = "vampire sun damage"})
+    -- local isVampire = mwscript.getSpellEffects({reference = npc, spell = "vampire sun damage"})
+
+    -- todo: non mwscript version of this
     local isWerewolf = mwscript.getSpellEffects({reference = npc, spell = "werewolf vision"})
 
     log(common.logLevels.large, ("Checking NPC:%s (%s or %s): id blocked:%s, mod blocked:%s " ..
             "guard:%s dead:%s vampire:%s werewolf:%s dreamer:%s follower:%s hostile:%s"), obj.name, npc.object.id,
         npc.object.baseObject and npc.object.baseObject.id or "nil", config.ignored[obj.id],
         config.ignored[obj.sourceMod], npc.object.isGuard, isDead, isVampire, isWerewolf,
-        obj.class.id == "Dreamers", followers[obj.id], isHostile)
+        (obj.class and obj.class.id == "Dreamers"), followers[obj.id], isHostile)
 
     return config.ignored[obj.id] or --
            config.ignored[obj.sourceMod] or --
@@ -232,7 +237,7 @@ local function isIgnoredNPC(npc)
            followers[obj.id] or -- ignore followers
            isVampire or --
            isWerewolf or --
-           obj.class.id == "Dreamers" or obj.class.id == "Witchhunter" --
+           (obj.class and obj.class.id == "Dreamers") --
 end
 
 -- checks NPC class and faction in cells for block list and adds to publicHouse list
@@ -255,6 +260,18 @@ local function isPublicHouse(cell)
             end
             local type = pickPublicHouseType(cell.name)
 
+            local worth = 0
+
+            -- for houses, worth is equal to NPC who lives there
+            if type ==  publicHouseTypes.houses then
+                worth = calculateNPCWorth(npc)
+            else
+                -- for other types, worth is combined worth of all NPCs
+                for innard in cell:iterateReferences(tes3.objectType.npc) do
+                    worth = worth + calculateNPCWorth(innard)
+                end
+            end
+
             if not publicHouses[city] then publicHouses[city] = {} end
             if not publicHouses[city][type] then publicHouses[city][type] = {} end
 
@@ -263,8 +280,8 @@ local function isPublicHouse(cell)
                 city = city,
                 cell = cell,
                 proprietor = npc,
-                worth = calculateNPCWorth(npc)
-                -- positions = positions.cells[cell.id] or {position = zeroVector, orientation = zeroVector}
+                proprietorName = npc.object.name,
+                worth = worth
             }
 
             interop.setInnTable(publicHouses)
@@ -473,15 +490,15 @@ local function disableNPCs(cell)
                 else
                     log(common.logLevels.medium, "Disabling homeless %s", npc.object.name)
                     -- npc:disable() -- ! this one sometimes causes crashes
-                    mwscript.disable({reference = npc}) -- ! this one is deprecated
-                    -- tes3.setEnabled({reference = npc, enabled = false})
+                    -- mwscript.disable({reference = npc}) -- ! this one is deprecated
+                    tes3.setEnabled({reference = npc, enabled = false})
                 end
             else
                 if not npcHome then
                     log(common.logLevels.medium, "Enabling homeless %s", npc.object.name)
                     -- npc:enable()
-                    mwscript.enable({reference = npc})
-                    -- tes3.setEnabled({reference = npc, enabled = true})
+                    -- mwscript.enable({reference = npc})
+                    tes3.setEnabled({reference = npc, enabled = true})
                 end
             end
         end
@@ -499,14 +516,14 @@ local function disableSiltStriders(cell)
         if activator.object.id:match("siltstrider") then
             if checkTime() or (checkWeather(cell) and not config.keepBadWeatherNPCs) then
                 log(common.logLevels.medium, "Disabling silt strider %s!", activator.object.name)
-                mwscript.disable({reference = activator})
+                -- mwscript.disable({reference = activator})
                 -- activator:disable()
-                -- tes3.setEnabled({reference = activator, enabled = false})
+                tes3.setEnabled({reference = activator, enabled = false})
             else
                 log(common.logLevels.medium, "Enabling silt strider %s!", activator.object.name)
-                mwscript.enable({reference = activator})
+                -- mwscript.enable({reference = activator})
                 -- activator:enable()
-                -- tes3.setEnabled({reference = activator, enabled = true})
+                tes3.setEnabled({reference = activator, enabled = true})
             end
         end
     end
