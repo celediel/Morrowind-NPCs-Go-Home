@@ -7,10 +7,9 @@ local defaultConfig = {
     disableInteraction = true,
     timerInterval = 7,
     ignored = {
-        ["fargoth"] = true,
         ["Balmora, Caius Cosades' House"] = true,
         ["Publican"] = true,
-        ["Healer Service"] = true,
+        -- ["Healer Service"] = true,
     },
     worstWeather = tes3.weather.thunder,
     keepBadWeatherNPCs = true,

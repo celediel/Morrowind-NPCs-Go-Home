@@ -200,13 +200,33 @@ end
 
 -- {{{ checks
 
+local function fargothCheck()
+    --[[
+        ID:	MS_Lookout
+        index   Finishes    Entry
+        10                  Hrisskar Flat-Foot asked me to do him a favor. He believes that
+                            Fargoth has been hiding money from the Imperials, and he'd like to
+                            know where it's gone. If I will work for him, he will give me a share
+                            of the bounty.
+        20                  I've agreed to help Hrisskar find the money that Fargoth has been
+                            hiding away. I am supposed to keep an eye on him from atop the
+                            lighthouse in town, and watch where he goes. Hrisskar believes I
+                            should watch him at night. I'm not supposed to approach him at any
+                            time. I should then retrace his footsteps and find out where he's
+                            hidden the money. When I've found it, I should report back to
+                            Hrisskar.
+        30	    ☑	        I've decided not to help Hrisskar.
+        40                  I've found Fargoth's hidden stash. He keeps it in a hollow
+                            treestump in a muck pond in town.
+        100	    ☑	        Hrisskar was grateful that I found the money that Fargoth had been
+                            hiding. He rewarded me with some gold, and told me I could keep
+                            anything else I found in the bag besides the money he wanted.
+    ]]
+    return tes3.getJournalIndex("MS_Lookout") >= 30
+end
+
 local function isIgnoredNPC(npc)
-    local obj
-    if npc.object.baseObject then
-        obj = npc.object.baseObject
-    else
-        obj = npc.object
-    end
+    local obj = npc.object.baseObject and npc.object.baseObject or npc.object
 
     -- ignore dead, attack on sight NPCs, and vampires
     local isDead = false
@@ -218,20 +238,22 @@ local function isIgnoredNPC(npc)
         isVampire = tes3.isAffectedBy({reference = npc, effect = tes3.effect.vampirism})
     end
 
-    -- local isVampire = mwscript.getSpellEffects({reference = npc, spell = "vampire sun damage"})
+    local isFargothDone = obj.id == "fargoth" and fargothCheck() or false
 
     -- todo: non mwscript version of this
     local isWerewolf = mwscript.getSpellEffects({reference = npc, spell = "werewolf vision"})
+    -- local isVampire = mwscript.getSpellEffects({reference = npc, spell = "vampire sun damage"})
 
     log(common.logLevels.large, ("Checking NPC:%s (%s or %s): id blocked:%s, mod blocked:%s " ..
             "guard:%s dead:%s vampire:%s werewolf:%s dreamer:%s follower:%s hostile:%s"), obj.name, npc.object.id,
         npc.object.baseObject and npc.object.baseObject.id or "nil", config.ignored[obj.id],
-        config.ignored[obj.sourceMod], npc.object.isGuard, isDead, isVampire, isWerewolf,
+        config.ignored[obj.sourceMod], obj.isGuard, isDead, isVampire, isWerewolf,
         (obj.class and obj.class.id == "Dreamers"), followers[obj.id], isHostile)
 
     return config.ignored[obj.id] or --
            config.ignored[obj.sourceMod] or --
-           npc.object.isGuard or --
+           obj.isGuard or --
+           isFargothDone or --
            isDead or -- don't move dead NPCS
            isHostile or --
            followers[obj.id] or -- ignore followers
