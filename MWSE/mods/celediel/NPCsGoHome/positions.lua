@@ -5,11 +5,14 @@ return {
         -- Balmora, vanilla
         ["Rarayn Radarys"] = {position = {136.23, 132.69, 7.00}, orientation = {0.00, 0.00, -3.14}},
         ["Dralosa Athren"] = {position = {190.74, 91.01, 7.00}, orientation = {0.00, 0.00, -1.55}},
-        ["Balyn Omarel"] = {position = {0, 0, 0}, orientation = {0, 0, 0}},
-        ["Dralcea Arethi"] = {position = {0, 0, 0}, orientation = {0, 0, 0}}
+        ["Balyn Omarel"] = {position = {259.97, 54.13, 7.00}, orientation = {0.00, 0.00, -1.97}},
+        ["Dralcea Arethi"] = {position = {185.27, -64.19, 7.00}, orientation = {0.00, 0.00, 0.02}}
+
     },
+
     -- positions picked from a list for public houses
     cells = {
+        -- {{{ Balmora
         ["Balmora, Lucky Lockup"] = {
             {position = {222.87, 1290.63, -505.00}, orientation = {0.00, 0.00, -2.54}},
             {position = {-10.30, 757.07, -505.00}, orientation = {0.00, 0.00, -0.04}},
@@ -55,6 +58,7 @@ return {
             {position = {806.36, 296.22, -217.31}, orientation = {0.00, 0.00, -1.11}},
             {position = {337.37, 737.83, -249.00}, orientation = {0.00, 0.00, 3.09}}
         },
+        -- todo: add support for this:
         ["Balmora, South Wall Cornerclub (mod)"] = {
             {position = {239.72, 589.39, -249.00}, orientation = {0.00, 0.00, -2.86}},
             {position = {241.20, 588.73, -249.00}, orientation = {0.00, 0.00, -1.62}},
@@ -64,6 +68,21 @@ return {
             {position = {640.98, 786.91, -248.08}, orientation = {0.00, 0.00, 1.56}},
             {position = {581.22, 644.53, -248.08}, orientation = {0.00, 0.00, 2.71}}
         },
+        ["Balmora, Morag Tong Guild"] = {
+            {position = {359.47, 358.09, 9.88}, orientation = {0.00, 0.00, -1.66}},
+            {position = {902.58, 436.94, 9.69}, orientation = {0.00, 0.00, -1.90}},
+            {position = {1077.50, 284.22, 9.69}, orientation = {0.00, 0.00, 2.99}},
+            {position = {1109.53, -199.75, 9.69}, orientation = {0.00, 0.00, 3.09}},
+            {position = {897.73, -200.37, 9.69}, orientation = {0.00, 0.00, 3.10}},
+            {position = {1168.76, 17.80, 7.00}, orientation = {0.00, 0.00, -1.68}},
+            {position = {12.37, 51.53, 7.00}, orientation = {0.00, 0.00, 3.01}},
+            {position = {315.16, -260.68, 9.88}, orientation = {0.00, 0.00, -0.24}},
+            {position = {-172.78, -153.71, 9.88}, orientation = {0.00, 0.00, 1.51}},
+            {position = {251.52, 1053.12, 266.16}, orientation = {0.00, 0.00, 2.02}}
+        },
+        -- }}}
+
+        -- {{{ Gnisis
         ["Gnisis, Madach Tradehouse"] = {
             {position = {-625.02, 305.07, -894.00}, orientation = {0.00, 0.00, 2.46}},
             {position = {100.10, -49.81, -894.00}, orientation = {0.00, 0.00, -2.84}},
@@ -91,6 +110,9 @@ return {
             {position = {-1368.90, 232.95, -254.00}, orientation = {0.00, 0.00, -0.39}},
             {position = {-1728.43, 172.37, -254.00}, orientation = {0.00, 0.00, 0.91}}
         },
+        -- }}}
+
+        -- {{{ Ald-Ruhn
         ["Ald-ruhn, The Rat In The Pot"] = {
             {position = {154.18, 425.84, 2.00}, orientation = {0.00, 0.00, 0.64}},
             {position = {19.49, 429.50, 2.00}, orientation = {0.00, 0.00, -1.60}},
@@ -121,5 +143,6 @@ return {
             {position = {-595.91, 435.92, -482.86}, orientation = {0.00, 0.00, 2.63}},
             {position = {-482.90, 419.23, -482.86}, orientation = {0.00, 0.00, -3.03}}
         }
+        -- }}}
     }
 }
