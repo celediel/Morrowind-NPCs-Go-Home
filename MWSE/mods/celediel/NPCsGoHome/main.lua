@@ -512,15 +512,15 @@ local function disableNPCs(cell)
                 else
                     log(common.logLevels.medium, "Disabling homeless %s", npc.object.name)
                     -- npc:disable() -- ! this one sometimes causes crashes
-                    -- mwscript.disable({reference = npc}) -- ! this one is deprecated
-                    tes3.setEnabled({reference = npc, enabled = false})
+                    mwscript.disable({reference = npc}) -- ! this one is deprecated
+                    -- tes3.setEnabled({reference = npc, enabled = false}) -- ! but this one causes crashes too
                 end
             else
                 if not npcHome then
                     log(common.logLevels.medium, "Enabling homeless %s", npc.object.name)
                     -- npc:enable()
-                    -- mwscript.enable({reference = npc})
-                    tes3.setEnabled({reference = npc, enabled = true})
+                    mwscript.enable({reference = npc})
+                    -- tes3.setEnabled({reference = npc, enabled = true})
                 end
             end
         end
@@ -538,14 +538,14 @@ local function disableSiltStriders(cell)
         if activator.object.id:match("siltstrider") then
             if checkTime() or (checkWeather(cell) and not config.keepBadWeatherNPCs) then
                 log(common.logLevels.medium, "Disabling silt strider %s!", activator.object.name)
-                -- mwscript.disable({reference = activator})
+                mwscript.disable({reference = activator})
                 -- activator:disable()
-                tes3.setEnabled({reference = activator, enabled = false})
+                -- tes3.setEnabled({reference = activator, enabled = false})
             else
                 log(common.logLevels.medium, "Enabling silt strider %s!", activator.object.name)
-                -- mwscript.enable({reference = activator})
+                mwscript.enable({reference = activator})
                 -- activator:enable()
-                tes3.setEnabled({reference = activator, enabled = true})
+                -- tes3.setEnabled({reference = activator, enabled = true})
             end
         end
     end
@@ -652,7 +652,7 @@ end
 
 -- {{{ event functions
 local function onActivated(e)
-    if e.activator ~= tes3.player and e.target.object.objectType ~= tes3.objectType.npc then return end
+    if e.activator ~= tes3.player or e.target.object.objectType ~= tes3.objectType.npc then return end
 
     if tes3.player.data.NPCsGoHome.intruding and not isIgnoredNPC(e.target) then
         tes3.messageBox(string.format("%s: Get out before I call the guards!", e.target.object.name))
