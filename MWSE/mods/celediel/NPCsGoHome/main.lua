@@ -222,7 +222,7 @@ local function fargothCheck()
                             hiding. He rewarded me with some gold, and told me I could keep
                             anything else I found in the bag besides the money he wanted.
     ]]
-    return tes3.getJournalIndex("MS_Lookout") >= 30
+    return ( tes3.getJournalIndex({ id = "MS_Lookout" }) or 0 ) <= 30
 end
 
 local function isIgnoredNPC(npc)
