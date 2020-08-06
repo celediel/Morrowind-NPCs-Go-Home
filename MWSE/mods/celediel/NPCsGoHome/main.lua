@@ -222,7 +222,12 @@ local function fargothCheck()
                             hiding. He rewarded me with some gold, and told me I could keep
                             anything else I found in the bag besides the money he wanted.
     ]]
-    return ( tes3.getJournalIndex({ id = "MS_Lookout" }) or 0 ) <= 30
+    local fargothJournal = tes3.getJournalIndex({ id = "MS_Lookout" })
+    if not fargothJournal then return false end
+
+    -- only disable Fargoth before speaking to Hrisskar, and after observing Fargoth sneak
+    log(common.logLevels.large, "Fargoth journal check %s: %s", fargothJournal, fargothJournal > 10 and fargothJournal <= 30)
+    return fargothJournal > 10 and fargothJournal <= 30
 end
 
 local function isIgnoredNPC(npc)
@@ -238,22 +243,24 @@ local function isIgnoredNPC(npc)
         isVampire = tes3.isAffectedBy({reference = npc, effect = tes3.effect.vampirism})
     end
 
-    local isFargothDone = obj.id == "fargoth" and fargothCheck() or false
+    local isFargothActive = obj.id == "fargoth" and fargothCheck() or false
 
     -- todo: non mwscript version of this
     local isWerewolf = mwscript.getSpellEffects({reference = npc, spell = "werewolf vision"})
     -- local isVampire = mwscript.getSpellEffects({reference = npc, spell = "vampire sun damage"})
 
+    -- this just keeps getting uglier but it's debug logging so whatever I don't care
     log(common.logLevels.large, ("Checking NPC:%s (%s or %s): id blocked:%s, mod blocked:%s " ..
-            "guard:%s dead:%s vampire:%s werewolf:%s dreamer:%s follower:%s hostile:%s"), obj.name, npc.object.id,
-        npc.object.baseObject and npc.object.baseObject.id or "nil", config.ignored[obj.id],
-        config.ignored[obj.sourceMod], obj.isGuard, isDead, isVampire, isWerewolf,
-        (obj.class and obj.class.id == "Dreamers"), followers[obj.id], isHostile)
+        "guard:%s dead:%s vampire:%s werewolf:%s dreamer:%s follower:%s hostile:%s %s%s"),
+        obj.name, npc.object.id, npc.object.baseObject and npc.object.baseObject.id or "nil",
+        config.ignored[obj.id], config.ignored[obj.sourceMod], obj.isGuard, isDead, isVampire,
+        isWerewolf, (obj.class and obj.class.id == "Dreamers"), followers[obj.id], isHostile,
+        obj.id == "fargoth" and "fargoth:" or "", obj.id == "fargoth" and isFargothActive or "")
 
     return config.ignored[obj.id] or --
            config.ignored[obj.sourceMod] or --
            obj.isGuard or --
-           isFargothDone or --
+           isFargothActive or --
            isDead or -- don't move dead NPCS
            isHostile or --
            followers[obj.id] or -- ignore followers
