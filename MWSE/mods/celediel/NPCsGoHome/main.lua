@@ -259,27 +259,6 @@ end
 -- {{{ checks
 
 local function fargothCheck()
-    --[[
-        ID:	MS_Lookout
-        index   Finishes    Entry
-        10                  Hrisskar Flat-Foot asked me to do him a favor. He believes that
-                            Fargoth has been hiding money from the Imperials, and he'd like to
-                            know where it's gone. If I will work for him, he will give me a share
-                            of the bounty.
-        20                  I've agreed to help Hrisskar find the money that Fargoth has been
-                            hiding away. I am supposed to keep an eye on him from atop the
-                            lighthouse in town, and watch where he goes. Hrisskar believes I
-                            should watch him at night. I'm not supposed to approach him at any
-                            time. I should then retrace his footsteps and find out where he's
-                            hidden the money. When I've found it, I should report back to
-                            Hrisskar.
-        30	    ☑	        I've decided not to help Hrisskar.
-        40                  I've found Fargoth's hidden stash. He keeps it in a hollow
-                            treestump in a muck pond in town.
-        100	    ☑	        Hrisskar was grateful that I found the money that Fargoth had been
-                            hiding. He rewarded me with some gold, and told me I could keep
-                            anything else I found in the bag besides the money he wanted.
-    ]]
     local fargothJournal = tes3.getJournalIndex({ id = "MS_Lookout" })
     if not fargothJournal then return false end
 
