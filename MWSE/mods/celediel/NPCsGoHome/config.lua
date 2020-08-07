@@ -20,7 +20,7 @@ local defaultConfig = {
     moveNPCs = false,
     homelessWanderersToPublicHouses = false,
     logLevel = common.logLevels.none,
-    factionIgnorePercentage = 0.67
+    factionIgnorePercentage = 0.66
 }
 
 local currentConfig
