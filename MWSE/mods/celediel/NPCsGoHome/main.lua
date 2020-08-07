@@ -185,6 +185,45 @@ local function createHomedNPCTableEntry(npc, home, startingPlace, isHome)
     return this
 end
 
+local function createPublicHouseTableEntry(publicCell, proprietor)
+    local city, publicHouseName
+
+    if publicCell.name and string.match(publicCell.name, ",") then
+        city = common.split(publicCell.name, ",")[1]
+        publicHouseName = common.split(publicCell.name, ",")[2]:gsub("^%s", "")
+    else
+        city = wilderness
+        publicHouseName = publicCell.id
+    end
+    local type = pickPublicHouseType(publicCell.name)
+
+    local worth = 0
+
+    -- for houses, worth is equal to NPC who lives there
+    if type ==  publicHouseTypes.houses then
+        worth = calculateNPCWorth(proprietor)
+    else
+        -- for other types, worth is combined worth of all NPCs
+        for innard in publicCell:iterateReferences(tes3.objectType.npc) do
+            worth = worth + calculateNPCWorth(innard)
+        end
+    end
+
+    if not publicHouses[city] then publicHouses[city] = {} end
+    if not publicHouses[city][type] then publicHouses[city][type] = {} end
+
+    publicHouses[city][type][publicCell.name] = {
+        name = publicHouseName,
+        city = city,
+        cell = publicCell,
+        proprietor = proprietor,
+        proprietorName = proprietor.object.name,
+        worth = worth
+    }
+
+    interop.setInnTable(publicHouses)
+end
+
 -- looks through doors to find a cell that matches a wandering NPCs name
 local function pickHomeForNPC(cell, npc)
     -- wilderness cells don't have name
@@ -297,49 +336,20 @@ local function isPublicHouse(cell)
             log(common.logLevels.medium, "NPC:\'%s\' of class:\'%s\' made %s public", npc.object.name,
                 npc.object.class and npc.object.class.id or "none", cell.name)
 
-            local city, publicHouseName
-
-            if cell.name then
-                city = common.split(cell.name, ",")[1]
-                publicHouseName = common.split(cell.name, ",")[2]:gsub("^%s", "")
-            else
-                city = wilderness
-                publicHouseName = cell.id
-            end
-            local type = pickPublicHouseType(cell.name)
-
-            local worth = 0
-
-            -- for houses, worth is equal to NPC who lives there
-            if type ==  publicHouseTypes.houses then
-                worth = calculateNPCWorth(npc)
-            else
-                -- for other types, worth is combined worth of all NPCs
-                for innard in cell:iterateReferences(tes3.objectType.npc) do
-                    worth = worth + calculateNPCWorth(innard)
-                end
-            end
-
-            if not publicHouses[city] then publicHouses[city] = {} end
-            if not publicHouses[city][type] then publicHouses[city][type] = {} end
-
-            publicHouses[city][type][cell.name] = {
-                name = publicHouseName,
-                city = city,
-                cell = cell,
-                proprietor = npc,
-                proprietorName = npc.object.name,
-                worth = worth
-            }
-
-            interop.setInnTable(publicHouses)
+            createPublicHouseTableEntry(cell, npc)
 
             return true
         end
 
-        local faction = npc.object.faction and npc.object.faction.id
+        local faction = npc.object.faction-- and npc.object.faction.id
+
         if faction then
             if not npcs.factions[faction] then npcs.factions[faction] = {total = 0, percentage = 0} end
+
+            if not npcs.factions[faction].master or npcs.factions[faction].master.object.factionIndex < npc.object.factionIndex then
+                npcs.factions[faction].master = npc
+            end
+
             npcs.factions[faction].total = npcs.factions[faction].total + 1
         end
 
@@ -457,7 +467,11 @@ end
 
 local function checkEnteredSpawnedNPCHome(cell)
     local home = homedNPCS[cell.id]
-    if home then log(common.logLevels.medium, "Entering home of %s, %s", home.name, home.homeName) end
+    if home then
+        local message = string.format("Entering home of %s, %s", home.name, home.homeName)
+        log(common.logLevels.medium, message)
+        tes3.messageBox(message)
+    end
 end
 
 local function checkEnteredPublicHouse(cell, city)
@@ -465,9 +479,11 @@ local function checkEnteredPublicHouse(cell, city)
 
     local publicHouse = publicHouses[city] and (publicHouses[city][type] and publicHouses[city][type][cell.name])
     if publicHouse then
-        log(common.logLevels.medium, "Entering public space %s, %s, in the city of %s. Talk to %s, %s for services.",
-            publicHouse.name, publicHouse.type, publicHouse.city, publicHouse.proprietor.object.name,
+        local message = string.format("Entering public space %s, a%s %s in the town of %s. Talk to %s, %s for services.",
+            publicHouse.name, common.vowel(type), type:gsub("s$", ""), publicHouse.city, publicHouse.proprietor.object.name,
             publicHouse.proprietor.object.class)
+        log(common.logLevels.small, message)
+        tes3.messageBox(message)
     end
 end
 
@@ -490,7 +506,7 @@ local function moveNPC(data)
         orientation = data.homeOrientation
     })
 
-    log(common.logLevels.medium, "Moving %s to home %s (%s, %s, %s)", data.npc.object.name, data.home.id,
+    log(common.logLevels.small, "Moving %s to home %s (%s, %s, %s)", data.npc.object.name, data.home.id,
         data.homePosition.x, data.homePosition.y, data.homePosition.z)
 end
 
@@ -515,10 +531,12 @@ end
 -- todo: rename to toggleNPCs(cell, state = true|false)
 -- todo: using tes3.setEnabled({ enabled = state })
 local function disableNPCs(cell)
+    if not config.disableNPCs then return end
+
     -- iterate NPCs in the cell, move them to their homes, and keep track of moved NPCs so we can move them back later
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         -- for npc, _ in pairs(cellsInMemory[cell].npcs) do
-        if config.disableNPCs and not isIgnoredNPC(npc) then
+        if not isIgnoredNPC(npc) then
             log(common.logLevels.large, "People change")
 
             -- find NPC homes
@@ -558,6 +576,8 @@ local function disableNPCs(cell)
 end
 
 local function disableSiltStriders(cell)
+    if not config.disableNPCs then return end
+
     log(common.logLevels.large, "Looking for silt striders")
     for activator in cell:iterateReferences(tes3.objectType.activator) do
         log(common.logLevels.large, "Is %s a silt strider??", activator.object.id)
@@ -579,13 +599,15 @@ local function disableSiltStriders(cell)
 end
 
 local function processDoors(cell)
+    if not config.lockDoors then return end
+
     log(common.logLevels.large, "Checking out doors")
 
     for door in cell:iterateReferences(tes3.objectType.door) do
         if not door.data.NPCsGoHome then door.data.NPCsGoHome = {} end
         log(common.logLevels.large, "Door has destination: %s", door.destination and door.destination.cell.id or "none")
 
-        if config.lockDoors and not isIgnoredDoor(door, cell.id) then
+        if not isIgnoredDoor(door, cell.id) then
             log(common.logLevels.large, "It knows there's a door")
 
             local alreadyLocked = tes3.getLocked({reference = door})
@@ -631,16 +653,17 @@ local function applyChanges(cell)
         else
             obj = friend.object
         end
-        followers[obj.id] = true
-        log(common.logLevels.large, "%s is follower", obj.id)
+
+        if friend ~= tes3.mobilePlayer then
+            followers[obj.id] = true
+            -- log(common.logLevels.large, "%s is follower", obj.id)
+        end
     end
 
     if isIgnoredCell(cell) then return end
 
     -- Interior cell, except Waistworks, don't do anything
     if checkInteriorCell(cell) and not (config.waistWorks and checkCantonCell(cell.name)) then return end
-
-    log(common.logLevels.medium, "The hour is: %s", tes3.worldController.hour.value)
 
     -- Disable NPCs in cell
     disableNPCs(cell)
