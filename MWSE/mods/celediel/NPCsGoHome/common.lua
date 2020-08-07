@@ -26,4 +26,13 @@ this.inspect = function(thing)
     this.log(inspect(thing))
 end
 
+this.vowel = function(str)
+    local s = string.sub(str, 1, 1)
+    local n = ""
+
+    if string.match(s, "[AOEUIaoeui]") then n = "n" end
+
+    return n
+end
+
 return this

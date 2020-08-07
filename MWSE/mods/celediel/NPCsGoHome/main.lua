@@ -686,7 +686,7 @@ local function updatePlayerTrespass(cell)
     cell = cell or tes3.getPlayerCell()
 
     if checkInteriorCell(cell) and not isIgnoredCell(cell) and not isPublicHouse(cell) then
-        if config.disableInteraction and checkTime() then
+        if checkTime() then
             tes3.player.data.NPCsGoHome.intruding = true
         else
             tes3.player.data.NPCsGoHome.intruding = false
@@ -701,7 +701,11 @@ end
 
 -- {{{ event functions
 local function onActivated(e)
-    if e.activator ~= tes3.player or e.target.object.objectType ~= tes3.objectType.npc then return end
+    if e.activator ~= tes3.player or
+       e.target.object.objectType ~= tes3.objectType.npc or
+       not config.disableInteraction then
+        return
+    end
 
     if tes3.player.data.NPCsGoHome.intruding and not isIgnoredNPC(e.target) then
         tes3.messageBox(string.format("%s: Get out before I call the guards!", e.target.object.name))
