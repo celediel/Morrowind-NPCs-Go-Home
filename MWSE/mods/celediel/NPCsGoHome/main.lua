@@ -359,16 +359,18 @@ local function isPublicHouse(cell)
 
     -- no NPCs of ignored classes, so let's check out factions
     for faction, info in pairs(npcs.factions) do
-        info.percentage = info.total / npcs.total
+        info.percentage = ( info.total / npcs.total ) * 100
         log(common.logLevels.large,
-            "No NPCs of ignored class in %s, checking faction %s (ignored: %s) with %s (%s%%) vs total %s", cell.name,
-            faction, config.ignored[faction], info.total, info.percentage * 100, npcs.total)
+            "No NPCs of ignored class in %s, checking faction %s (ignored: %s, player joined: %s) with %s (%s%%) vs total %s", cell.name,
+            faction, config.ignored[faction.id], faction.playerJoined, info.total, info.percentage, npcs.total)
 
         -- less than 3 NPCs can't possibly be a public house unless it's a Blades house
-        if config.ignored[faction] and (npcs.total >= config.minimumOccupancy or faction == "Blades") and
+        if ( config.ignored[faction.id] or faction.playerJoined ) and (npcs.total >= config.minimumOccupancy or faction == "Blades") and
             info.percentage >= config.factionIgnorePercentage then
-            log(common.logLevels.medium, "%s is %s%% faction %s, marking public.", cell.name, info.percentage * 100,
+            log(common.logLevels.medium, "%s is %s%% faction %s, marking public.", cell.name, info.percentage,
                 faction)
+
+            createPublicHouseTableEntry(cell, npcs.factions[faction].master)
             return true
         end
     end
@@ -385,11 +387,12 @@ local function isIgnoredDoor(door, homeCellId)
         return true
     end
 
-    -- Only doors in cities and towns (cells that share the same first characters) return true
+    -- Only doors in cities and towns (cells whose names share the same first characters)
+    -- todo: if destination cell name contains outside cell name
     local inCity = string.sub(homeCellId, 1, 4) == string.sub(door.destination.cell.id, 1, 4)
 
     -- peek inside doors to look for guild halls, inns and clubs
-    local isPublic = isPublicHouse(door.destination.cell)
+    local leadsToPublicCell = isPublicHouse(door.destination.cell)
 
     local hasOccupants = false
     for npc in door.destination.cell:iterateReferences(tes3.objectType.npc) do
@@ -402,10 +405,10 @@ local function isIgnoredDoor(door, homeCellId)
     log(common.logLevels.large, "%s is %s, %s is %s (%sin a city, is %spublic)", door.destination.cell.id,
         config.ignored[door.destination.cell.id] and "ignored" or "not ignored", door.destination.cell.sourceMod,
         config.ignored[door.destination.cell.sourceMod] and "ignored" or "not ignored", inCity and "" or "not ",
-        isPublic and "" or "not ")
+        leadsToPublicCell and "" or "not ")
 
     return config.ignored[door.destination.cell.id] or config.ignored[door.destination.cell.sourceMod] or not inCity or
-               isPublicHouse or not hasOccupants
+               leadsToPublicCell or not hasOccupants
 end
 
 local function isIgnoredCell(cell)
