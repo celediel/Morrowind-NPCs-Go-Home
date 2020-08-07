@@ -36,6 +36,22 @@ local contextualNPCs = {"^AM_"}
 -- {{{ helper functions
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
 
+local function checkModdedCell(cellId)
+    local id
+
+    if cellId == "Balmora, South Wall Cornerclub" and tes3.isModActive("South Wall.ESP") then
+        id = "Balmora, South Wall Den Of Iniquity"
+    elseif cellId == "Balmora, Eight Plates" and tes3.isModActive("Eight Plates.esp") then
+        id = "Balmora, Seedy Eight Plates"
+    elseif cellId == "Hla Oad, Fatleg's Drop Off" and tes3.isModActive("Clean DR115_TheDropoff_HlaOadDocks.ESP") then
+        id = "Hla Oad, The Drop Off"
+    else
+        id = cellId
+    end
+
+    return id
+end
+
 -- {{{ npc evaluators
 
 -- NPCs barter gold + value of all inventory items
@@ -129,16 +145,19 @@ local function createHomedNPCTableEntry(npc, home, startingPlace, isHome)
 
     local pickedPosition, pickedOrientation, p, o
 
+    -- mod support for different positions in cells
+    local id = checkModdedCell(home.id)
+
     if isHome and positions.npcs[npc.object.name] then
         p = positions.npcs[npc.object.name].position
         o = positions.npcs[npc.object.name].orientation
         pickedPosition = positions.npcs[npc.object.name] and tes3vector3.new(p[1], p[2], p[3]) or zeroVector:copy()
         pickedOrientation = positions.npcs[npc.object.name] and tes3vector3.new(o[1], o[2], o[3]) or zeroVector:copy()
-    elseif positions.cells[home.id] then
-        p = table.choice(positions.cells[home.id]).position
-        o = table.choice(positions.cells[home.id]).orientation
-        pickedPosition = positions.cells[home.id] and tes3vector3.new(p[1], p[2], p[3]) or zeroVector:copy()
-        pickedOrientation = positions.cells[home.id] and tes3vector3.new(o[1], o[2], o[3]) or zeroVector:copy()
+    elseif positions.cells[id] then
+        p = table.choice(positions.cells[id]).position
+        o = table.choice(positions.cells[id]).orientation
+        pickedPosition = positions.cells[id] and tes3vector3.new(p[1], p[2], p[3]) or zeroVector:copy()
+        pickedOrientation = positions.cells[id] and tes3vector3.new(o[1], o[2], o[3]) or zeroVector:copy()
     else
         pickedPosition = zeroVector:copy()
         pickedOrientation = zeroVector:copy()

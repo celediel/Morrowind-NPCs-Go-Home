@@ -64,7 +64,7 @@ return {
             {position = {337.37, 737.83, -249.00}, orientation = {0.00, 0.00, 3.09}}
         },
         -- todo: add support for this:
-        ["Balmora, South Wall Cornerclub (mod)"] = {
+        ["Balmora, South Wall Den Of Iniquity"] = {
             {position = {239.72, 589.39, -249.00}, orientation = {0.00, 0.00, -2.86}},
             {position = {241.20, 588.73, -249.00}, orientation = {0.00, 0.00, -1.62}},
             {position = {245.71, 471.54, -249.00}, orientation = {0.00, 0.00, -1.52}},
@@ -272,7 +272,16 @@ return {
             {position = {-204.03, -281.63, 132.37}, orientation = {0.00, 0.00, -1.73}},
             {position = {-192.90, -195.83, 132.37}, orientation = {0.00, 0.00, -1.66}},
             {position = {-104.57, -418.53, 131.84}, orientation = {0.00, 0.00, 3.06}}
-        }
+        },
+        -- }}}
+
+        -- {{{ Hla Oad
+        ["Hla Oad, Fatleg's Drop Off"] = {
+
+        },
+        ["Hla Oad, The Drop Off"] = {
+
+        },
         -- }}}
     }
 }
