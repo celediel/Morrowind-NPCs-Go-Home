@@ -2,6 +2,13 @@
 return {
     -- home positions for NPCS
     npcs = {
+        -- Seyda Neen, vanilla
+        ["Eldafire"] = {position = {-213.27, -5.37, -123.42}, orientation = {0.00, 0.00, 1.57}},
+        ["Erene Llenim"] = {position = {-23.87, 109.84, 16.71}, orientation = {0.00, 0.00, 2.77}},
+        ["Fargoth"] = {position = {58.65, 89.09, -123.50}, orientation = {0.00, 0.00, -3.01}},
+        ["Indrele Rathryon"] = {position = {31.86, -16.17, 26.38}, orientation = {0.00, 0.00, 0.93}},
+        ["Vodunius Nuccius"] = {position = {15.47, 24.62, -137.08}, orientation = {0.00, 0.00, -3.10}},
+
         -- Balmora, vanilla
         ["Rarayn Radarys"] = {position = {136.23, 132.69, 7.00}, orientation = {0.00, 0.00, -3.14}},
         ["Dralosa Athren"] = {position = {190.74, 91.01, 7.00}, orientation = {0.00, 0.00, -1.55}},
@@ -12,7 +19,19 @@ return {
         ["Aryni Orethi"] = {position = {12.19, 387.82, -254.00}, orientation = {0.00, 0.00, 3.11}},
         ["Dandera Selaro"] = {position = {-15.23, 357.65, -124.36}, orientation = {0.00, 0.00, 3.12}},
         ["Gindrala Hleran"] = {position = {30.24, 358.76, -126.00}, orientation = {0.00, 0.00, -3.07}},
-        ["Tauryon"] = {position = {-94.82, 315.39, -126.00}, orientation = {0.00, 0.00, 2.57}}
+        ["Tauryon"] = {position = {-94.82, 315.39, -126.00}, orientation = {0.00, 0.00, 2.57}},
+
+        -- Hla Oad, vanilla
+        ["Fadila Balvel"] = {position = {4058.02, 4268.32, 8147.63}, orientation = {0.00, 0.00, -2.27}},
+        ["Relien Rirne"] = {position = {4120.17, 2938.51, 14676.96}, orientation = {0.00, 0.00, -2.51}},
+
+        -- Gnaar Mok
+        ["Anglalos"] = {position = {4043.17, 4186.94, 15124.96}, orientation = {0.00, 0.00, -3.02}},
+        ["Caryarel"] = {position = {4084.50, 4114.05, 15124.96}, orientation = {0.00, 0.00, -2.90}},
+        ["Nadene Rotheran"] = {position = {4173.37, 4272.18, 14623.57}, orientation = {0.00, 0.00, -2.65}},
+
+        -- Caldera
+        ["Caldera, Nedhelas' House"] = {position = {-235.15, 3.21, -123.42}, orientation = {0.00, 0.00, 1.77}}
     },
 
     -- positions picked from a list for public houses
@@ -63,7 +82,6 @@ return {
             {position = {806.36, 296.22, -217.31}, orientation = {0.00, 0.00, -1.11}},
             {position = {337.37, 737.83, -249.00}, orientation = {0.00, 0.00, 3.09}}
         },
-        -- todo: add support for this:
         ["Balmora, South Wall Den Of Iniquity"] = {
             {position = {239.72, 589.39, -249.00}, orientation = {0.00, 0.00, -2.86}},
             {position = {241.20, 588.73, -249.00}, orientation = {0.00, 0.00, -1.62}},
@@ -276,11 +294,67 @@ return {
         -- }}}
 
         -- {{{ Hla Oad
-        ["Hla Oad, Fatleg's Drop Off"] = {
+        -- ? maybe, maybe not ?
+        -- ["Hla Oad, Fatleg's Drop Off"] = {},
+        -- ["Hla Oad, The Drop Off"] = {},
+        -- }}}
 
+        -- {{{ Pelagiad
+        ["Pelagiad, Halfway Tavern"] = {
+            {position = {-53.46, -300.18, 2.00}, orientation = {0.00, 0.00, 0.26}},
+            {position = {171.16, -73.97, 2.00}, orientation = {0.00, 0.00, -2.43}},
+            {position = {293.28, 294.99, 2.00}, orientation = {0.00, 0.00, -0.04}},
+            {position = {360.19, 296.12, 2.00}, orientation = {0.00, 0.00, -0.04}},
+            {position = {428.74, 297.33, 2.00}, orientation = {0.00, 0.00, -0.23}},
+            {position = {500.92, 405.54, 2.00}, orientation = {0.00, 0.00, -1.59}},
+            {position = {826.17, 509.89, 2.00}, orientation = {0.00, 0.00, -2.43}},
+            {position = {732.58, 462.36, 2.00}, orientation = {0.00, 0.00, -2.54}},
+            {position = {530.07, -84.56, 2.00}, orientation = {0.00, 0.00, -1.15}},
+            {position = {403.12, -14.35, 2.00}, orientation = {0.00, 0.00, 1.58}},
+            {position = {401.25, 51.01, 2.00}, orientation = {0.00, 0.00, 1.51}},
+            {position = {249.69, 749.41, -254.00}, orientation = {0.00, 0.00, 2.55}},
+            {position = {468.77, 265.65, -254.00}, orientation = {0.00, 0.00, 2.58}},
+            {position = {251.22, 332.29, -254.00}, orientation = {0.00, 0.00, -2.57}},
+            {position = {569.66, 121.96, 258.00}, orientation = {0.00, 0.00, 0.24}},
+            {position = {786.80, -296.05, 258.00}, orientation = {0.00, 0.00, -0.08}}
         },
-        ["Hla Oad, The Drop Off"] = {
+        -- }}}
 
+        -- {{{ Gnaar Mok
+        ["Gnaar Mok, Druegh-jigger's Rest"] = {
+            {position = {3957.30, 3969.36, 14481.53}, orientation = {0.00, 0.00, 1.09}},
+            {position = {3949.90, 4105.69, 14481.53}, orientation = {0.00, 0.00, 1.62}},
+            {position = {4134.70, 4252.04, 14481.53}, orientation = {0.00, 0.00, 0.10}},
+            {position = {4300.35, 4302.60, 14481.53}, orientation = {0.00, 0.00, -2.86}},
+            {position = {4346.93, 3962.00, 14481.53}, orientation = {0.00, 0.00, -1.21}},
+            {position = {4215.60, 3912.02, 14481.53}, orientation = {0.00, 0.00, 0.89}},
+            {position = {4127.97, 4100.41, 14481.53}, orientation = {0.00, 0.00, -1.71}}
+        },
+        -- }}}
+
+        -- {{{ Caldera
+        ["Caldera, Shenk's Shovel"] = {
+            {position = {76.14, 1.11, 130.00}, orientation = {0.00, 0.00, 1.45}},
+            {position = {125.18, -105.21, 130.00}, orientation = {0.00, 0.00, 0.47}},
+            {position = {268.91, -128.54, 130.00}, orientation = {0.00, 0.00, -0.05}},
+            {position = {370.32, -123.93, 134.13}, orientation = {0.00, 0.00, -0.05}},
+            {position = {480.65, -117.58, 134.13}, orientation = {0.00, 0.00, -0.05}},
+            {position = {554.92, -311.51, 130.00}, orientation = {0.00, 0.00, -1.36}},
+            {position = {-37.23, -547.36, 130.00}, orientation = {0.00, 0.00, 0.49}},
+            {position = {-61.29, 406.96, 130.00}, orientation = {0.00, 0.00, 0.70}},
+            {position = {68.72, 578.33, 130.00}, orientation = {0.00, 0.00, -2.60}},
+            {position = {-71.46, 588.34, 130.00}, orientation = {0.00, 0.00, 2.53}},
+            {position = {336.74, 186.69, 130.00}, orientation = {0.00, 0.00, -0.89}},
+            {position = {142.95, 221.89, 130.00}, orientation = {0.00, 0.00, 0.89}},
+            {position = {215.56, 379.49, 130.00}, orientation = {0.00, 0.00, -3.12}},
+            {position = {594.85, 59.74, 386.00}, orientation = {0.00, 0.00, -2.67}},
+            {position = {586.76, -564.72, 386.00}, orientation = {0.00, 0.00, -1.41}},
+            {position = {16.14, -429.27, 386.00}, orientation = {0.00, 0.00, 3.12}},
+            {position = {-22.40, 64.39, 419.04}, orientation = {0.00, 0.00, 1.64}},
+            {position = {-78.76, 53.74, 642.00}, orientation = {0.00, 0.00, 2.00}},
+            {position = {-51.95, -243.29, 642.00}, orientation = {0.00, 0.00, 1.44}},
+            {position = {334.04, -173.96, 642.00}, orientation = {0.00, 0.00, -2.89}},
+            {position = {100.93, -575.35, 642.00}, orientation = {0.00, 0.00, -1.04}}
         },
         -- }}}
     }
