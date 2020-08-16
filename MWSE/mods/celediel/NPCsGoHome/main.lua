@@ -496,13 +496,39 @@ local function isIgnoredDoor(door, homeCellId)
         end
     end
 
-    log(common.logLevels.large, "%s is %s, %s is %s (%sin a city, is %spublic)", door.destination.cell.id,
-        config.ignored[door.destination.cell.id] and "ignored" or "not ignored", door.destination.cell.sourceMod,
-        config.ignored[door.destination.cell.sourceMod] and "ignored" or "not ignored", inCity and "" or "not ",
-        leadsToPublicCell and "" or "not ")
+    log(common.logLevels.large, "%s is %s, %s is %s (%sin a city, is %spublic, %soccupied)", --
+        door.destination.cell.id, config.ignored[door.destination.cell.id] and "ignored" or "not ignored", -- destination is ignored
+        door.destination.cell.sourceMod, config.ignored[door.destination.cell.sourceMod] and "ignored" or "not ignored", -- destination mod is ignored
+        inCity and "" or "not ", leadsToPublicCell and "" or "not ", hasOccupants and "" or "un") -- in a city, is public, is ocupado
 
-    return config.ignored[door.destination.cell.id] or config.ignored[door.destination.cell.sourceMod] or not inCity or
-               leadsToPublicCell or not hasOccupants
+    -- todo: clean this up
+    -- local shit = config.ignored[door.destination.cell.id] or config.ignored[door.destination.cell.sourceMod] or not inCity or leadsToPublicCell or not hasOccupants
+    -- log(common.logLevels.large, "shit: %s", shit)
+    -- return shit
+    if config.ignored[door.destination.cell.id] then
+        log(common.logLevels.large, "ignored cell id: %s", door.destination.cell.id)
+        return true
+
+    elseif config.ignored[door.destination.cell.sourceMod] then
+        log(common.logLevels.large, "ignored cell mod: %s", door.destination.cell.sourceMod)
+        return true
+
+    elseif not inCity then
+        log(common.logLevels.large, "%s not in city", door.destination.cell.id)
+        return true
+
+    elseif leadsToPublicCell then
+        log(common.logLevels.large, "%s is public", door.destination.cell.id)
+        return true
+
+    elseif not hasOccupants then
+        log(common.logLevels.large, "%s is unoccupied", door.destination.cell.id)
+        return true
+
+    -- otherwise
+    else
+        return false
+    end
 end
 
 local function isIgnoredCell(cell)
