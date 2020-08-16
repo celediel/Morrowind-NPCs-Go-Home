@@ -16,7 +16,10 @@ local updateTimer
 
 -- NPC homes
 local publicHouses = {}
-local homes = {byName = {}, byCell = {}}
+local homes = {
+    byName = {}, -- used to ensure duplicate homes are not created
+    byCell = {} -- used for cellChange events
+}
 
 -- city name if cell.name is nil
 local wilderness = "Wilderness"
@@ -52,6 +55,15 @@ local function checkModdedCell(cellId)
     end
 
     return id
+end
+
+local function isInteriorCell(cell)
+    if not cell then return end
+
+    log(common.logLevels.large, "Cell %s: interior: %s, behaves as exterior: %s therefore returning %s",
+        cell.id, cell.isInterior, cell.behavesAsExterior, cell.isInterior and not cell.behavesAsExterior)
+
+    return cell.isInterior and not cell.behavesAsExterior
 end
 
 -- patented by Merlord
@@ -91,6 +103,7 @@ end
 -- NPCs barter gold + value of all inventory items
 local function calculateNPCWorth(npc, merchantCell)
     local worth = npc.object.barterGold
+    local obj = npc.baseObject and npc.baseObject or npc.object
 
     if npc.object.inventory then
         for _, item in pairs(npc.object.inventory) do worth = worth + (item.object.value or 0) end
@@ -100,7 +113,7 @@ local function calculateNPCWorth(npc, merchantCell)
         for box in merchantCell:iterateReferences(tes3.objectType.container) do -- loop over each container
             if box.inventory then -- if it's not empty
                 for item in tes3.iterate(box.inventory) do -- loop over its items
-                    if npc.object.baseObject:tradesItemType(item.objectType) then -- if the NPC sells that type
+                    if obj:tradesItemType(item.objectType) then -- if the NPC sells that type
                         worth = worth + item.object.value -- add its value to the NPCs total value
                     end
                 end
@@ -187,13 +200,14 @@ end
 
 local function createHomedNPCTableEntry(npc, home, startingPlace, isHome, position, orientation)
     if npc.object and (npc.object.name == nil or npc.object.name == "") then return end
-    log(common.logLevels.medium, "Found %s for %s: %s... adding it to in memory table...",
-        isHome and "home" or "public house", npc.object.name, home.id)
 
     local pickedPosition, pickedOrientation, pos, ori
 
     -- mod support for different positions in cells
     local id = checkModdedCell(home.id)
+
+    log(common.logLevels.medium, "Found %s for %s: %s... adding it to in memory table...",
+        isHome and "home" or "public house", npc.object.name, id)
 
     if isHome and positions.npcs[npc.object.name] then
         pos = positions.npcs[npc.object.name].position
@@ -334,7 +348,7 @@ local function fargothCheck()
 end
 
 local function isIgnoredNPC(npc)
-    local obj = npc.object.baseObject and npc.object.baseObject or npc.object
+    local obj = npc.baseObject and npc.baseObject or npc.object
 
     -- ignore dead, attack on sight NPCs, and vampires
     local isDead = false
@@ -351,7 +365,7 @@ local function isIgnoredNPC(npc)
         isVampire = obj.head.vampiric and true or false -- don't set a reference ... is bool even a reference type??
     end
 
-    local isFargothActive = obj.id == "fargoth" and fargothCheck() or false
+    local isFargothActive = obj.id:match("fargoth") and fargothCheck() or false
 
     -- todo: non mwscript version of this
     local isWerewolf = mwscript.getSpellEffects({reference = npc, spell = "werewolf vision"})
@@ -363,7 +377,7 @@ local function isIgnoredNPC(npc)
         obj.name, npc.object.id, npc.object.baseObject and npc.object.baseObject.id or "nil", --
         config.ignored[string.lower(obj.id)], obj.sourceMod, config.ignored[string.lower(obj.sourceMod)], --
         obj.isGuard, isDead, isVampire, isWerewolf, (obj.class and obj.class.id == "Dreamers"), --
-        followers[obj.id], isHostile, obj.id == "fargoth" and "fargoth:" or "", obj.id == "fargoth" and isFargothActive or "")
+        followers[obj.id], isHostile, obj.id:match("fargoth") and "fargoth:" or "", obj.id:match("fargoth") and isFargothActive or "")
 
     return config.ignored[string.lower(obj.id)] or --
            config.ignored[string.lower(obj.sourceMod)] or --
@@ -380,6 +394,9 @@ end
 -- checks NPC class and faction in cells for block list and adds to publicHouse list
 -- todo: rewrite this
 local function isPublicHouse(cell)
+    -- only interior cells are public "houses"
+    if not isInteriorCell(cell) then return false end
+
     local typeOfPub = pickPublicHouseType(cell.name)
     local city, publicHouseName
 
@@ -464,7 +481,7 @@ local function isIgnoredDoor(door, homeCellId)
     for npc in door.destination.cell:iterateReferences(tes3.objectType.npc) do
         if not isIgnoredNPC(npc) then
             hasOccupants = true
-            -- break
+            break
         end
     end
 
@@ -486,15 +503,6 @@ local function isIgnoredCell(cell)
     -- if not cell.name then wilderness = true end
 
     return config.ignored[cell.id] or config.ignored[cell.sourceMod] -- or wilderness
-end
-
-local function isInteriorCell(cell)
-    if not cell then return end
-
-    log(common.logLevels.large, "Cell: interior: %s, behaves as exterior: %s therefore returning %s", cell.isInterior,
-        cell.behavesAsExterior, cell.isInterior and not cell.behavesAsExterior)
-
-    return cell.isInterior and not cell.behavesAsExterior
 end
 
 local function isCantonCell(cellName)
@@ -521,13 +529,18 @@ end
 
 -- travel agents, their steeds, and argonians stick around
 local function isBadWeatherNPC(npc)
-    if not npc.object then return end
+    local obj = npc.baseObject and npc.baseObject or npc.object
+    if not obj then return end
 
     log(common.logLevels.large, "NPC Inclement Weather: %s is %s, %s", npc.object.name, npc.object.class.name,
         npc.object.race.id)
 
-    return npc.object.class.name == "Caravaner" or npc.object.class.name == "Gondolier" or npc.object.race.id ==
-               "Argonian"
+    -- todo: better detection of NPCs who offer travel services
+    -- found a rogue "shipmaster" in molag mar
+    return obj.class.name == "Caravaner" or
+           obj.class.name == "Gondolier" or
+           obj.class.name == "Shipmaster" or
+           obj.race.id == "Argonian"
 end
 
 -- }}}
@@ -539,7 +552,7 @@ local function checkEnteredNPCHome(cell)
     if home then
         local msg = string.format("Entering home of %s, %s", home.name, home.homeName)
         log(common.logLevels.small, msg)
-        message(msg)
+        -- message(msg) -- this one is mostly for debugging, so it doesn't need to be shown
     end
 end
 
@@ -553,7 +566,7 @@ local function checkEnteredPublicHouse(cell, city)
                                   publicHouse.name, common.vowel(typeOfPub), typeOfPub:gsub("s$", ""), publicHouse.city,
                                   publicHouse.proprietor.object.name, publicHouse.proprietor.object.class)
         log(common.logLevels.small, msg)
-        message(msg)
+        message(msg) -- this one is more informative, and not entirely for debugging, and reminiscent of Daggerfall's messages
     end
 end
 
@@ -616,6 +629,9 @@ end
 
 -- search in a specific cell for moved NPCs
 local function checkForMovedNPCs(cell)
+    -- NPCs don't get moved to exterior cells, so no need to check them for moved NPCs
+    if not isInteriorCell(cell) then return end
+
     log(common.logLevels.medium, "Looking for moved NPCs in cell %s", cell.id)
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         if npc.data and npc.data.NPCsGoHome then
@@ -641,7 +657,7 @@ local function processNPCs(cell)
     -- todo: move this check somewhere else, so that disabled NPCs will be re-enabled even if the option is off
     if not config.disableNPCs then return end
 
-    log(common.logLevels.small, "Applying changes to NPCs in %s", cell.id)
+    log(common.logLevels.small, "Looking for NPCs to process in cell:%s", cell.id)
 
     -- iterate NPCs in the cell, move them to their homes, and keep track of moved NPCs so we can move them back later
     for npc in cell:iterateReferences(tes3.objectType.npc) do
@@ -696,7 +712,7 @@ end
 local function processSiltStriders(cell)
     if not config.disableNPCs then return end
 
-    log(common.logLevels.small, "Applying changes to silt striders in %s", cell.name)
+    log(common.logLevels.small, "Looking for silt striders to process in cell:%s", cell.name)
     for activator in cell:iterateReferences(tes3.objectType.activator) do
         log(common.logLevels.large, "Is %s a silt strider??", activator.object.id)
         if activator.object.id:match("siltstrider") then
@@ -723,7 +739,7 @@ end
 local function processDoors(cell)
     if not config.lockDoors then return end
 
-    log(common.logLevels.small, "Applying changes to doors in %s", cell.id)
+    log(common.logLevels.small, "Looking for doors to process in cell:%s", cell.id)
 
     for door in cell:iterateReferences(tes3.objectType.door) do
         if not door.data.NPCsGoHome then door.data.NPCsGoHome = {} end
@@ -747,7 +763,7 @@ local function processDoors(cell)
                 end
             else
                 -- only unlock doors that we locked before
-                if door.data.NPCsGoHome and door.data.NPCsGoHome.modified then
+                if door.data.NPCsGoHome.modified then
                     door.data.NPCsGoHome.modified = false
 
                     tes3.setLockLevel({reference = door, level = 0})
@@ -768,12 +784,7 @@ local function applyChanges(cell)
 
     -- build our followers list
     for friend in tes3.iterate(tes3.mobilePlayer.friendlyActors) do
-        local obj
-        if friend.object.baseObject then
-            obj = friend.object.baseObject
-        else
-            obj = friend.object
-        end
+        local obj = friend.baseObject and friend.baseObject or friend.object
 
         if friend ~= tes3.mobilePlayer then
             followers[obj.id] = true
