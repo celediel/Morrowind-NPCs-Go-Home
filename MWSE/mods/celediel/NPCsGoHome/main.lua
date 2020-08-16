@@ -391,6 +391,17 @@ local function isIgnoredNPC(npc)
            (obj.class and obj.class.id == "Dreamers") --
 end
 
+local function isNPCPet(creature)
+    local obj = creature.baseObject and creature.baseObject or creature.object
+
+    -- todo: more pets?
+    if obj.id:match("guar") and obj.mesh:match("pack") then
+        return true
+    else
+        return false
+    end
+end
+
 -- checks NPC class and faction in cells for block list and adds to publicHouse list
 -- todo: rewrite this
 local function isPublicHouse(cell)
@@ -708,7 +719,6 @@ local function processNPCs(cell)
     if not (checkTime() or checkWeather(cell)) then putNPCsBack() end
 end
 
--- todo: deal with trader's guars, and other npc linked creatures/whatever
 local function processSiltStriders(cell)
     if not config.disableNPCs then return end
 
@@ -734,6 +744,24 @@ local function processSiltStriders(cell)
         end
     end
     log(common.logLevels.large, "Done with silt striders")
+end
+
+-- deal with trader's guars, and other npc linked creatures/whatever
+local function processPets(cell)
+    if not config.disableNPCs then return end
+
+    log(common.logLevels.small, "Looking for NPC pets to process in cell:%s", cell.name)
+
+    for creature in cell:iterateReferences(tes3.objectType.creature) do
+        if isNPCPet(creature) then
+            if checkTime() then
+                -- disable
+                log(common.logLevels.medium, "Disabling NPC Pet %s!", creature.object.id)
+            else
+                -- enable
+            end
+        end
+    end
 end
 
 local function processDoors(cell)
@@ -799,6 +827,7 @@ local function applyChanges(cell)
 
     -- Deal with NPCs and mounts in cell
     processNPCs(cell)
+    processPets(cell)
     processSiltStriders(cell)
 
     -- check doors in cell, locking those that aren't inns/clubs
