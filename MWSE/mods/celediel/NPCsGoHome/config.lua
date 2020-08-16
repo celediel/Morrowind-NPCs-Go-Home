@@ -9,7 +9,6 @@ local defaultConfig = {
     ignored = {
         ["Balmora, Caius Cosades' House"] = true,
         ["Publican"] = true,
-        -- ["Healer Service"] = true,
     },
     worstWeather = tes3.weather.thunder,
     keepBadWeatherNPCs = true,
