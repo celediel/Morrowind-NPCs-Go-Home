@@ -359,6 +359,22 @@ local function isCityCell(internalCellId, externalCellId)
     return false
 end
 
+local function isIgnoredCell(cell)
+    log(common.logLevels.large, "%s is %s, %s is %s", cell.id, config.ignored[cell.id] and "ignored" or "not ignored",
+        cell.sourceMod, config.ignored[cell.sourceMod] and "ignored" or "not ignored")
+
+    -- don't do things in the wilderness
+    -- local wilderness = false
+    -- if not cell.name then wilderness = true end
+
+    return config.ignored[cell.id] or config.ignored[cell.sourceMod] -- or wilderness
+end
+
+local function isCantonCell(cellName)
+    for _, str in pairs(waistworks) do if cellName:match(str) then return true end end
+    return false
+end
+
 local function fargothCheck()
     local fargothJournal = tes3.getJournalIndex({id = "MS_Lookout"})
     if not fargothJournal then return false end
@@ -496,7 +512,7 @@ local function isPublicHouse(cell)
     return false
 end
 
--- todo: check cell contents to decide if it should be locked
+-- doors that lead to ignored, exterior, canton, unoccupied, or public cells, and doors that aren't in cities
 local function isIgnoredDoor(door, homeCellId)
     -- don't lock non-cell change doors
     if not door.destination then
@@ -519,33 +535,16 @@ local function isIgnoredDoor(door, homeCellId)
         end
     end
 
-    log(common.logLevels.large, "%s is %s, %s is %s (%sin a city, is %spublic, %soccupied)", --
-        door.destination.cell.id, config.ignored[door.destination.cell.id] and "ignored" or "not ignored", -- destination is ignored
-        door.destination.cell.sourceMod, config.ignored[door.destination.cell.sourceMod] and "ignored" or "not ignored", -- destination mod is ignored
+    log(common.logLevels.large, "%s is %s, (%sin a city, is %spublic, %soccupied)", --
+        door.destination.cell.id, isIgnoredCell(door.destination.cell) and "ignored" or "not ignored", -- destination is ignored
         inCity and "" or "not ", leadsToPublicCell and "" or "not ", hasOccupants and "" or "un") -- in a city, is public, is ocupado
 
-    return config.ignored[door.destination.cell.id] or
-           config.ignored[door.destination.cell.sourceMod] or
+    return isIgnoredCell(door.destination.cell) or
            not isInteriorCell(door.destination.cell) or
+           isCantonCell(door.destination.cell.id) or
            not inCity or
            leadsToPublicCell or
            not hasOccupants
-end
-
-local function isIgnoredCell(cell)
-    log(common.logLevels.large, "%s is %s, %s is %s", cell.id, config.ignored[cell.id] and "ignored" or "not ignored",
-        cell.sourceMod, config.ignored[cell.sourceMod] and "ignored" or "not ignored")
-
-    -- don't do things in the wilderness
-    -- local wilderness = false
-    -- if not cell.name then wilderness = true end
-
-    return config.ignored[cell.id] or config.ignored[cell.sourceMod] -- or wilderness
-end
-
-local function isCantonCell(cellName)
-    for _, str in pairs(waistworks) do if cellName:match(str) then return true end end
-    return false
 end
 
 -- AT NIGHT
