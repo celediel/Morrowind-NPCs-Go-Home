@@ -850,7 +850,7 @@ local function applyChanges(cell)
     if isIgnoredCell(cell) then return end
 
     -- Interior cell, except Waistworks, don't do anything
-    if isInteriorCell(cell) and not (config.waistWorks and isCantonCell(cell.name)) then return end
+    if isInteriorCell(cell) and not (config.waistWorks and isCantonCell(cell.id)) then return end
 
     -- don't do anything to public houses
     if isPublicHouse(cell) then return end
