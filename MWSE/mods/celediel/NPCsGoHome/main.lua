@@ -336,6 +336,29 @@ end
 
 -- {{{ checks
 
+local function isCityCell(internalCellId, externalCellId)
+    -- easy mode
+    if string.match(internalCellId, externalCellId) then
+        log(common.logLevels.large, "easy mode city: %s in %s", internalCellId, externalCellId)
+        return true
+    end
+
+    local cityMatch = "^(%w+), (.*)"
+    -- check for "advanced" cities
+    local _, _, internalCity = string.find(internalCellId, cityMatch)
+    local _, _, externalCity = string.find(externalCellId, cityMatch)
+
+    if externalCity and externalCity == internalCity then
+        log(common.logLevels.large, "hard mode city: %s in %s, %s == %s",
+            internalCellId, externalCellId, externalCity, internalCity)
+        return true
+    end
+
+    log(common.logLevels.large, "hard mode not city: %s not in %s, %s ~= %s or both are nil",
+        internalCellId, externalCellId, externalCity, internalCity)
+    return false
+end
+
 local function fargothCheck()
     local fargothJournal = tes3.getJournalIndex({id = "MS_Lookout"})
     if not fargothJournal then return false end
@@ -482,7 +505,7 @@ local function isIgnoredDoor(door, homeCellId)
     end
 
     -- Only doors in cities and towns (interior cells with names that contain the exterior cell)
-    local inCity = string.match(door.destination.cell.id, homeCellId)
+    local inCity = isCityCell(door.destination.cell.id, homeCellId)
 
     -- peek inside doors to look for guild halls, inns and clubs
     local leadsToPublicCell = isPublicHouse(door.destination.cell)
