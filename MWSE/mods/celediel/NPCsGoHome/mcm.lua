@@ -16,6 +16,18 @@ local page = template:createSideBarPage({
 -- todo: categorize the options
 local category = page:createCategory(common.modName)
 
+category:createDropdown({
+    label = "Debug log level",
+    description = [[Enable this if you want to flood mwse.log with nonsense. Even small is huge.]],
+    options = {
+        {label = "None", value = common.logLevels.none},
+        {label = "Small", value = common.logLevels.small},
+        {label = "Medium", value = common.logLevels.medium},
+        {label = "Large", value = common.logLevels.large}
+    },
+    variable = createTableVar("logLevel")
+})
+
 category:createYesNoButton({
     label = "Lock doors and containers at night?",
     variable = createTableVar("lockDoors")
@@ -124,16 +136,9 @@ category:createSlider({
     variable = createTableVar("timerInterval")
 })
 
-category:createDropdown({
-    label = "Debug log level",
-    description = [[Enable this if you want to flood mwse.log with nonsense. Even small is huge.]],
-    options = {
-        {label = "None", value = common.logLevels.none},
-        {label = "Small", value = common.logLevels.small},
-        {label = "Medium", value = common.logLevels.medium},
-        {label = "Large", value = common.logLevels.large}
-    },
-    variable = createTableVar("logLevel")
+category:createYesNoButton({
+    label = "Show messages when entering public spaces/NPC homes",
+    variable = createTableVar("showMessages")
 })
 
 template:createExclusionsPage({
@@ -157,7 +162,7 @@ template:createExclusionsPage({
             callback = (function()
                 local CellNames = {}
                 for cell, _ in pairs(tes3.dataHandler.nonDynamicData.cells) do
-                    table.insert(CellNames, cell)
+                    table.insert(CellNames, string.lower(cell))
                 end
                 return CellNames
             end)
@@ -167,7 +172,7 @@ template:createExclusionsPage({
             callback = function()
                 local factions = {}
                 for _, faction in pairs(tes3.dataHandler.nonDynamicData.factions) do
-                    table.insert(factions, faction.id)
+                    table.insert(factions, string.lower(faction.id))
                 end
                 return factions
             end
@@ -177,7 +182,7 @@ template:createExclusionsPage({
             callback = function()
                 local classes = {}
                 for _, class in pairs(tes3.dataHandler.nonDynamicData.classes) do
-                    table.insert(classes, class.id)
+                    table.insert(classes, string.lower(class.id))
                 end
                 return classes
             end
