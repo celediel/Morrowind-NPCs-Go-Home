@@ -357,5 +357,17 @@ return {
             {position = {100.93, -575.35, 642.00}, orientation = {0.00, 0.00, -1.04}}
         },
         -- }}}
+
+        -- {{{ Suran
+        ["Suran, Desele's House of Earthly Delights"] = {
+            {position = {-108.34,-220.51,265.00}, orientation = {0.00,0.00,1.97}},
+            {position = {-269.44,-225.96,265.00}, orientation = {0.00,0.00,-3.12}},
+            {position = {-22.04,-92.09,265.00}, orientation = {0.00,0.00,-3.11}},
+            {position = {-43.25,-60.40,265.00}, orientation = {0.00,0.00,1.09}},
+            {position = {-459.20,-80.04,263.00}, orientation = {0.00,0.00,-1.84}},
+            {position = {-559.84,-783.53,264.17}, orientation = {0.00,0.00,1.19}},
+            {position = {40.33,-818.81,7.00}, orientation = {0.00,0.00,-0.56}},
+        },
+        -- }}}
     }
 }
