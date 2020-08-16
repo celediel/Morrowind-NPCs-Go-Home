@@ -360,14 +360,66 @@ return {
 
         -- {{{ Suran
         ["Suran, Desele's House of Earthly Delights"] = {
-            {position = {-108.34,-220.51,265.00}, orientation = {0.00,0.00,1.97}},
-            {position = {-269.44,-225.96,265.00}, orientation = {0.00,0.00,-3.12}},
-            {position = {-22.04,-92.09,265.00}, orientation = {0.00,0.00,-3.11}},
-            {position = {-43.25,-60.40,265.00}, orientation = {0.00,0.00,1.09}},
-            {position = {-459.20,-80.04,263.00}, orientation = {0.00,0.00,-1.84}},
-            {position = {-559.84,-783.53,264.17}, orientation = {0.00,0.00,1.19}},
-            {position = {40.33,-818.81,7.00}, orientation = {0.00,0.00,-0.56}},
+            {position = {-108.34, -220.51, 265.00}, orientation = {0.00, 0.00, 1.97}},
+            {position = {-269.44, -225.96, 265.00}, orientation = {0.00, 0.00, -3.12}},
+            {position = {-22.04, -92.09, 265.00}, orientation = {0.00, 0.00, -3.11}},
+            {position = {-43.25, -60.40, 265.00}, orientation = {0.00, 0.00, 1.09}},
+            {position = {-459.20, -80.04, 263.00}, orientation = {0.00, 0.00, -1.84}},
+            {position = {-559.84, -783.53, 264.17}, orientation = {0.00, 0.00, 1.19}},
+            {position = {40.33, -818.81, 7.00}, orientation = {0.00, 0.00, -0.56}}
         },
+        -- }}}
+
+        -- {{{ Molag Mar
+        ["Molag Mar, Temple"] = {
+            {position = {2.24, 189.94, 12.80}, orientation = {0.00, 0.00, -3.08}},
+            {position = {146.72, 138.88, 12.80}, orientation = {0.00, 0.00, -2.71}},
+            {position = {191.69, -4.14, 14.87}, orientation = {0.00, 0.00, -1.53}},
+            {position = {-110.92, 185.00, 12.80}, orientation = {0.00, 0.00, 2.80}},
+            {position = {-207.61, 4.95, 14.89}, orientation = {0.00, 0.00, 1.61}},
+            {position = {-8.85, -376.09, 2.00}, orientation = {0.00, 0.00, -3.13}},
+            {position = {516.68, 60.91, 2.00}, orientation = {0.00, 0.00, -1.74}},
+            {position = {518.65, -49.65, 2.00}, orientation = {0.00, 0.00, -1.67}},
+            {position = {-395.19, 80.69, -254.00}, orientation = {0.00, 0.00, -3.09}},
+            {position = {-571.83, 63.91, -254.00}, orientation = {0.00, 0.00, 1.60}},
+            {position = {78.52, 127.53, -254.00}, orientation = {0.00, 0.00, -2.83}},
+            {position = {130.31, -7.97, -254.00}, orientation = {0.00, 0.00, -1.66}},
+            {position = {1273.15, -455.03, -252.12}, orientation = {0.00, 0.00, -0.79}}
+        },
+        ["Molag Mar, St. Veloth's Hostel"] = {
+            {position = {4160.26,3906.16,15554.00}, orientation = {0.00,0.00,0.02}},
+            {position = {4069.98,4004.76,15554.00}, orientation = {0.00,0.00,1.25}},
+            {position = {3869.26,3893.23,15554.00}, orientation = {0.00,0.00,-2.61}},
+            {position = {3729.06,3898.95,15554.00}, orientation = {0.00,0.00,3.07}},
+            {position = {3565.69,3907.93,15554.00}, orientation = {0.00,0.00,3.05}},
+            {position = {3417.14,4125.15,15554.00}, orientation = {0.00,0.00,-0.18}},
+            {position = {3469.29,4265.61,15554.00}, orientation = {0.00,0.00,-2.07}},
+            {position = {3426.97,4003.59,15300.39}, orientation = {0.00,0.00,-0.22}},
+            {position = {3607.49,3734.34,15300.39}, orientation = {0.00,0.00,-0.14}},
+            {position = {3971.19,3946.15,15298.00}, orientation = {0.00,0.00,-1.79}},
+            {position = {3757.05,4086.39,15298.00}, orientation = {0.00,0.00,-3.11}},
+            {position = {3720.15,4472.21,15298.00}, orientation = {0.00,0.00,1.86}},
+            {position = {3874.18,4578.54,15298.00}, orientation = {0.00,0.00,3.03}},
+            {position = {4364.12,3898.59,15302.37}, orientation = {0.00,0.00,-1.87}},
+        },
+        -- }}}
+
+        -- {{{ Vivec
+        ["Vivec, Black Shalk Cornerclub"] = {
+            {position = {670.25,-950.57,-318.00}, orientation = {0.00,0.00,-2.41}},
+            {position = {524.95,-958.40,-318.00}, orientation = {0.00,0.00,2.47}},
+            {position = {408.90,-826.91,-318.00}, orientation = {0.00,0.00,0.08}},
+            {position = {615.04,-704.82,-318.00}, orientation = {0.00,0.00,1.51}},
+            {position = {622.61,-502.62,-318.00}, orientation = {0.00,0.00,1.55}},
+            {position = {629.35,-236.27,-318.00}, orientation = {0.00,0.00,0.00}},
+            {position = {206.25,-258.17,-318.00}, orientation = {0.00,0.00,-1.90}},
+            {position = {136.03,-72.00,-318.00}, orientation = {0.00,0.00,3.07}},
+            {position = {208.83,242.04,-318.00}, orientation = {0.00,0.00,-3.09}},
+            {position = {326.40,259.17,-318.00}, orientation = {0.00,0.00,2.64}},
+            {position = {657.09,276.60,-318.00}, orientation = {0.00,0.00,-3.06}},
+            {position = {634.31,85.01,-318.00}, orientation = {0.00,0.00,0.18}},
+            {position = {465.71,99.84,-318.00}, orientation = {0.00,0.00,-0.91}},
+        }
         -- }}}
     }
 }
