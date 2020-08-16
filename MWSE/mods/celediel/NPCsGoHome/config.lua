@@ -2,25 +2,29 @@ local common = require("celediel.NPCsGoHome.common")
 
 -- todo: clean this up
 local defaultConfig = {
-    disableNPCs = true,
-    lockDoors = true,
-    disableInteraction = true,
-    timerInterval = 7,
+    -- general settings
     ignored = {
         ["Balmora, Caius Cosades' House"] = true,
         ["Publican"] = true,
     },
-    worstWeather = tes3.weather.thunder,
-    keepBadWeatherNPCs = true,
     closeTime = 21,
     openTime = 7,
-    minimumOccupancy = 3,
-    waistWorks = true,
-    moveNPCs = false,
-    homelessWanderersToPublicHouses = false,
+    timerInterval = 7,
     showMessages = true,
+    -- npc settings
+    disableNPCs = true,
+    moveNPCs = true,
+    keepBadWeatherNPCs = true,
+    worstWeather = tes3.weather.thunder,
+    factionIgnorePercentage = 0.66,
+    minimumOccupancy = 3,
+    homelessWanderersToPublicHouses = false,
+    disableInteraction = true,
+    -- door settings
+    lockDoors = true,
+    waistWorks = true,
+    -- debug settings
     logLevel = common.logLevels.none,
-    factionIgnorePercentage = 0.66
 }
 
 local currentConfig
