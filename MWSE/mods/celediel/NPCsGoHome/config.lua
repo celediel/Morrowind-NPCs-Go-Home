@@ -19,6 +19,7 @@ local defaultConfig = {
     waistWorks = true,
     moveNPCs = false,
     homelessWanderersToPublicHouses = false,
+    showMessages = true,
     logLevel = common.logLevels.none,
     factionIgnorePercentage = 0.66
 }

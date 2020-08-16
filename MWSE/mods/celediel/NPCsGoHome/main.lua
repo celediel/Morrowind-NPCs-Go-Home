@@ -35,6 +35,7 @@ local contextualNPCs = {"^AM_"}
 
 -- {{{ helper functions
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
+local function message(...) if config.showMessages then tes3.messageBox(...) end end
 
 local function checkModdedCell(cellId)
     local id
@@ -447,25 +448,26 @@ end
 
 -- {{{ cell change checks
 
-local function checkEnteredSpawnedNPCHome(cell)
-    local home = homedNPCS[cell.id]
+local function checkEnteredNPCHome(cell)
+    local home = homes.byCell[cell.id]
     if home then
-        local message = string.format("Entering home of %s, %s", home.name, home.homeName)
-        log(common.logLevels.medium, message)
-        tes3.messageBox(message)
+        local msg = string.format("Entering home of %s, %s", home.name, home.homeName)
+        log(common.logLevels.small, msg)
+        message(msg)
     end
 end
 
 local function checkEnteredPublicHouse(cell, city)
-    local type = pickPublicHouseType(cell.name)
+    local typeOfPub = pickPublicHouseType(cell.name)
 
-    local publicHouse = publicHouses[city] and (publicHouses[city][type] and publicHouses[city][type][cell.name])
+    local publicHouse = publicHouses[city] and (publicHouses[city][typeOfPub] and publicHouses[city][typeOfPub][cell.name])
+
     if publicHouse then
-        local message = string.format("Entering public space %s, a%s %s in the town of %s. Talk to %s, %s for services.",
-            publicHouse.name, common.vowel(type), type:gsub("s$", ""), publicHouse.city, publicHouse.proprietor.object.name,
-            publicHouse.proprietor.object.class)
-        log(common.logLevels.small, message)
-        tes3.messageBox(message)
+        local msg = string.format("Entering public space %s, a%s %s in the town of %s. Talk to %s, %s for services.",
+                                  publicHouse.name, common.vowel(typeOfPub), typeOfPub:gsub("s$", ""), publicHouse.city,
+                                  publicHouse.proprietor.object.name, publicHouse.proprietor.object.class)
+        log(common.logLevels.small, msg)
+        message(msg)
     end
 end
 
@@ -712,22 +714,11 @@ end
 
 local function onCellChanged(e)
     updateCells()
-    updatePlayerTrespass(e.cell)
-    checkEnteredSpawnedNPCHome(e.cell)
+    updatePlayerTrespass(e.cell, e.previousCell)
+    checkEnteredNPCHome(e.cell)
     if e.cell.name then -- exterior wilderness cells don't have name
         checkEnteredPublicHouse(e.cell, common.split(e.cell.name, ",")[1])
     end
-
-    --[[
-    -- ! delete this
-    if config.logLevel == common.logLevels.none then
-        if (e.previousCell and e.previousCell.name and e.previousCell.name ~= e.cell.name) then
-            mwse.log("}\n[\"%s\"] = {", e.cell.id)
-        elseif not e.previousCell then
-            mwse.log("[\"%s\"] = {", e.cell.id)
-        end
-    end
-    -- ! ]]
 end
 -- }}}
 
