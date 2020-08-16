@@ -53,14 +53,58 @@ local function checkModdedCell(cellId)
     return id
 end
 
+-- patented by Merlord
+local yeet = function(reference)
+    -- tes3.positionCell({reference = reference, position = {0, 0, 10000}})
+    reference:disable()
+    timer.delayOneFrame(function() mwscript.setDelete({reference = reference}) end)
+end
+
+-- very todd workaround
+local function getFightFromSpawnedReference(id)
+    -- Spawn a reference of the given id in toddtest
+    local toddTest = tes3.getCell("toddtest")
+
+    log(common.logLevels.medium, "Spawning %s in %s", id, toddTest.id)
+
+    local ref = tes3.createReference({
+        object = id,
+        -- cell = toddTest,
+        cell = tes3.getPlayerCell(),
+        -- position = zeroVector,
+        position = {0, 0, 10000},
+        orientation = zeroVector
+    })
+
+    local fight = ref.mobile.fight
+
+    log(common.logLevels.medium, "Got fight of %s, time to yeet %s", fight, id)
+
+    yeet(ref)
+
+    return fight
+end
+
 -- {{{ npc evaluators
 
 -- NPCs barter gold + value of all inventory items
-local function calculateNPCWorth(npc)
+local function calculateNPCWorth(npc, merchantCell)
     local worth = npc.object.barterGold
 
     if npc.object.inventory then
         for _, item in pairs(npc.object.inventory) do worth = worth + (item.object.value or 0) end
+    end
+
+    if merchantCell then -- if we pass a cell argument
+        for box in merchantCell:iterateReferences(tes3.objectType.container) do -- loop over each container
+            if box.inventory then -- if it's not empty
+                for item in tes3.iterate(box.inventory) do -- loop over its items
+                    if npc.object.baseObject:tradesItemType(item.objectType) then -- if the NPC sells that type
+                        worth = worth + item.object.value -- add its value to the NPCs total value
+                    end
+                end
+            end
+        end
     end
 
     return worth
