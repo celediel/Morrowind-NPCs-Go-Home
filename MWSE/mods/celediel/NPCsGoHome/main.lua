@@ -524,34 +524,12 @@ local function isIgnoredDoor(door, homeCellId)
         door.destination.cell.sourceMod, config.ignored[door.destination.cell.sourceMod] and "ignored" or "not ignored", -- destination mod is ignored
         inCity and "" or "not ", leadsToPublicCell and "" or "not ", hasOccupants and "" or "un") -- in a city, is public, is ocupado
 
-    -- todo: clean this up
-    -- local shit = config.ignored[door.destination.cell.id] or config.ignored[door.destination.cell.sourceMod] or not inCity or leadsToPublicCell or not hasOccupants
-    -- log(common.logLevels.large, "shit: %s", shit)
-    -- return shit
-    if config.ignored[door.destination.cell.id] then
-        log(common.logLevels.large, "ignored cell id: %s", door.destination.cell.id)
-        return true
-
-    elseif config.ignored[door.destination.cell.sourceMod] then
-        log(common.logLevels.large, "ignored cell mod: %s", door.destination.cell.sourceMod)
-        return true
-
-    elseif not inCity then
-        log(common.logLevels.large, "%s not in city", door.destination.cell.id)
-        return true
-
-    elseif leadsToPublicCell then
-        log(common.logLevels.large, "%s is public", door.destination.cell.id)
-        return true
-
-    elseif not hasOccupants then
-        log(common.logLevels.large, "%s is unoccupied", door.destination.cell.id)
-        return true
-
-    -- otherwise
-    else
-        return false
-    end
+    return config.ignored[door.destination.cell.id] or
+           config.ignored[door.destination.cell.sourceMod] or
+           not isInteriorCell(door.destination.cell) or
+           not inCity or
+           leadsToPublicCell or
+           not hasOccupants
 end
 
 local function isIgnoredCell(cell)
@@ -873,6 +851,9 @@ local function applyChanges(cell)
 
     -- Interior cell, except Waistworks, don't do anything
     if isInteriorCell(cell) and not (config.waistWorks and isCantonCell(cell.name)) then return end
+
+    -- don't do anything to public houses
+    if isPublicHouse(cell) then return end
 
     -- Deal with NPCs and mounts in cell
     processNPCs(cell)
