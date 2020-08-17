@@ -782,9 +782,16 @@ local function processPets(cell)
         if isNPCPet(creature) then
             if checkTime() then
                 -- disable
-                log(common.logLevels.medium, "Disabling NPC Pet %s!", creature.object.id)
+                if not creature.disabled then
+                    log(common.logLevels.medium, "Disabling NPC Pet %s!", creature.object.id)
+                    mwscript.disable({reference = creature })
+                end
             else
                 -- enable
+                if creature.disabled then
+                    log(common.logLevels.medium, "Enabling NPC Pet %s!", creature.object.id)
+                    mwscript.enable({reference = creature })
+                end
             end
         end
     end
