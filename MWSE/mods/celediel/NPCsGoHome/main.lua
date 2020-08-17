@@ -402,6 +402,7 @@ local function isIgnoredNPC(npc)
         -- local fight = getFightFromSpawnedReference(obj.id) -- ! calling this hundreds of times is bad for performance lol
         -- if (fight or 0) > 70 then isHostile = true end
         isVampire = obj.head.vampiric and true or false -- don't set a reference ... is bool even a reference type??
+        if obj.id:match("[Dd]ead") or obj.name:match("[Dd]ead") then isDead = true end
     end
 
     local isFargothActive = obj.id:match("fargoth") and fargothCheck() or false
