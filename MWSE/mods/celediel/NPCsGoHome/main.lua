@@ -8,11 +8,8 @@ local positions = require("celediel.NPCsGoHome.positions")
 
 -- {{{ variables and such
 -- Waistworks string match
--- I'm probably trying too hard to avoid false positives
 local waistworks = {
-    "^[Vv]ivec,.*[Ww]aist", -- St Olms and St Delyn have Waist North|South
-    "^[Vv]ivec,.*[Cc]anal", -- and Canal North|South cells
-    "[Cc]analworks", -- These will match vanilla Molag Mar
+    "[Cc]analworks", -- These will match Vivec and Molag Mar
     "[Ww]aistworks" -- and Almas Thirr from Tamriel Rebuilt
 }
 -- these are separate because doors to underworks should be ignored
