@@ -9,7 +9,15 @@ local positions = require("celediel.NPCsGoHome.positions")
 -- {{{ variables and such
 -- Waistworks string match
 -- I'm probably trying too hard to avoid false positives
-local waistworks = {"^[Vv]ivec,?.*[Ww]aist", "[Cc]analworks", "[Ww]aistworks"}
+local waistworks = {
+    "^[Vv]ivec,.*[Ww]aist", -- St Olms and St Delyn have Waist North|South
+    "^[Vv]ivec,.*[Cc]anal", -- and Canal North|South cells
+    "[Cc]analworks", -- These will match vanilla Molag Mar
+    "[Ww]aistworks" -- and Almas Thirr from Tamriel Rebuilt
+}
+-- these are separate because doors to underworks should be ignored
+-- but NPCs in underworks should not be disabled
+local underworks = "[Uu]nderworks"
 
 -- timers
 local updateTimer
@@ -143,6 +151,7 @@ local function checkManor(cellName, npcName)
     return string.match(cellName, sur)
 end
 
+-- todo: pick this better
 local function pickPublicHouseType(cellName)
     if cellName:match("Guild") then
         return publicHouseTypes.guildhalls
@@ -240,15 +249,15 @@ local function createHomedNPCTableEntry(npc, home, startingPlace, isHome, positi
         (npc.orientation and npc.orientation:copy() or zeroVector:copy())
 
     local this = {
-        name = npc.object.name,
+        name = npc.object.name, -- string
         npc = npc, -- tes3npc
         isHome = isHome, -- bool
         home = home, -- tes3cell
-        homeName = home.id,
+        homeName = home.id, -- string
         ogPlace = startingPlace, -- tes3cell
         ogPlaceName = startingPlace.id,
-        ogPosition = ogPosition,
-        ogOrientation = ogOrientation,
+        ogPosition = ogPosition, -- tes3vector3
+        ogOrientation = ogOrientation, -- tes3vector3
         homePosition = pickedPosition, -- tes3vector3
         homeOrientation = pickedOrientation, -- tes3vector3
         worth = calculateNPCWorth(npc) -- int
@@ -521,28 +530,34 @@ local function isIgnoredDoor(door, homeCellId)
         return true
     end
 
+    -- we use this a lot, so set a reference to it
+    local dest = door.destination.cell
+
     -- Only doors in cities and towns (interior cells with names that contain the exterior cell)
-    local inCity = isCityCell(door.destination.cell.id, homeCellId)
+    local inCity = isCityCell(dest.id, homeCellId)
 
     -- peek inside doors to look for guild halls, inns and clubs
-    local leadsToPublicCell = isPublicHouse(door.destination.cell)
+    local leadsToPublicCell = isPublicHouse(dest)
 
     -- don't lock unoccupied cells
     local hasOccupants = false
-    for npc in door.destination.cell:iterateReferences(tes3.objectType.npc) do
+    for npc in dest:iterateReferences(tes3.objectType.npc) do
         if not isIgnoredNPC(npc) then
             hasOccupants = true
             break
         end
     end
 
+    -- don't lock doors to underworks in addition to other canton cells
+    local isCanton = isCantonCell(dest.id) or dest.id:match(underworks)
+
     log(common.logLevels.large, "%s is %s, (%sin a city, is %spublic, %soccupied)", --
-        door.destination.cell.id, isIgnoredCell(door.destination.cell) and "ignored" or "not ignored", -- destination is ignored
+        dest.id, isIgnoredCell(dest) and "ignored" or "not ignored", -- destination is ignored
         inCity and "" or "not ", leadsToPublicCell and "" or "not ", hasOccupants and "" or "un") -- in a city, is public, is ocupado
 
-    return isIgnoredCell(door.destination.cell) or
-           not isInteriorCell(door.destination.cell) or
-           isCantonCell(door.destination.cell.id) or
+    return isIgnoredCell(dest) or
+           not isInteriorCell(dest) or
+           isCanton or
            not inCity or
            leadsToPublicCell or
            not hasOccupants
@@ -856,7 +871,7 @@ local function applyChanges(cell)
 
     if isIgnoredCell(cell) then return end
 
-    -- Interior cell, except Waistworks, don't do anything
+    -- Interior cell, except Canton cells, don't do anything
     if isInteriorCell(cell) and not (config.waistWorks and isCantonCell(cell.id)) then return end
 
     -- don't do anything to public houses
