@@ -103,6 +103,18 @@ local function getFightFromSpawnedReference(id)
     return fight
 end
 
+local function buildFollowerList()
+    local f = {}
+    -- build our followers list
+    for friend in tes3.iterate(tes3.mobilePlayer.friendlyActors) do
+        if friend ~= tes3.player then -- ? why is the player friendly towards the player ?
+            f[friend.object.id] = true
+            log(common.logLevels.large, "%s is follower", friend.object.id)
+        end
+    end
+    return f
+end
+
 -- {{{ npc evaluators
 
 -- NPCs barter gold + value of all inventory items
@@ -856,16 +868,6 @@ end
 local function applyChanges(cell)
     if not cell then cell = tes3.getPlayerCell() end
 
-    -- build our followers list
-    for friend in tes3.iterate(tes3.mobilePlayer.friendlyActors) do
-        local obj = friend.baseObject and friend.baseObject or friend.object
-
-        if friend ~= tes3.mobilePlayer then
-            followers[obj.id] = true
-            -- log(common.logLevels.large, "%s is follower", obj.id)
-        end
-    end
-
     if isIgnoredCell(cell) then return end
 
     -- Interior cell, except Canton cells, don't do anything
@@ -885,6 +887,8 @@ end
 
 local function updateCells()
     log(common.logLevels.medium, "Updating active cells!")
+
+    followers = buildFollowerList()
 
     for _, cell in pairs(tes3.getActiveCells()) do
         log(common.logLevels.large, "Applying changes to cell %s", cell.id)
@@ -929,6 +933,8 @@ local function onLoaded()
     -- movedNPCs = tes3.player.data.NPCsGoHome.movedNPCs or {}
     if tes3.player.cell then searchCellsForNPCs() end
 
+    followers = buildFollowerList()
+
     if not updateTimer or (updateTimer and updateTimer.state ~= timer.active) then
         updateTimer = timer.start({
             type = timer.simulate,
@@ -941,6 +947,7 @@ end
 
 local function onCellChanged(e)
     updateCells()
+    followers = buildFollowerList()
     updatePlayerTrespass(e.cell, e.previousCell)
     checkEnteredNPCHome(e.cell)
     if e.cell.name then -- exterior wilderness cells don't have name
