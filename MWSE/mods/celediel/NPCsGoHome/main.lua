@@ -433,17 +433,18 @@ local function isIgnoredNPC(npc)
     log(common.logLevels.large, ("Checking NPC:%s (%s or %s): id blocked:%s, %s blocked:%s " .. --
         "guard:%s dead:%s vampire:%s werewolf:%s dreamer:%s follower:%s hostile:%s %s%s"), --
         obj.name, npc.object.id, npc.object.baseObject and npc.object.baseObject.id or "nil", --
-        config.ignored[string.lower(obj.id)], obj.sourceMod, config.ignored[string.lower(obj.sourceMod)], --
+        config.ignored[obj.id:lower()], obj.sourceMod, config.ignored[obj.sourceMod:lower()], --
         obj.isGuard, isDead, isVampire, isWerewolf, (obj.class and obj.class.id == "Dreamers"), --
-        followers[obj.id], isHostile, obj.id:match("fargoth") and "fargoth:" or "", obj.id:match("fargoth") and isFargothActive or "")
+        followers[npc.object.id], isHostile, obj.id:match("fargoth") and "fargoth:" or "", --
+        obj.id:match("fargoth") and isFargothActive or "")
 
-    return config.ignored[string.lower(obj.id)] or --
-           config.ignored[string.lower(obj.sourceMod)] or --
+    return config.ignored[obj.id:lower()] or --
+           config.ignored[obj.sourceMod:lower()] or --
            obj.isGuard or --
            isFargothActive or --
            isDead or -- don't move dead NPCS
            isHostile or --
-           followers[obj.id] or -- ignore followers
+           followers[npc.object.id] or -- ignore followers
            isVampire or --
            isWerewolf or --
            (obj.class and obj.class.id == "Dreamers") --
