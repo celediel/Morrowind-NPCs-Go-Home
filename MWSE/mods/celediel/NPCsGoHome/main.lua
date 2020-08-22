@@ -161,12 +161,12 @@ local function checkManor(cellName, npcName)
 end
 
 -- todo: pick this better
-local function pickPublicHouseType(cellName)
-    if cellName:match("Guild") then
+local function pickPublicHouseType(cell)
+    if cell.id:match("Guild") then
         return publicHouseTypes.guildhalls
-    elseif cellName:match("Temple") then
+    elseif cell.id:match("Temple") then
         return publicHouseTypes.temples
-    -- elseif cellName:match("House") then
+    -- elseif cell.id:match("House") then
     --     return publicHouseTypes.houses
     else
         return publicHouseTypes.inns
@@ -281,7 +281,7 @@ local function createHomedNPCTableEntry(npc, home, startingPlace, isHome, positi
 end
 
 local function createPublicHouseTableEntry(publicCell, proprietor, city, name)
-    local typeOfPub = pickPublicHouseType(publicCell.name)
+    local typeOfPub = pickPublicHouseType(publicCell)
 
     local worth = 0
 
@@ -467,7 +467,7 @@ local function isPublicHouse(cell)
     -- only interior cells are public "houses"
     if not isInteriorCell(cell) then return false end
 
-    local typeOfPub = pickPublicHouseType(cell.name)
+    local typeOfPub = pickPublicHouseType(cell)
     local city, publicHouseName
 
     if cell.name and string.match(cell.name, ",") then
@@ -620,7 +620,7 @@ local function checkEnteredNPCHome(cell)
 end
 
 local function checkEnteredPublicHouse(cell, city)
-    local typeOfPub = pickPublicHouseType(cell.name)
+    local typeOfPub = pickPublicHouseType(cell)
 
     local publicHouse = publicHouses[city] and (publicHouses[city][typeOfPub] and publicHouses[city][typeOfPub][cell.name])
 
