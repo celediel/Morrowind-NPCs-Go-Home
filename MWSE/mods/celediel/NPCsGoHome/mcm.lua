@@ -162,7 +162,7 @@ template:createExclusionsPage({
             callback = (function()
                 local CellNames = {}
                 for cell, _ in pairs(tes3.dataHandler.nonDynamicData.cells) do
-                    table.insert(CellNames, string.lower(cell))
+                    table.insert(CellNames, cell:lower())
                 end
                 return CellNames
             end)
@@ -172,7 +172,7 @@ template:createExclusionsPage({
             callback = function()
                 local factions = {}
                 for _, faction in pairs(tes3.dataHandler.nonDynamicData.factions) do
-                    table.insert(factions, string.lower(faction.id))
+                    table.insert(factions, faction.id:lower())
                 end
                 return factions
             end
@@ -182,7 +182,7 @@ template:createExclusionsPage({
             callback = function()
                 local classes = {}
                 for _, class in pairs(tes3.dataHandler.nonDynamicData.classes) do
-                    table.insert(classes, string.lower(class.id))
+                    table.insert(classes, class.id:lower())
                 end
                 return classes
             end
