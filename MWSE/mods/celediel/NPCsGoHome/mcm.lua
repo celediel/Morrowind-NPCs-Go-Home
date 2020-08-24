@@ -1,9 +1,7 @@
 local config = require("celediel.NPCsGoHome.config").getConfig()
 local common = require("celediel.NPCsGoHome.common")
 
-local function createTableVar(id)
-    return mwse.mcm.createTableVariable({id = id, table = config})
-end
+local function createTableVar(id) return mwse.mcm.createTableVariable({id = id, table = config}) end
 
 local template = mwse.mcm.createTemplate({name = common.modName})
 template:saveOnClose(common.configPath, config)
@@ -28,15 +26,9 @@ category:createDropdown({
     variable = createTableVar("logLevel")
 })
 
-category:createYesNoButton({
-    label = "Lock doors and containers at night?",
-    variable = createTableVar("lockDoors")
-})
+category:createYesNoButton({label = "Lock doors and containers at night?", variable = createTableVar("lockDoors")})
 
-category:createYesNoButton({
-    label = "Disable non-Guard NPCs at night?",
-    variable = createTableVar("disableNPCs")
-})
+category:createYesNoButton({label = "Disable non-Guard NPCs at night?", variable = createTableVar("disableNPCs")})
 
 category:createYesNoButton({
     label = "Move NPCs into their homes at night and in bad weather instead of disabling them?",
@@ -56,12 +48,12 @@ category:createYesNoButton({
 category:createDropdown({
     label = "Treat Canton waistworks as exteriors, public spaces, or neither",
     description = "If canton cells are treated as exterior, inside NPCs will be disabled, and doors will be locked.\n" ..
-    "If they're treated as public spaces, inside NPCs won't be disabled, and homeless NPCs will be moved inside "..
-    "(if configured to do so).\n\nIf neither, canton cells will be treated as any other.",
+        "If they're treated as public spaces, inside NPCs won't be disabled, and homeless NPCs will be moved inside " ..
+        "(if configured to do so).\n\nIf neither, canton cells will be treated as any other.",
     options = {
         {label = "Neither", value = common.waist.neither},
         {label = "Exterior", value = common.waist.exterior},
-        {label = "Public", value = common.waist.public},
+        {label = "Public", value = common.waist.public}
     },
     defaultSetting = common.waist.neither,
     variable = createTableVar("waistWorks")

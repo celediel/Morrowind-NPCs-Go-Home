@@ -48,14 +48,17 @@ end
 local function checkEnteredPublicHouse(cell, city)
     local typeOfPub = common.pickPublicHouseType(cell)
 
-    local publicHouse = publicHouses[city] and (publicHouses[city][typeOfPub] and publicHouses[city][typeOfPub][cell.name])
+    local publicHouse = publicHouses[city] and
+                            (publicHouses[city][typeOfPub] and publicHouses[city][typeOfPub][cell.name])
 
     if publicHouse then
-        local msg = string.format("Entering public space %s, a%s %s in the town of %s.",
-                                  publicHouse.name, common.vowel(typeOfPub), typeOfPub:gsub("s$", ""), publicHouse.city)
+        local msg = string.format("Entering public space %s, a%s %s in the town of %s.", publicHouse.name,
+                                  common.vowel(typeOfPub), typeOfPub:gsub("s$", ""), publicHouse.city)
 
         if publicHouse.proprietor then
-            msg = msg .. string.format(" Talk to %s, %s for services.", publicHouse.proprietor.object.name, publicHouse.proprietor.object.class)
+            msg = msg ..
+                      string.format(" Talk to %s, %s for services.", publicHouse.proprietor.object.name,
+                                    publicHouse.proprietor.object.class)
         end
 
         log(common.logLevels.small, msg)
@@ -71,9 +74,8 @@ local function applyChanges(cell)
     if checks.isIgnoredCell(cell) then return end
 
     -- Interior cell, except Canton cells, don't do anything
-    if checks.isInteriorCell(cell) and not (config.waistWorks == common.waist.exterior and checks.isCantonWorksCell(cell)) then
-        return
-    end
+    if checks.isInteriorCell(cell) and
+        not (config.waistWorks == common.waist.exterior and checks.isCantonWorksCell(cell)) then return end
 
     -- don't do anything to public houses
     if checks.isPublicHouse(cell) then return end

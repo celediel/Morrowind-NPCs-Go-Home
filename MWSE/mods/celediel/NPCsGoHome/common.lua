@@ -15,7 +15,13 @@ this.logLevels = {none = 0, small = 1, medium = 2, large = 3}
 this.waist = {neither = 0, exterior = 1, public = 2}
 
 -- for runtime data
-this.publicHouseTypes = {inns = "Inns", guildhalls = "Guildhalls", temples = "Temples", houses = "Houses", cantonworks = "Cantonworks"}
+this.publicHouseTypes = {
+    inns = "Inns",
+    guildhalls = "Guildhalls",
+    temples = "Temples",
+    houses = "Houses",
+    cantonworks = "Cantonworks"
+}
 -- }}}
 
 -- {{{ Filled at runtime
@@ -23,10 +29,7 @@ this.runtimeData = {
     -- cells marked as public
     publicHouses = {},
     -- homes picked for NPCs
-    homes = {
-        byName = {},
-        byCell = {}
-    },
+    homes = {byName = {}, byCell = {}},
     -- NPCs who have been moved
     movedNPCs = {},
     -- positions that haven't been used

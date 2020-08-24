@@ -57,8 +57,8 @@ local this = {}
 this.isInteriorCell = function(cell)
     if not cell then return end
 
-    log(common.logLevels.large, "Cell %s: interior: %s, behaves as exterior: %s therefore returning %s",
-        cell.id, cell.isInterior, cell.behavesAsExterior, cell.isInterior and not cell.behavesAsExterior)
+    log(common.logLevels.large, "Cell %s: interior: %s, behaves as exterior: %s therefore returning %s", cell.id,
+        cell.isInterior, cell.behavesAsExterior, cell.isInterior and not cell.behavesAsExterior)
 
     return cell.isInterior and not cell.behavesAsExterior
 end
@@ -76,13 +76,13 @@ this.isCityCell = function(internalCellId, externalCellId)
     local _, _, externalCity = string.find(externalCellId, cityMatch)
 
     if externalCity and externalCity == internalCity then
-        log(common.logLevels.large, "hard mode city: %s in %s, %s == %s",
-            internalCellId, externalCellId, externalCity, internalCity)
+        log(common.logLevels.large, "hard mode city: %s in %s, %s == %s", internalCellId, externalCellId, externalCity,
+            internalCity)
         return true
     end
 
-    log(common.logLevels.large, "hard mode not city: %s not in %s, %s ~= %s or both are nil",
-        internalCellId, externalCellId, externalCity, internalCity)
+    log(common.logLevels.large, "hard mode not city: %s not in %s, %s ~= %s or both are nil", internalCellId,
+        externalCellId, externalCity, internalCity)
     return false
 end
 
@@ -105,9 +105,7 @@ end
 this.isCantonCell = function(cell)
     if this.isInteriorCell(cell) then return false end
     for door in cell:iterateReferences(tes3.objectType.door) do
-        if door.destination and this.isCantonWorksCell(door.destination.cell) then
-            return true
-        end
+        if door.destination and this.isCantonWorksCell(door.destination.cell) then return true end
     end
     return false
 end
@@ -200,7 +198,10 @@ this.isPublicHouse = function(cell)
     end
 
     -- don't iterate NPCs in the cell if we've already marked it public
-    if common.runtimeData.publicHouses[city] and (common.runtimeData.publicHouses[city][typeOfPub] and common.runtimeData.publicHouses[city][typeOfPub][cell.id]) then return true end
+    if common.runtimeData.publicHouses[city] and
+        (common.runtimeData.publicHouses[city][typeOfPub] and common.runtimeData.publicHouses[city][typeOfPub][cell.id]) then
+        return true
+    end
 
     -- if it's a waistworks cell, it's public, with no proprietor
     if config.waistWorks == common.waist.public and cell.id:match(waistworks) then
@@ -289,15 +290,12 @@ this.isIgnoredDoor = function(door, homeCellId)
     local isCantonWorks = this.isCantonWorksCell(dest)
 
     log(common.logLevels.large, "%s is %s, (%sin a city, is %spublic, %soccupied)", --
-        dest.id, this.isIgnoredCell(dest) and "ignored" or "not ignored", -- destination is ignored
-        inCity and "" or "not ", leadsToPublicCell and "" or "not ", hasOccupants and "" or "un") -- in a city, is public, is ocupado
+    dest.id, this.isIgnoredCell(dest) and "ignored" or "not ignored", -- destination is ignored
+    inCity and "" or "not ", leadsToPublicCell and "" or "not ", hasOccupants and "" or "un") -- in a city, is public, is ocupado
 
-    return this.isIgnoredCell(dest) or
-           not this.isInteriorCell(dest) or
-           isCantonWorks or
-           not inCity or
-           leadsToPublicCell or
-           not hasOccupants
+    return
+        this.isIgnoredCell(dest) or not this.isInteriorCell(dest) or isCantonWorks or not inCity or leadsToPublicCell or
+            not hasOccupants
 end
 
 -- AT NIGHT
@@ -327,10 +325,8 @@ this.isBadWeatherNPC = function(npc)
 
     -- todo: better detection of NPCs who offer travel services
     -- found a rogue "shipmaster" in molag mar
-    return obj.class.name == "Caravaner" or
-           obj.class.name == "Gondolier" or
-           obj.class.name == "Shipmaster" or
-           obj.race.id == "Argonian"
+    return obj.class.name == "Caravaner" or obj.class.name == "Gondolier" or obj.class.name == "Shipmaster" or
+               obj.race.id == "Argonian"
 end
 
 return this

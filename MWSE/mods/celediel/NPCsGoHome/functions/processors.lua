@@ -16,9 +16,7 @@ this.updatePositions = function(cell)
     -- update runtime positions in cell, but don't overwrite loaded positions
     if not common.runtimeData.positions[id] and positions.cells[id] then
         common.runtimeData.positions[id] = {}
-        for _, data in pairs(positions.cells[id]) do
-            table.insert(common.runtimeData.positions[id], data)
-        end
+        for _, data in pairs(positions.cells[id]) do table.insert(common.runtimeData.positions[id], data) end
     end
 end
 
@@ -32,7 +30,9 @@ this.searchCellsForPositions = function()
                 this.updatePositions(door.destination.cell)
                 -- one more time
                 for internalDoor in door.destination.cell:iterateReferences(tes3.objectType.door) do
-                    if internalDoor.destination then this.updatePositions(internalDoor.destination.cell) end
+                    if internalDoor.destination then
+                        this.updatePositions(internalDoor.destination.cell)
+                    end
                 end
             end
         end
@@ -47,7 +47,8 @@ this.checkForMovedNPCs = function(cell)
     log(common.logLevels.medium, "Looking for moved NPCs in cell %s", cell.id)
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         if npc.data and npc.data.NPCsGoHome then
-            dataTables.createHomedNPCTableEntry(npc, cell, tes3.getCell(npc.data.NPCsGoHome.cell), true, npc.data.NPCsGoHome.position, npc.data.NPCsGoHome.orientation)
+            dataTables.createHomedNPCTableEntry(npc, cell, tes3.getCell(npc.data.NPCsGoHome.cell), true,
+                                                npc.data.NPCsGoHome.position, npc.data.NPCsGoHome.orientation)
         end
     end
 end
@@ -73,16 +74,8 @@ this.moveNPC = function(homeData)
     -- set npc data, so we can move NPCs back after a load
     local npc = homeData.npc
     npc.data.NPCsGoHome = {
-        position = {
-            x = npc.position.x,
-            y = npc.position.y,
-            z = npc.position.z,
-        },
-        orientation = {
-            x = npc.orientation.x,
-            y = npc.orientation.y,
-            z = npc.orientation.z,
-        },
+        position = {x = npc.position.x, y = npc.position.y, z = npc.position.z},
+        orientation = {x = npc.orientation.x, y = npc.orientation.y, z = npc.orientation.z},
         cell = homeData.ogPlaceName
     }
 
@@ -139,12 +132,11 @@ this.processNPCs = function(cell)
                 npcHome and npcHome.home or "nowhere", npcHome and (npcHome.isHome and "." or " at night.") or ".")
 
             -- disable or move NPCs
-            if (checks.checkTime() or
-                (checks.checkWeather(cell) and
-                    (not checks.isBadWeatherNPC(npc) or (checks.isBadWeatherNPC(npc) and not config.keepBadWeatherNPCs)))) then
+            if (checks.checkTime() or (checks.checkWeather(cell) and
+                (not checks.isBadWeatherNPC(npc) or (checks.isBadWeatherNPC(npc) and not config.keepBadWeatherNPCs)))) then
                 if npcHome then
                     this.moveNPC(npcHome)
-                -- elseif not npc.data.NPCsGoHome.modified then
+                    -- elseif not npc.data.NPCsGoHome.modified then
                 elseif not npc.disabled then
                     log(common.logLevels.medium, "Disabling homeless %s", npc.object.name)
                     -- npc:disable() -- ! this one sometimes causes crashes
@@ -211,13 +203,13 @@ this.processPets = function(cell)
                 -- disable
                 if not creature.disabled then
                     log(common.logLevels.medium, "Disabling NPC Pet %s!", creature.object.id)
-                    mwscript.disable({reference = creature })
+                    mwscript.disable({reference = creature})
                 end
             else
                 -- enable
                 if creature.disabled then
                     log(common.logLevels.medium, "Enabling NPC Pet %s!", creature.object.id)
-                    mwscript.enable({reference = creature })
+                    mwscript.enable({reference = creature})
                 end
             end
         end
