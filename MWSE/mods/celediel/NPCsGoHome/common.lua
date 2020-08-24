@@ -2,6 +2,7 @@ local inspect = require("inspect")
 
 local this = {}
 
+-- {{{ Variables and such
 this.modName = "NPCs Go Home (At Night)"
 this.author = "OEA/Celediel"
 this.version = "0.0.1"
@@ -10,7 +11,25 @@ this.modInfo = "Move NPCs to their homes, or public houses (or just disable them
 this.configPath = "NPCSGOHOME"
 
 this.logLevels = {none = 0, small = 1, medium = 2, large = 3}
+-- }}}
 
+-- {{{ Filled at runtime
+this.runtimeData = {
+    -- cells marked as public
+    publicHouses = {},
+    -- homes picked for NPCs
+    homes = {
+        byName = {},
+        byCell = {}
+    },
+    -- NPCs who have been moved
+    movedNPCs = {},
+    -- player companions
+    followers = {}
+}
+-- }}}
+
+-- {{{ Functions
 this.split = function(input, sep)
     if not input then return end
     if not sep then sep = "%s" end
@@ -34,5 +53,6 @@ this.vowel = function(str)
 
     return n
 end
+-- }}}
 
 return this
