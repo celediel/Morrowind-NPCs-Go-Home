@@ -22,7 +22,7 @@ local defaultConfig = {
     disableInteraction = true,
     -- door settings
     lockDoors = true,
-    waistWorks = true,
+    waistWorks = common.waist.interior,
     -- debug settings
     logLevel = common.logLevels.none,
 }

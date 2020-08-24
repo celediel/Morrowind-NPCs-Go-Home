@@ -1,14 +1,14 @@
 local common = require("celediel.NPCsGoHome.common")
 local config = require("celediel.NPCsGoHome.config").getConfig()
-local housing = require("celediel.NPCsGoHome.functions.housing")
+local entry = require("celediel.NPCsGoHome.functions.entry")
 
 -- {{{ local variables and such
--- Waistworks string match
-local waistworks = {
-    "[Cc]analworks", -- These will match Vivec and Molag Mar
-    "[Ww]aistworks" -- and Almas Thirr from Tamriel Rebuilt
-}
--- these are separate because doors to underworks should be ignored
+-- Canton string matches
+-- move NPCs into waistworks
+local waistworks = "[Ww]aistworks"
+-- don't lock canalworks
+local canalworks = "[Cc]analworks"
+-- doors to underworks should be ignored
 -- but NPCs in underworks should not be disabled
 local underworks = "[Uu]nderworks"
 
@@ -30,7 +30,6 @@ end
 local function getFightFromSpawnedReference(id)
     -- Spawn a reference of the given id in toddtest
     local toddTest = tes3.getCell("toddtest")
-
     log(common.logLevels.medium, "Spawning %s in %s", id, toddTest.id)
 
     local ref = tes3.createReference({
@@ -39,7 +38,7 @@ local function getFightFromSpawnedReference(id)
         cell = tes3.getPlayerCell(),
         -- position = zeroVector,
         position = {0, 0, 10000},
-        orientation = housing.zeroVector
+        orientation = tes3vector3.new(0, 0, 0)
     })
 
     local fight = ref.mobile.fight
@@ -97,8 +96,18 @@ this.isIgnoredCell = function(cell)
     return config.ignored[cell.id] or config.ignored[cell.sourceMod] -- or wilderness
 end
 
-this.isCantonCell = function(cellName)
-    for _, str in pairs(waistworks) do if cellName:match(str) then return true end end
+this.isCantonWorksCell = function(cell)
+    -- for _, str in pairs(waistworks) do if cell.id:match(str) then return true end end
+    return cell.id:match(waistworks) or cell.id:match(canalworks) or cell.id:match(underworks)
+end
+
+this.isCantonCell = function(cell)
+    if this.isInteriorCell(cell) then return false end
+    for door in cell:iterateReferences(tes3.objectType.door) do
+        if door.destination and this.isCantonWorksCell(door.destination.cell) then
+            return true
+        end
+    end
     return false
 end
 
@@ -177,7 +186,7 @@ this.isPublicHouse = function(cell)
     -- only interior cells are public "houses"
     if not this.isInteriorCell(cell) then return false end
 
-    local typeOfPub = housing.pickPublicHouseType(cell)
+    local typeOfPub = common.pickPublicHouseType(cell)
     local city, publicHouseName
 
     if cell.name and string.match(cell.name, ",") then
@@ -191,6 +200,12 @@ this.isPublicHouse = function(cell)
     -- don't iterate NPCs in the cell if we've already marked it public
     if common.runtimeData.publicHouses[city] and (common.runtimeData.publicHouses[city][typeOfPub] and common.runtimeData.publicHouses[city][typeOfPub][cell.id]) then return true end
 
+    -- if it's a waistworks cell, it's public, with no proprietor
+    if config.waistWorks == common.waist.public and cell.id:match(waistworks) then
+        entry.createPublicHouseTableEntry(cell, nil, city, publicHouseName)
+        return true
+    end
+
     local npcs = {factions = {}, total = 0}
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         -- Check for NPCS of ignored classes first
@@ -199,7 +214,7 @@ this.isPublicHouse = function(cell)
                 log(common.logLevels.medium, "NPC:\'%s\' of class:\'%s\' made %s public", npc.object.name,
                     npc.object.class and npc.object.class.id or "none", cell.name)
 
-                housing.createPublicHouseTableEntry(cell, npc, city, publicHouseName)
+                entry.createPublicHouseTableEntry(cell, npc, city, publicHouseName)
 
                 return true
             end
@@ -233,7 +248,7 @@ this.isPublicHouse = function(cell)
             config.factionIgnorePercentage then
             log(common.logLevels.medium, "%s is %s%% faction %s, marking public.", cell.name, info.percentage, faction)
 
-            housing.createPublicHouseTableEntry(cell, npcs.factions[faction].master, city, publicHouseName)
+            entry.createPublicHouseTableEntry(cell, npcs.factions[faction].master, city, publicHouseName)
             return true
         end
     end
@@ -268,8 +283,8 @@ this.isIgnoredDoor = function(door, homeCellId)
         end
     end
 
-    -- don't lock doors to underworks in addition to other canton cells
-    local isCanton = this.isCantonCell(dest.id) or dest.id:match(underworks)
+    -- don't lock doors to canton cells
+    local isCantonWorks = this.isCantonWorksCell(dest)
 
     log(common.logLevels.large, "%s is %s, (%sin a city, is %spublic, %soccupied)", --
         dest.id, this.isIgnoredCell(dest) and "ignored" or "not ignored", -- destination is ignored
@@ -277,7 +292,7 @@ this.isIgnoredDoor = function(door, homeCellId)
 
     return this.isIgnoredCell(dest) or
            not this.isInteriorCell(dest) or
-           isCanton or
+           isCantonWorks or
            not inCity or
            leadsToPublicCell or
            not hasOccupants

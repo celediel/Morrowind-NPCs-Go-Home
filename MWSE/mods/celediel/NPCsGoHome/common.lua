@@ -10,7 +10,12 @@ this.modInfo = "Move NPCs to their homes, or public houses (or just disable them
                    "and prevent interaction after hours, selectively disable NPCs in inclement weather"
 this.configPath = "NPCSGOHOME"
 
+-- for config
 this.logLevels = {none = 0, small = 1, medium = 2, large = 3}
+this.waist = {neither = 0, exterior = 1, public = 2}
+
+-- for runtime data
+this.publicHouseTypes = {inns = "Inns", guildhalls = "Guildhalls", temples = "Temples", houses = "Houses", cantonworks = "Cantonworks"}
 -- }}}
 
 -- {{{ Filled at runtime
@@ -52,6 +57,21 @@ this.vowel = function(str)
     if string.match(s, "[AOEUIaoeui]") then n = "n" end
 
     return n
+end
+
+-- todo: pick this better
+this.pickPublicHouseType = function(cell)
+    if cell.id:match("Guild") then
+        return this.publicHouseTypes.guildhalls
+    elseif cell.id:match("Temple") then
+        return this.publicHouseTypes.temples
+    elseif cell.id:match("[Cc]analworks") or cell.id:match("[Ww]aistworks") then
+        return this.publicHouseTypes.cantonworks
+    -- elseif cell.id:match("House") then
+    --     return publicHouseTypes.houses
+    else
+        return this.publicHouseTypes.inns
+    end
 end
 -- }}}
 

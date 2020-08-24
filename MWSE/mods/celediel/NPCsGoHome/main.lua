@@ -46,14 +46,18 @@ local function checkEnteredNPCHome(cell)
 end
 
 local function checkEnteredPublicHouse(cell, city)
-    local typeOfPub = housing.pickPublicHouseType(cell)
+    local typeOfPub = common.pickPublicHouseType(cell)
 
     local publicHouse = publicHouses[city] and (publicHouses[city][typeOfPub] and publicHouses[city][typeOfPub][cell.name])
 
     if publicHouse then
-        local msg = string.format("Entering public space %s, a%s %s in the town of %s. Talk to %s, %s for services.",
-                                  publicHouse.name, common.vowel(typeOfPub), typeOfPub:gsub("s$", ""), publicHouse.city,
-                                  publicHouse.proprietor.object.name, publicHouse.proprietor.object.class)
+        local msg = string.format("Entering public space %s, a%s %s in the town of %s.",
+                                  publicHouse.name, common.vowel(typeOfPub), typeOfPub:gsub("s$", ""), publicHouse.city)
+
+        if publicHouse.proprietor then
+            msg = msg .. string.format(" Talk to %s, %s for services.", publicHouse.proprietor.object.name, publicHouse.proprietor.object.class)
+        end
+
         log(common.logLevels.small, msg)
         message(msg) -- this one is more informative, and not entirely for debugging, and reminiscent of Daggerfall's messages
     end
@@ -67,7 +71,9 @@ local function applyChanges(cell)
     if checks.isIgnoredCell(cell) then return end
 
     -- Interior cell, except Canton cells, don't do anything
-    if checks.isInteriorCell(cell) and not (config.waistWorks and checks.isCantonCell(cell.id)) then return end
+    if checks.isInteriorCell(cell) and not (config.waistWorks == common.waist.exterior and checks.isCantonWorksCell(cell)) then
+        return
+    end
 
     -- don't do anything to public houses
     if checks.isPublicHouse(cell) then return end
@@ -161,15 +167,18 @@ local function onInitialized()
     followers = common.runtimeData.followers
 
     -- Register events
+    log(common.logLevels.small, "Registering events...")
     event.register("loaded", onLoaded)
     event.register("cellChanged", onCellChanged)
     event.register("activate", onActivated)
 
-    -- MCM
-    event.register("modConfigReady", function() mwse.mcm.register(require("celediel.NPCsGoHome.mcm")) end)
+    log(common.logLevels.none, "Successfully initialized")
 end
 
 event.register("initialized", onInitialized)
+
+-- MCM
+event.register("modConfigReady", function() mwse.mcm.register(require("celediel.NPCsGoHome.mcm")) end)
 -- }}}
 
 -- vim:fdm=marker

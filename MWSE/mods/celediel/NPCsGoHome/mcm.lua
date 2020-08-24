@@ -39,12 +39,12 @@ category:createYesNoButton({
 })
 
 category:createYesNoButton({
-    label = "Move NPCs with homes instead of disabling them?",
+    label = "Move NPCs into their homes at night and in bad weather instead of disabling them?",
     variable = createTableVar("moveNPCs")
 })
 
 category:createYesNoButton({
-    label = "Move \"homeless\" NPCs to Inns at night and in bad weather instead of disabling them?",
+    label = "Move \"homeless\" NPCs to public spaces at night and in bad weather instead of disabling them?",
     variable = createTableVar("homelessWanderersToPublicHouses")
 })
 
@@ -53,8 +53,17 @@ category:createYesNoButton({
     variable = createTableVar("disableInteraction")
 })
 
-category:createYesNoButton({
-    label = "Treat Canton waistworks and canalworks as exteriors (lock doors and disable NPCs)",
+category:createDropdown({
+    label = "Treat Canton waistworks and canalworks as exteriors, public spaces, or neither",
+    description = "If canton cells are treated as exterior, inside NPCs will be disabled, and doors will be locked.\n" ..
+    "If they're treated as public spaces, inside NPCs won't be disabled, and homeless NPCs will be moved inside "..
+    "(if configured to do so).\n\nIf neither, canton cells will be treated as any other.",
+    options = {
+        {label = "Neither", value = common.waist.neither},
+        {label = "Exterior", value = common.waist.exterior},
+        {label = "Public", value = common.waist.public},
+    },
+    defaultSetting = common.waist.neither,
     variable = createTableVar("waistWorks")
 })
 
