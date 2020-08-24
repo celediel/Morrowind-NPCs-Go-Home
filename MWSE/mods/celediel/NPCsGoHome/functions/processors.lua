@@ -4,7 +4,7 @@ local config = require("celediel.NPCsGoHome.config").getConfig()
 local checks = require("celediel.NPCsGoHome.functions.checks")
 local interop = require("celediel.NPCsGoHome.interop")
 local housing = require("celediel.NPCsGoHome.functions.housing")
-local entry = require("celediel.NPCsGoHome.functions.entry")
+local dataTables = require("celediel.NPCsGoHome.functions.dataTables")
 
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
 
@@ -18,7 +18,7 @@ this.checkForMovedNPCs = function(cell)
     log(common.logLevels.medium, "Looking for moved NPCs in cell %s", cell.id)
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         if npc.data and npc.data.NPCsGoHome then
-            entry.createHomedNPCTableEntry(npc, cell, tes3.getCell(npc.data.NPCsGoHome.cell), true, npc.data.NPCsGoHome.position, npc.data.NPCsGoHome.orientation)
+            dataTables.createHomedNPCTableEntry(npc, cell, tes3.getCell(npc.data.NPCsGoHome.cell), true, npc.data.NPCsGoHome.position, npc.data.NPCsGoHome.orientation)
         end
     end
 end

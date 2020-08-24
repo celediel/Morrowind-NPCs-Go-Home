@@ -2,7 +2,7 @@
 local common = require("celediel.NPCsGoHome.common")
 local config = require("celediel.NPCsGoHome.config").getConfig()
 local checks = require("celediel.NPCsGoHome.functions.checks")
-local entry = require("celediel.NPCsGoHome.functions.entry")
+local dataTables = require("celediel.NPCsGoHome.functions.dataTables")
 
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
 
@@ -88,10 +88,10 @@ this.pickHomeForNPC = function(cell, npc)
 
             -- essentially, if npc full name, or surname matches the cell name
             if dest.id:match(name) or this.livesInManor(dest.name, name) then
-                if common.runtimeData.homes.byName[name] then -- already have a home, don't create the table entry again
+                if common.runtimeData.homes.byName[name] then -- already have a home, don't create the table dataTables again
                     picked = common.runtimeData.homes.byName[name]
                 else
-                    picked = entry.createHomedNPCTableEntry(npc, dest, cell, true)
+                    picked = dataTables.createHomedNPCTableEntry(npc, dest, cell, true)
                 end
             end
         end
@@ -102,7 +102,7 @@ this.pickHomeForNPC = function(cell, npc)
         log(common.logLevels.medium, "Didn't find a home for %s, trying inns", npc.object.name)
         local dest = this.pickPublicHouseForNPC(npc, city)
 
-        if dest then picked = entry.createHomedNPCTableEntry(npc, dest, cell, false) end
+        if dest then picked = dataTables.createHomedNPCTableEntry(npc, dest, cell, false) end
 
         -- if nothing was found, then we'll settle on Canton works cell, if the cell is a Canton
         if checks.isCantonCell(cell) then
@@ -111,7 +111,7 @@ this.pickHomeForNPC = function(cell, npc)
                 local canton = table.choice(common.runtimeData.publicHouses[city][common.publicHouseTypes.cantonworks])
                 log(common.logLevels.medium, "Picking works %s, %s for %s", canton.city, canton.name, npc.object.name)
 
-                if canton then picked = entry.createHomedNPCTableEntry(npc, canton.cell, cell, false) end
+                if canton then picked = dataTables.createHomedNPCTableEntry(npc, canton.cell, cell, false) end
             end
         end
     end

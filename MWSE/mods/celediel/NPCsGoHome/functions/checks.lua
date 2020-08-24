@@ -1,7 +1,7 @@
 -- handles logic checks for NPCs, doors, etc.
 local common = require("celediel.NPCsGoHome.common")
 local config = require("celediel.NPCsGoHome.config").getConfig()
-local entry = require("celediel.NPCsGoHome.functions.entry")
+local dataTables = require("celediel.NPCsGoHome.functions.dataTables")
 
 -- {{{ local variables and such
 -- Canton string matches
@@ -204,7 +204,7 @@ this.isPublicHouse = function(cell)
 
     -- if it's a waistworks cell, it's public, with no proprietor
     if config.waistWorks == common.waist.public and cell.id:match(waistworks) then
-        entry.createPublicHouseTableEntry(cell, nil, city, publicHouseName)
+        dataTables.createPublicHouseTableEntry(cell, nil, city, publicHouseName)
         return true
     end
 
@@ -216,7 +216,7 @@ this.isPublicHouse = function(cell)
                 log(common.logLevels.medium, "NPC:\'%s\' of class:\'%s\' made %s public", npc.object.name,
                     npc.object.class and npc.object.class.id or "none", cell.name)
 
-                entry.createPublicHouseTableEntry(cell, npc, city, publicHouseName)
+                dataTables.createPublicHouseTableEntry(cell, npc, city, publicHouseName)
 
                 return true
             end
@@ -250,7 +250,7 @@ this.isPublicHouse = function(cell)
             config.factionIgnorePercentage then
             log(common.logLevels.medium, "%s is %s%% faction %s, marking public.", cell.name, info.percentage, faction)
 
-            entry.createPublicHouseTableEntry(cell, npcs.factions[faction].master, city, publicHouseName)
+            dataTables.createPublicHouseTableEntry(cell, npcs.factions[faction].master, city, publicHouseName)
             return true
         end
     end
