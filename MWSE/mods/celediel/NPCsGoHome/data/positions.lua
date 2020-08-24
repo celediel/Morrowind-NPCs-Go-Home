@@ -36,6 +36,7 @@ return {
 
     -- positions picked from a list for public houses
     cells = {
+        -- {{{ Vvardenfell
         -- {{{ Balmora
         ["Balmora, Lucky Lockup"] = {
             {position = {222.87, 1290.63, -505.00}, orientation = {0.00, 0.00, -2.54}},
@@ -371,6 +372,30 @@ return {
         -- }}}
 
         -- {{{ Molag Mar
+        -- cantons
+        ["Molag Mar, Waistworks"] = {
+            {position = {213.32, 527.80, -958.00}, orientation = {0.00, 0.00, 3.03}},
+            {position = {4.79, 515.48, -948.53}, orientation = {0.00, 0.00, -3.06}},
+            {position = {-284.06, 515.07, -948.12}, orientation = {0.00, 0.00, 3.08}},
+            {position = {-410.04, 349.79, -958.00}, orientation = {0.00, 0.00, 1.53}},
+            {position = {-398.84, 117.78, -958.00}, orientation = {0.00, 0.00, 1.53}},
+            {position = {-388.71, -165.33, -949.25}, orientation = {0.00, 0.00, 1.71}},
+            {position = {-245.13, -264.15, -953.20}, orientation = {0.00, 0.00, 0.04}},
+            {position = {38.90, -273.30, -958.00}, orientation = {0.00, 0.00, 0.02}},
+            {position = {328.22, -275.49, -958.00}, orientation = {0.00, 0.00, -0.00}},
+            {position = {396.90, -71.06, -957.44}, orientation = {0.00, 0.00, -1.71}},
+            {position = {424.84, 210.13, -958.00}, orientation = {0.00, 0.00, -1.65}},
+            {position = {387.46, 475.91, -948.86}, orientation = {0.00, 0.00, -1.60}},
+            {position = {266.33, 344.34, -1214.00}, orientation = {0.00, 0.00, -1.82}},
+            {position = {48.29, 357.84, -1214.00}, orientation = {0.00, 0.00, 0.99}},
+            {position = {-70.91, 312.76, -1214.00}, orientation = {0.00, 0.00, -0.66}},
+            {position = {-223.38, 299.56, -1214.00}, orientation = {0.00, 0.00, 0.66}},
+            {position = {-93.66, -85.75, -1214.00}, orientation = {0.00, 0.00, 2.44}},
+            {position = {87.46, -103.46, -1214.00}, orientation = {0.00, 0.00, -2.22}},
+            {position = {261.59, -110.35, -1214.00}, orientation = {0.00, 0.00, -0.16}},
+            {position = {-286.66, -15.18, -1214.00}, orientation = {0.00, 0.00, 1.09}}
+        },
+        -- public spaces
         ["Molag Mar, Temple"] = {
             {position = {2.24, 189.94, 12.80}, orientation = {0.00, 0.00, -3.08}},
             {position = {146.72, 138.88, 12.80}, orientation = {0.00, 0.00, -2.71}},
@@ -387,39 +412,200 @@ return {
             {position = {1273.15, -455.03, -252.12}, orientation = {0.00, 0.00, -0.79}}
         },
         ["Molag Mar, St. Veloth's Hostel"] = {
-            {position = {4160.26,3906.16,15554.00}, orientation = {0.00,0.00,0.02}},
-            {position = {4069.98,4004.76,15554.00}, orientation = {0.00,0.00,1.25}},
-            {position = {3869.26,3893.23,15554.00}, orientation = {0.00,0.00,-2.61}},
-            {position = {3729.06,3898.95,15554.00}, orientation = {0.00,0.00,3.07}},
-            {position = {3565.69,3907.93,15554.00}, orientation = {0.00,0.00,3.05}},
-            {position = {3417.14,4125.15,15554.00}, orientation = {0.00,0.00,-0.18}},
-            {position = {3469.29,4265.61,15554.00}, orientation = {0.00,0.00,-2.07}},
-            {position = {3426.97,4003.59,15300.39}, orientation = {0.00,0.00,-0.22}},
-            {position = {3607.49,3734.34,15300.39}, orientation = {0.00,0.00,-0.14}},
-            {position = {3971.19,3946.15,15298.00}, orientation = {0.00,0.00,-1.79}},
-            {position = {3757.05,4086.39,15298.00}, orientation = {0.00,0.00,-3.11}},
-            {position = {3720.15,4472.21,15298.00}, orientation = {0.00,0.00,1.86}},
-            {position = {3874.18,4578.54,15298.00}, orientation = {0.00,0.00,3.03}},
-            {position = {4364.12,3898.59,15302.37}, orientation = {0.00,0.00,-1.87}},
+            {position = {4160.26, 3906.16, 15554.00}, orientation = {0.00, 0.00, 0.02}},
+            {position = {4069.98, 4004.76, 15554.00}, orientation = {0.00, 0.00, 1.25}},
+            {position = {3869.26, 3893.23, 15554.00}, orientation = {0.00, 0.00, -2.61}},
+            {position = {3729.06, 3898.95, 15554.00}, orientation = {0.00, 0.00, 3.07}},
+            {position = {3565.69, 3907.93, 15554.00}, orientation = {0.00, 0.00, 3.05}},
+            {position = {3417.14, 4125.15, 15554.00}, orientation = {0.00, 0.00, -0.18}},
+            {position = {3469.29, 4265.61, 15554.00}, orientation = {0.00, 0.00, -2.07}},
+            {position = {3426.97, 4003.59, 15300.39}, orientation = {0.00, 0.00, -0.22}},
+            {position = {3607.49, 3734.34, 15300.39}, orientation = {0.00, 0.00, -0.14}},
+            {position = {3971.19, 3946.15, 15298.00}, orientation = {0.00, 0.00, -1.79}},
+            {position = {3757.05, 4086.39, 15298.00}, orientation = {0.00, 0.00, -3.11}},
+            {position = {3720.15, 4472.21, 15298.00}, orientation = {0.00, 0.00, 1.86}},
+            {position = {3874.18, 4578.54, 15298.00}, orientation = {0.00, 0.00, 3.03}},
+            {position = {4364.12, 3898.59, 15302.37}, orientation = {0.00, 0.00, -1.87}}
         },
         -- }}}
 
         -- {{{ Vivec
+        -- cantons
+        ["Vivec, Arena Waistworks"] = {
+            {position = {4935.70, 5099.57, 18050.00}, orientation = {0.00, 0.00, -2.11}},
+            {position = {3481.49, 4232.53, 18050.00}, orientation = {0.00, 0.00, -1.71}},
+            {position = {3348.72, 3782.08, 18050.00}, orientation = {0.00, 0.00, 0.41}},
+            {position = {4092.16, 3939.02, 18050.00}, orientation = {0.00, 0.00, 0.59}},
+            {position = {4355.49, 4045.92, 18050.00}, orientation = {0.00, 0.00, -0.09}},
+            {position = {4298.64, 4266.86, 18050.00}, orientation = {0.00, 0.00, -1.76}},
+            {position = {4128.06, 4247.50, 18050.00}, orientation = {0.00, 0.00, -2.92}},
+            {position = {5161.25, 3827.25, 18050.00}, orientation = {0.00, 0.00, -0.67}},
+            {position = {2511.11, 3785.64, 18050.00}, orientation = {0.00, 0.00, 1.58}},
+            {position = {3378.72, 3546.21, 18050.00}, orientation = {0.00, 0.00, 1.07}},
+            {position = {3353.38, 4664.91, 18050.00}, orientation = {0.00, 0.00, 1.86}},
+            {position = {4310.78, 3532.53, 18050.00}, orientation = {0.00, 0.00, -0.62}},
+            {position = {4312.45, 4636.14, 18050.00}, orientation = {0.00, 0.00, -1.52}}
+        },
+        ["Vivec, Foreign Quarter Lower Waistworks"] = {
+            {position = {4779.61, 3880.70, 13442.00}, orientation = {0.00, 0.00, -1.05}},
+            {position = {4105.09, 3881.06, 13186.00}, orientation = {0.00, 0.00, -0.03}},
+            {position = {4093.57, 4283.46, 13186.00}, orientation = {0.00, 0.00, 1.83}},
+            {position = {4645.03, 4295.68, 13186.00}, orientation = {0.00, 0.00, -2.91}},
+            {position = {4597.47, 3921.74, 13186.00}, orientation = {0.00, 0.00, -0.95}},
+            {position = {4309.95, 4584.29, 13442.00}, orientation = {0.00, 0.00, -2.79}}
+        },
+        ["Vivec, Foreign Quarter Upper Waistworks"] = {
+            {position = {4332.56, 4347.65, 14850.00}, orientation = {0.00, 0.00, 1.08}},
+            {position = {4109.29, 4586.61, 14850.00}, orientation = {0.00, 0.00, -0.04}},
+            {position = {3865.10, 4360.15, 14850.00}, orientation = {0.00, 0.00, -1.85}},
+            {position = {4065.00, 4118.35, 14850.00}, orientation = {0.00, 0.00, 2.89}},
+            {position = {4375.37, 3909.21, 14850.00}, orientation = {0.00, 0.00, -1.36}},
+            {position = {3533.95, 3888.58, 14850.00}, orientation = {0.00, 0.00, 0.55}},
+            {position = {3573.93, 4794.15, 14850.00}, orientation = {0.00, 0.00, 1.37}},
+            {position = {4314.55, 3879.18, 14850.00}, orientation = {0.00, 0.00, 1.11}},
+            {position = {4552.39, 4336.22, 14850.00}, orientation = {0.00, 0.00, -2.08}},
+            {position = {3901.25, 4789.88, 14850.00}, orientation = {0.00, 0.00, 1.86}}
+        },
+        ["Vivec, Foreign Quarter Waistworks"] = {
+            -- rethinking Vivec
+        },
+        ["Vivec, Hlaalu Waistworks"] = {
+            {position = {778.54, 775.58, -382.00}, orientation = {0.00, 0.00, -1.75}},
+            {position = {786.02, 678.91, -382.00}, orientation = {0.00, 0.00, -1.75}},
+            {position = {785.16, 248.36, -382.00}, orientation = {0.00, 0.00, -1.45}},
+            {position = {786.13, 346.62, -382.00}, orientation = {0.00, 0.00, -1.45}},
+            {position = {234.32, 261.68, -382.00}, orientation = {0.00, 0.00, 1.68}},
+            {position = {229.51, 355.00, -382.00}, orientation = {0.00, 0.00, 1.69}},
+            {position = {229.64, 788.49, -382.00}, orientation = {0.00, 0.00, 1.49}},
+            {position = {233.38, 687.96, -382.00}, orientation = {0.00, 0.00, 1.53}},
+            {position = {377.48, 528.47, -359.43}, orientation = {0.00, 0.00, 1.74}},
+            {position = {110.50, 273.31, -126.00}, orientation = {0.00, 0.00, 1.60}},
+            {position = {272.72, 909.88, -126.00}, orientation = {0.00, 0.00, -3.09}},
+            {position = {718.80, 905.15, -122.20}, orientation = {0.00, 0.00, 3.06}},
+            {position = {914.77, 614.96, -126.00}, orientation = {0.00, 0.00, -1.54}}
+        },
+        ["Vivec, Redoran Waistworks"] = {
+            {position = {-135.48, -100.64, 135.98}, orientation = {0.00, 0.00, 1.48}},
+            {position = {-131.52, -391.19, 139.93}, orientation = {0.00, 0.00, 1.48}},
+            {position = {68.58, -648.48, 134.47}, orientation = {0.00, 0.00, 0.15}},
+            {position = {287.54, -648.93, 134.02}, orientation = {0.00, 0.00, 0.02}},
+            {position = {517.86, -650.56, 132.39}, orientation = {0.00, 0.00, 0.02}},
+            {position = {655.46, -408.73, 130.00}, orientation = {0.00, 0.00, -1.40}},
+            {position = {200.89, -157.18, -103.43}, orientation = {0.00, 0.00, 1.23}},
+            {position = {399.57, -293.32, -103.43}, orientation = {0.00, 0.00, -2.23}},
+            {position = {323.47, -412.84, -108.98}, orientation = {0.00, 0.00, -1.66}},
+            {position = {209.63, -7.48, -126.00}, orientation = {0.00, 0.00, -3.05}},
+            {position = {-161.87, -282.26, 130.00}, orientation = {0.00, 0.00, 1.53}},
+            {position = {88.59, 133.76, 137.19}, orientation = {0.00, 0.00, 2.55}},
+            {position = {381.78, 150.12, 130.00}, orientation = {0.00, 0.00, 2.63}}
+        },
+        ["Vivec, Telvanni Waistworks"] = {
+            {position = {345.63, -904.81, -121.87}, orientation = {0.00, 0.00, -0.00}},
+            {position = {547.84, -901.60, -118.65}, orientation = {0.00, 0.00, -0.00}},
+            {position = {742.85, -899.58, -116.63}, orientation = {0.00, 0.00, -0.00}},
+            {position = {910.50, -735.11, -126.00}, orientation = {0.00, 0.00, -1.39}},
+            {position = {912.00, -513.89, -126.00}, orientation = {0.00, 0.00, -1.63}},
+            {position = {899.64, -293.19, -116.19}, orientation = {0.00, 0.00, -1.50}},
+            {position = {750.49, -114.17, -126.00}, orientation = {0.00, 0.00, 3.03}},
+            {position = {511.54, -82.49, -126.00}, orientation = {0.00, 0.00, 3.03}},
+            {position = {247.86, -116.58, -124.47}, orientation = {0.00, 0.00, 3.03}},
+            {position = {691.46, -187.50, -376.43}, orientation = {0.00, 0.00, 2.96}},
+            {position = {817.33, -343.56, -382.00}, orientation = {0.00, 0.00, -2.60}},
+            {position = {805.17, -693.27, -382.00}, orientation = {0.00, 0.00, -1.65}},
+            {position = {555.62, -790.82, -382.00}, orientation = {0.00, 0.00, -0.08}},
+            {position = {443.63, -790.89, -382.00}, orientation = {0.00, 0.00, -0.08}},
+            {position = {240.16, -307.64, -382.00}, orientation = {0.00, 0.00, 1.36}},
+            {position = {250.84, -696.10, -382.00}, orientation = {0.00, 0.00, 1.20}},
+            {position = {114.37, -710.82, -126.00}, orientation = {0.00, 0.00, 1.18}}
+        },
+        ["Vivec, St. Delyn Waistworks"] = {
+            {position = {310.29, -755.88, -126.00}, orientation = {0.00, 0.00, -0.01}},
+            {position = {705.58, -770.98, -126.00}, orientation = {0.00, 0.00, -0.13}},
+            {position = {716.52, -252.58, -126.00}, orientation = {0.00, 0.00, -3.12}},
+            {position = {313.63, -250.03, -126.00}, orientation = {0.00, 0.00, 3.07}},
+            {position = {497.90, -108.36, 130.00}, orientation = {0.00, 0.00, 3.13}},
+            {position = {929.60, -380.29, 130.00}, orientation = {0.00, 0.00, -1.63}},
+            {position = {920.01, -591.86, 130.00}, orientation = {0.00, 0.00, -1.63}},
+            {position = {739.60, -917.90, 130.00}, orientation = {0.00, 0.00, -0.47}},
+            {position = {457.17, -914.89, 130.00}, orientation = {0.00, 0.00, -0.32}}
+        },
+        ["Vivec, St. Olms Waistworks"] = {
+            {position = {311.26, -911.36, -126.00}, orientation = {0.00, 0.00, -0.03}},
+            {position = {531.22, -900.78, -117.83}, orientation = {0.00, 0.00, -0.03}},
+            {position = {773.62, -899.03, -116.08}, orientation = {0.00, 0.00, -0.03}},
+            {position = {939.04, -752.03, -123.59}, orientation = {0.00, 0.00, -1.54}},
+            {position = {941.86, -530.50, -126.00}, orientation = {0.00, 0.00, -1.54}},
+            {position = {944.76, -268.61, -126.00}, orientation = {0.00, 0.00, -1.61}},
+            {position = {812.26, -118.18, -122.87}, orientation = {0.00, 0.00, -3.10}},
+            {position = {592.80, -111.69, -126.00}, orientation = {0.00, 0.00, -3.11}},
+            {position = {238.09, -124.69, -116.36}, orientation = {0.00, 0.00, 3.07}},
+            {position = {152.00, -293.40, -120.54}, orientation = {0.00, 0.00, 1.46}},
+            {position = {156.50, -543.01, -116.05}, orientation = {0.00, 0.00, 1.54}},
+            {position = {155.84, -827.16, -116.70}, orientation = {0.00, 0.00, 1.56}},
+            {position = {242.12, -688.58, -382.00}, orientation = {0.00, 0.00, 0.93}},
+            {position = {809.40, -749.61, -382.00}, orientation = {0.00, 0.00, 0.35}},
+            {position = {806.65, -313.38, -382.00}, orientation = {0.00, 0.00, -2.22}},
+            {position = {219.91, -304.45, -376.39}, orientation = {0.00, 0.00, 1.99}}
+        },
+        -- public spaces
         ["Vivec, Black Shalk Cornerclub"] = {
-            {position = {670.25,-950.57,-318.00}, orientation = {0.00,0.00,-2.41}},
-            {position = {524.95,-958.40,-318.00}, orientation = {0.00,0.00,2.47}},
-            {position = {408.90,-826.91,-318.00}, orientation = {0.00,0.00,0.08}},
-            {position = {615.04,-704.82,-318.00}, orientation = {0.00,0.00,1.51}},
-            {position = {622.61,-502.62,-318.00}, orientation = {0.00,0.00,1.55}},
-            {position = {629.35,-236.27,-318.00}, orientation = {0.00,0.00,0.00}},
-            {position = {206.25,-258.17,-318.00}, orientation = {0.00,0.00,-1.90}},
-            {position = {136.03,-72.00,-318.00}, orientation = {0.00,0.00,3.07}},
-            {position = {208.83,242.04,-318.00}, orientation = {0.00,0.00,-3.09}},
-            {position = {326.40,259.17,-318.00}, orientation = {0.00,0.00,2.64}},
-            {position = {657.09,276.60,-318.00}, orientation = {0.00,0.00,-3.06}},
-            {position = {634.31,85.01,-318.00}, orientation = {0.00,0.00,0.18}},
-            {position = {465.71,99.84,-318.00}, orientation = {0.00,0.00,-0.91}},
+            {position = {670.25, -950.57, -318.00}, orientation = {0.00, 0.00, -2.41}},
+            {position = {524.95, -958.40, -318.00}, orientation = {0.00, 0.00, 2.47}},
+            {position = {408.90, -826.91, -318.00}, orientation = {0.00, 0.00, 0.08}},
+            {position = {615.04, -704.82, -318.00}, orientation = {0.00, 0.00, 1.51}},
+            {position = {622.61, -502.62, -318.00}, orientation = {0.00, 0.00, 1.55}},
+            {position = {629.35, -236.27, -318.00}, orientation = {0.00, 0.00, 0.00}},
+            {position = {206.25, -258.17, -318.00}, orientation = {0.00, 0.00, -1.90}},
+            {position = {136.03, -72.00, -318.00}, orientation = {0.00, 0.00, 3.07}},
+            {position = {208.83, 242.04, -318.00}, orientation = {0.00, 0.00, -3.09}},
+            {position = {326.40, 259.17, -318.00}, orientation = {0.00, 0.00, 2.64}},
+            {position = {657.09, 276.60, -318.00}, orientation = {0.00, 0.00, -3.06}},
+            {position = {634.31, 85.01, -318.00}, orientation = {0.00, 0.00, 0.18}},
+            {position = {465.71, 99.84, -318.00}, orientation = {0.00, 0.00, -0.91}}
+        },
+        -- }}}
+        -- }}}
+
+        -- {{{ Mainland Morrowind
+        -- {{{ Almas Thirr
+        -- cantons
+        ["Almas Thirr, Waistworks"] = {
+            {position = {5257.20, 3614.06, 12034.00}, orientation = {0.00, 0.00, 3.08}},
+            {position = {4838.67, 3592.44, 12034.00}, orientation = {0.00, 0.00, 3.14}},
+            {position = {4736.85, 2533.22, 12034.00}, orientation = {0.00, 0.00, 0.15}},
+            {position = {5298.11, 2072.02, 12035.29}, orientation = {0.00, 0.00, 3.05}},
+            {position = {5205.03, 2055.23, 12035.29}, orientation = {0.00, 0.00, 3.12}},
+            {position = {5763.51, 2530.47, 12034.00}, orientation = {0.00, 0.00, 0.50}},
+            {position = {5639.44, 4088.63, 12034.00}, orientation = {0.00, 0.00, -0.39}},
+            {position = {5335.43, 4083.18, 12034.00}, orientation = {0.00, 0.00, -0.47}},
+            {position = {5216.86, 4070.39, 12034.00}, orientation = {0.00, 0.00, -0.10}},
+            {position = {4842.84, 4091.39, 12034.00}, orientation = {0.00, 0.00, -0.13}},
+            {position = {4728.14, 5123.60, 12034.00}, orientation = {0.00, 0.00, 2.63}},
+            {position = {5251.99, 4534.71, 12065.88}, orientation = {0.00, 0.00, -0.19}},
+            {position = {5774.66, 5304.96, 12290.00}, orientation = {0.00, 0.00, -1.55}},
+            {position = {4848.35, 5378.74, 12290.00}, orientation = {0.00, 0.00, 3.09}},
+            {position = {4563.61, 4407.18, 12290.00}, orientation = {0.00, 0.00, 1.90}},
+            {position = {4536.89, 3502.34, 12290.00}, orientation = {0.00, 0.00, 2.16}},
+            {position = {4722.35, 2376.24, 12290.00}, orientation = {0.00, 0.00, 0.42}}
+        },
+        -- public spaces
+        ["Almas Thirr, Canalworks Temple"] = {
+            {position = {4197.91, 6825.42, 8962.00}, orientation = {0.00, 0.00, 3.03}},
+            {position = {3905.75, 6802.21, 8962.00}, orientation = {0.00, 0.00, 3.00}},
+            {position = {4015.18, 6831.25, 8962.00}, orientation = {0.00, 0.00, 3.06}},
+            {position = {3968.57, 6694.26, 8962.00}, orientation = {0.00, 0.00, 3.04}},
+            {position = {4047.08, 6712.05, 8962.00}, orientation = {0.00, 0.00, 3.03}},
+            {position = {4202.87, 6706.79, 8962.55}, orientation = {0.00, 0.00, 3.11}},
+            {position = {3952.43, 7222.09, 8963.29}, orientation = {0.00, 0.00, 0.56}},
+            {position = {3202.58, 7219.05, 8972.79}, orientation = {0.00, 0.00, -0.33}},
+            {position = {3044.80, 6860.65, 8962.00}, orientation = {0.00, 0.00, -3.11}},
+            {position = {2933.09, 6832.00, 8972.79}, orientation = {0.00, 0.00, 2.77}},
+            {position = {3232.95, 6810.64, 8962.00}, orientation = {0.00, 0.00, -2.77}},
+            {position = {3463.89, 7671.45, 8972.79}, orientation = {0.00, 0.00, 0.57}},
+            {position = {3699.30, 7678.87, 8972.79}, orientation = {0.00, 0.00, -0.95}},
+            {position = {3100.34, 7522.52, 8962.00}, orientation = {0.00, 0.00, 1.72}}
         }
+        -- }}}
         -- }}}
     }
 }
