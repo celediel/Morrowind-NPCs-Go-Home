@@ -1,3 +1,4 @@
+-- handles creation of runtime data tables
 local common = require("celediel.NPCsGoHome.common")
 local interop = require("celediel.NPCsGoHome.interop")
 local positions = require("celediel.NPCsGoHome.data.positions")

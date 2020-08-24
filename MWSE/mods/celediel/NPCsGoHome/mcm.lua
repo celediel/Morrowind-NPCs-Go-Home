@@ -54,7 +54,7 @@ category:createYesNoButton({
 })
 
 category:createDropdown({
-    label = "Treat Canton waistworks and canalworks as exteriors, public spaces, or neither",
+    label = "Treat Canton waistworks as exteriors, public spaces, or neither",
     description = "If canton cells are treated as exterior, inside NPCs will be disabled, and doors will be locked.\n" ..
     "If they're treated as public spaces, inside NPCs won't be disabled, and homeless NPCs will be moved inside "..
     "(if configured to do so).\n\nIf neither, canton cells will be treated as any other.",

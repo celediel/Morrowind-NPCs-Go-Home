@@ -1,3 +1,4 @@
+-- handles logic checks for NPCs, doors, etc.
 local common = require("celediel.NPCsGoHome.common")
 local config = require("celediel.NPCsGoHome.config").getConfig()
 local entry = require("celediel.NPCsGoHome.functions.entry")
@@ -183,9 +184,10 @@ end
 -- checks NPC class and faction in cells for block list and adds to publicHouse list
 -- todo: rewrite this
 this.isPublicHouse = function(cell)
-    -- only interior cells are public "houses"
+    -- only interior cells are public spaces
     if not this.isInteriorCell(cell) then return false end
 
+    -- gather some data about the cell
     local typeOfPub = common.pickPublicHouseType(cell)
     local city, publicHouseName
 

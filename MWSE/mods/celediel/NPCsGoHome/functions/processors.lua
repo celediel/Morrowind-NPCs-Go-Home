@@ -1,3 +1,4 @@
+-- handles processing NPCs, their pets/mounts, doors
 local common = require("celediel.NPCsGoHome.common")
 local config = require("celediel.NPCsGoHome.config").getConfig()
 local checks = require("celediel.NPCsGoHome.functions.checks")
