@@ -5,7 +5,10 @@ local defaultConfig = {
     -- general settings
     ignored = {
         ["Balmora, Caius Cosades' House"] = true,
-        ["Publican"] = true,
+        ["Publican"] = true, -- inns are public
+        -- temples are public too
+        ["Temple"] = true,
+        ["T_Mw_Temple"] = true
     },
     closeTime = 21,
     openTime = 7,
@@ -24,7 +27,7 @@ local defaultConfig = {
     lockDoors = true,
     waistWorks = common.waist.interior,
     -- debug settings
-    logLevel = common.logLevels.none,
+    logLevel = common.logLevels.none
 }
 
 local currentConfig
