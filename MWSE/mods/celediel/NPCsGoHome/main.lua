@@ -91,6 +91,7 @@ local function updateCells()
     log(common.logLevels.medium, "Updating active cells!")
 
     followers = buildFollowerList()
+    processors.searchCellsForPositions()
 
     for _, cell in pairs(tes3.getActiveCells()) do
         log(common.logLevels.large, "Applying changes to cell %s", cell.id)

@@ -45,7 +45,8 @@ end
 
 this.pickPublicHouseForNPC = function(npc, city)
     -- look for wandering guild members
-    if common.runtimeData.publicHouses[city] and common.runtimeData.publicHouses[city][common.publicHouseTypes.guildhalls] then
+    if common.runtimeData.publicHouses[city] and
+        common.runtimeData.publicHouses[city][common.publicHouseTypes.guildhalls] then
         for _, data in pairs(common.runtimeData.publicHouses[city][common.publicHouseTypes.guildhalls]) do
             -- if npc's faction and proprietor's faction match, pick that one
             if npc.object.faction == data.proprietor.object.faction then
@@ -78,8 +79,6 @@ this.pickHomeForNPC = function(cell, npc)
     for _, str in pairs(contextualNPCs) do if npc.object.id:match(str) then return end end
 
     -- time to pick the "home"
-    local picked = nil
-
     local name = npc.object.name
     local city = common.split(cell.name, ",")[1]
     for door in cell:iterateReferences(tes3.objectType.door) do
@@ -88,11 +87,9 @@ this.pickHomeForNPC = function(cell, npc)
 
             -- essentially, if npc full name, or surname matches the cell name
             if dest.id:match(name) or this.livesInManor(dest.name, name) then
-                if common.runtimeData.homes.byName[name] then -- already have a home, don't create the table dataTables again
-                    picked = common.runtimeData.homes.byName[name]
-                else
-                    picked = dataTables.createHomedNPCTableEntry(npc, dest, cell, true)
-                end
+                -- already have a home, don't create the table dataTables again
+                return common.runtimeData.homes.byName[name] and common.runtimeData.homes.byName[name] or
+                           dataTables.createHomedNPCTableEntry(npc, dest, cell, true)
             end
         end
     end
@@ -102,21 +99,23 @@ this.pickHomeForNPC = function(cell, npc)
         log(common.logLevels.medium, "Didn't find a home for %s, trying inns", npc.object.name)
         local dest = this.pickPublicHouseForNPC(npc, city)
 
-        if dest then picked = dataTables.createHomedNPCTableEntry(npc, dest, cell, false) end
+        if dest then return dataTables.createHomedNPCTableEntry(npc, dest, cell, false) end
 
         -- if nothing was found, then we'll settle on Canton works cell, if the cell is a Canton
         if checks.isCantonCell(cell) then
-            if common.runtimeData.publicHouses[city] and common.runtimeData.publicHouses[city][common.publicHouseTypes.cantonworks] then
+            if common.runtimeData.publicHouses[city] and
+                common.runtimeData.publicHouses[city][common.publicHouseTypes.cantonworks] then
                 -- todo: maybe poorer NPCs in canalworks, others in waistworks ?
                 local canton = table.choice(common.runtimeData.publicHouses[city][common.publicHouseTypes.cantonworks])
                 log(common.logLevels.medium, "Picking works %s, %s for %s", canton.city, canton.name, npc.object.name)
 
-                if canton then picked = dataTables.createHomedNPCTableEntry(npc, canton.cell, cell, false) end
+                if canton then return dataTables.createHomedNPCTableEntry(npc, canton.cell, cell, false) end
             end
         end
     end
 
-    return picked
+    -- didn't find anything
+    return nil
 end
 
 return this

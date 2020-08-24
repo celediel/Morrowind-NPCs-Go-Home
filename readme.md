@@ -16,6 +16,7 @@ ignored class or faction will not be locked, or have its NPCS disabled.
 * NPC "homes"
     * Outside NPCs who have homes are currently paired with the inside cell of their home
     * Other NPCs are configurably paired with local public houses (Inns, temples, and guildhalls of their faction)
+* Moved NPCs persist on save/load
 
 ## WIP ##
 
@@ -29,3 +30,8 @@ ignored class or faction will not be locked, or have its NPCS disabled.
 
 * move non-faction NPCs who don't have homes to temples or inns based on their "worth"
 * pick temple for the poorest NPCs, or classed inns based on NPC/inn "worth"
+
+## Known issues ##
+
+* If NPCs in a town are moved, and the player moves far away from that town before they're moved back, then
+saves and reloads, those NPCs will probably stay moved.

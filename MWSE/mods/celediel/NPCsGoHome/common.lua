@@ -29,6 +29,8 @@ this.runtimeData = {
     },
     -- NPCs who have been moved
     movedNPCs = {},
+    -- positions that haven't been used
+    positions = {},
     -- player companions
     followers = {}
 }
@@ -72,6 +74,22 @@ this.pickPublicHouseType = function(cell)
     else
         return this.publicHouseTypes.inns
     end
+end
+
+this.checkModdedCell = function(cellId)
+    local id
+
+    if cellId == "Balmora, South Wall Cornerclub" and tes3.isModActive("South Wall.ESP") then
+        id = "Balmora, South Wall Den Of Iniquity"
+    elseif cellId == "Balmora, Eight Plates" and tes3.isModActive("Eight Plates.esp") then
+        id = "Balmora, Seedy Eight Plates"
+    elseif cellId == "Hla Oad, Fatleg's Drop Off" and tes3.isModActive("Clean DR115_TheDropoff_HlaOadDocks.ESP") then
+        id = "Hla Oad, The Drop Off"
+    else
+        id = cellId
+    end
+
+    return id
 end
 -- }}}
 

@@ -5,10 +5,39 @@ local checks = require("celediel.NPCsGoHome.functions.checks")
 local interop = require("celediel.NPCsGoHome.interop")
 local housing = require("celediel.NPCsGoHome.functions.housing")
 local dataTables = require("celediel.NPCsGoHome.functions.dataTables")
+local positions = require("celediel.NPCsGoHome.data.positions")
 
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
 
 local this = {}
+
+this.updatePositions = function(cell)
+    local id = cell.id
+    -- update runtime positions in cell, but don't overwrite loaded positions
+    if not common.runtimeData.positions[id] and positions.cells[id] then
+        common.runtimeData.positions[id] = {}
+        for _, data in pairs(positions.cells[id]) do
+            table.insert(common.runtimeData.positions[id], data)
+        end
+    end
+end
+
+this.searchCellsForPositions = function()
+    for _, cell in pairs(tes3.getActiveCells()) do
+        -- check active cells
+        this.updatePositions(cell)
+        for door in cell:iterateReferences(tes3.objectType.door) do
+            if door.destination then
+                -- then check cells attached to active cells
+                this.updatePositions(door.destination.cell)
+                -- one more time
+                for internalDoor in door.destination.cell:iterateReferences(tes3.objectType.door) do
+                    if internalDoor.destination then this.updatePositions(internalDoor.destination.cell) end
+                end
+            end
+        end
+    end
+end
 
 -- search in a specific cell for moved NPCs
 this.checkForMovedNPCs = function(cell)

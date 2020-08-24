@@ -37,29 +37,13 @@ end
 
 -- }}}
 
-this.checkModdedCell = function(cellId)
-    local id
-
-    if cellId == "Balmora, South Wall Cornerclub" and tes3.isModActive("South Wall.ESP") then
-        id = "Balmora, South Wall Den Of Iniquity"
-    elseif cellId == "Balmora, Eight Plates" and tes3.isModActive("Eight Plates.esp") then
-        id = "Balmora, Seedy Eight Plates"
-    elseif cellId == "Hla Oad, Fatleg's Drop Off" and tes3.isModActive("Clean DR115_TheDropoff_HlaOadDocks.ESP") then
-        id = "Hla Oad, The Drop Off"
-    else
-        id = cellId
-    end
-
-    return id
-end
-
 this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, position, orientation)
     if npc.object and (npc.object.name == nil or npc.object.name == "") then return end
 
     local pickedPosition, pickedOrientation, pos, ori
 
     -- mod support for different positions in cells
-    local id = this.checkModdedCell(home.id)
+    local id = common.checkModdedCell(home.id)
 
     log(common.logLevels.medium, "Found %s for %s: %s... adding it to in memory table...",
         isHome and "home" or "public house", npc.object.name, id)
@@ -67,21 +51,20 @@ this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, posit
     if isHome and positions.npcs[npc.object.name] then
         pos = positions.npcs[npc.object.name].position
         ori = positions.npcs[npc.object.name].orientation
-        -- pickedPosition = positions.npcs[npc.object.name] and tes3vector3.new(p[1], p[2], p[3]) or zeroVector:copy()
-        -- pickedOrientation = positions.npcs[npc.object.name] and tes3vector3.new(o[1], o[2], o[3]) or zeroVector:copy()
-    elseif positions.cells[id] then
-        pos = table.choice(positions.cells[id]).position
-        ori = table.choice(positions.cells[id]).orientation
-        -- pickedPosition = positions.cells[id] and tes3vector3.new(p[1], p[2], p[3]) or zeroVector:copy()
-        -- pickedOrientation = positions.cells[id] and tes3vector3.new(o[1], o[2], o[3]) or zeroVector:copy()
-        -- pickedPosition = tes3vector3.new(p[1], p[2], p[3])
-        -- pickedOrientation = tes3vector3.new(o[1], o[2], o[3])
+    -- elseif positions.cells[id] then
+    elseif common.runtimeData.positions[id] then
+        -- pos = table.choice(positions.cells[id]).position
+        -- ori = table.choice(positions.cells[id]).orientation
+        local choice, index = table.choice(common.runtimeData.positions[id])
+        pos = choice.position
+        ori = choice.orientation
+        table.remove(common.runtimeData.positions[id], index)
     else
         pos = {0,0,0}
         ori = {0,0,0}
-        -- pickedPosition = zeroVector:copy()
-        -- pickedOrientation = zeroVector:copy()
     end
+
+    log(common.logLevels.large, "Settled on position:%s, orientation:%s for %s in %s", pos, ori, npc.object.name, id)
 
     pickedPosition = tes3vector3.new(pos[1], pos[2], pos[3])
     pickedOrientation = tes3vector3.new(ori[1], ori[2], ori[3])
