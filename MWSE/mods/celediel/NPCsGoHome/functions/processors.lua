@@ -117,8 +117,6 @@ this.putNPCsBack = function()
 end
 
 this.processNPCs = function(cell)
-    -- todo: move this check somewhere else, so that disabled NPCs will be re-enabled even if the option is off
-    if not config.disableNPCs then return end
 
     log(common.logLevels.small, "Looking for NPCs to process in cell:%s", cell.id)
 
@@ -140,26 +138,24 @@ this.processNPCs = function(cell)
             -- disable or move NPCs
             if (checks.checkTime() or (checks.checkWeather(cell) and
                 (not checks.isBadWeatherNPC(npc) or (checks.isBadWeatherNPC(npc) and not config.keepBadWeatherNPCs)))) then
-                if npcHome then
-                    this.moveNPC(npcHome)
-                    -- elseif not npc.data.NPCsGoHome.modified then
-                elseif not npc.disabled then
-                    log(common.logLevels.medium, "Disabling homeless %s", npc.object.name)
-                    -- npc:disable() -- ! this one sometimes causes crashes
-                    mwscript.disable({reference = npc}) -- ! this one is deprecated
-                    -- tes3.setEnabled({reference = npc, enabled = false}) -- ! but this one causes crashes too
-                    -- npc.data.NPCsGoHome.modified = true
-                else
-                    log(common.logLevels.medium, "Didn't do anything with %s", npc.object.name)
+                if config.disableNPCs then -- this way, even if the option is off, disabled NPCs will get reenabled
+                    if npcHome then
+                        this.moveNPC(npcHome)
+                    elseif not npc.disabled then
+                        log(common.logLevels.medium, "Disabling homeless %s", npc.object.name)
+                        -- npc:disable() -- ! this one sometimes causes crashes
+                        mwscript.disable({reference = npc}) -- ! this one is deprecated
+                        -- tes3.setEnabled({reference = npc, enabled = false}) -- ! but this one causes crashes too
+                    else
+                        log(common.logLevels.medium, "Didn't do anything with %s", npc.object.name)
+                    end
                 end
             else
-                -- if not npcHome and npc.data.modified then
                 if not npcHome and npc.disabled then
                     log(common.logLevels.medium, "Enabling homeless %s", npc.object.name)
                     -- npc:enable()
                     mwscript.enable({reference = npc})
                     -- tes3.setEnabled({reference = npc, enabled = true})
-                    -- npc.data.NPCsGoHome.modified = false
                 end
             end
         end
