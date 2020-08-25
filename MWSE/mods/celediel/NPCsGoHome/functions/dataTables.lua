@@ -1,41 +1,14 @@
 -- handles creation of runtime data tables
 local common = require("celediel.NPCsGoHome.common")
+local config = require("celediel.NPCsGoHome.config").getConfig()
 local interop = require("celediel.NPCsGoHome.interop")
 local positions = require("celediel.NPCsGoHome.data.positions")
-local config = require("celediel.NPCsGoHome.config").getConfig()
+local evaluators = require("celediel.NPCsGoHome.functions.npcEvaluators")
 
 local zeroVector = tes3vector3.new(0, 0, 0)
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
 
 local this = {}
-
--- {{{ npc evaluators
-
--- NPCs barter gold + value of all inventory items
-this.calculateNPCWorth = function(npc, merchantCell)
-    local worth = npc.object.barterGold
-    local obj = npc.baseObject and npc.baseObject or npc.object
-
-    if npc.object.inventory then
-        for _, item in pairs(npc.object.inventory) do worth = worth + (item.object.value or 0) end
-    end
-
-    if merchantCell then -- if we pass a cell argument
-        for box in merchantCell:iterateReferences(tes3.objectType.container) do -- loop over each container
-            if box.inventory then -- if it's not empty
-                for item in tes3.iterate(box.inventory) do -- loop over its items
-                    if obj:tradesItemType(item.objectType) then -- if the NPC sells that type
-                        worth = worth + item.object.value -- add its value to the NPCs total value
-                    end
-                end
-            end
-        end
-    end
-
-    return worth
-end
-
--- }}}
 
 this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, position, orientation)
     if npc.object and (npc.object.name == nil or npc.object.name == "") then return end
@@ -51,7 +24,7 @@ this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, posit
     if isHome and positions.npcs[npc.object.name] then
         pos = positions.npcs[npc.object.name].position
         ori = positions.npcs[npc.object.name].orientation
-    elseif common.runtimeData.positions[id] then
+    elseif not table.empty(common.runtimeData.positions[id]) then
         local choice, index = table.choice(common.runtimeData.positions[id])
         pos = choice.position
         ori = choice.orientation
@@ -84,7 +57,7 @@ this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, posit
         ogOrientation = ogOrientation, -- tes3vector3
         homePosition = pickedPosition, -- tes3vector3
         homeOrientation = pickedOrientation, -- tes3vector3
-        worth = this.calculateNPCWorth(npc) -- int
+        worth = evaluators.calculateNPCWorth(npc) -- int
     }
 
     common.runtimeData.homes.byName[npc.object.name] = entry
@@ -103,9 +76,9 @@ this.createPublicHouseTableEntry = function(publicCell, proprietor, city, name)
     -- cell worth is combined worth of all NPCs
     for innard in publicCell:iterateReferences(tes3.objectType.npc) do
         if innard == proprietor then
-            worth = worth + this.calculateNPCWorth(innard, publicCell)
+            worth = worth + evaluators.calculateNPCWorth(innard, publicCell).total
         else
-            worth = worth + this.calculateNPCWorth(innard)
+            worth = worth + evaluators.calculateNPCWorth(innard).total
         end
     end
 

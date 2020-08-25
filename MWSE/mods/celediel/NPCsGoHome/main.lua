@@ -3,7 +3,6 @@
 local config = require("celediel.NPCsGoHome.config").getConfig()
 local common = require("celediel.NPCsGoHome.common")
 local checks = require("celediel.NPCsGoHome.functions.checks")
-local housing = require("celediel.NPCsGoHome.functions.housing")
 local processors = require("celediel.NPCsGoHome.functions.processors")
 -- }}}
 
@@ -159,6 +158,20 @@ local function onCellChanged(e)
         checkEnteredPublicHouse(e.cell, common.split(e.cell.name, ",")[1])
     end
 end
+
+-- debug events
+local function onKeyDown(e)
+    -- if alt log runtimeData
+    if e.isAltDown then
+        -- log(common.logLevels.small, common.inspect(common.runtimeData))
+        log(common.logLevels.none, json.encode(common.runtimeData, { indent = true }))
+    end
+    -- if ctrl log position data formattet for positions.lua
+    if e.isControlDown then
+        log(common.logLevels.none, "{position = %s, orientation = %s,", tes3.player.position, tes3.player.orientation)
+    end
+end
+
 -- }}}
 
 -- {{{ init
@@ -174,6 +187,9 @@ local function onInitialized()
     event.register("loaded", onLoaded)
     event.register("cellChanged", onCellChanged)
     event.register("activate", onActivated)
+
+    -- debug events
+    event.register("keyDown", onKeyDown, { filter = tes3.scanCode.c } )
 
     log(common.logLevels.none, "Successfully initialized")
 end

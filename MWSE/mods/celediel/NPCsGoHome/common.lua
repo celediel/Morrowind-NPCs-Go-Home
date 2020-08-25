@@ -29,7 +29,12 @@ this.runtimeData = {
     -- cells marked as public
     publicHouses = {},
     -- homes picked for NPCs
-    homes = {byName = {}, byCell = {}},
+    homes = {
+        -- used for caching homes to avoid reiterating NPCs
+        byName = {},
+        -- used for checking when entering wandering NPC's house, will probably remove
+        byCell = {}
+    },
     -- NPCs who have been moved
     movedNPCs = {},
     -- positions that haven't been used

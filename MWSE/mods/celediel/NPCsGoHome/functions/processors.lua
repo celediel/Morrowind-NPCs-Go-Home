@@ -20,6 +20,7 @@ this.updatePositions = function(cell)
     end
 end
 
+-- todo: make this recursive?
 this.searchCellsForPositions = function()
     for _, cell in pairs(tes3.getActiveCells()) do
         -- check active cells
@@ -107,6 +108,11 @@ this.putNPCsBack = function()
             orientation = data.ogPlace
         })
     end
+
+    -- reset loaded position data
+    common.runtimeData.positions = {}
+    this.searchCellsForPositions()
+
     interop.setRuntimeData(common.runtimeData)
 end
 
