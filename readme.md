@@ -5,6 +5,7 @@ Forked from 1.1 of [OEA's Lightweight Lua Scheduling](https://www.nexusmods.com/
 ## Things I've Added, Changed or Fixed ##
 
 - timer for updating everything, configurable interval
+- disabled NPCs are reenabled even if the option to disable NPCs is off
 - Silt Striders and pack guars are disabled as well
 - Inclement weather toggle removed, in favour of dropdown with "None" option
 - Travel agents, their silt striders, and argonians configurably stay in inclement weather
