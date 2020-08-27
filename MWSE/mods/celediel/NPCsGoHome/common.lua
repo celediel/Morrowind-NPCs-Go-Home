@@ -22,6 +22,16 @@ this.publicHouseTypes = {
     houses = "Houses",
     cantonworks = "Cantonworks"
 }
+
+-- Canton string matches
+-- move NPCs into waistworks
+this.waistworks = "[Ww]aistworks"
+-- don't lock canalworks
+this.canalworks = "[Cc]analworks"
+-- doors to underworks should be ignored
+-- but NPCs in underworks should not be disabled
+this.underworks = "[Uu]nderworks"
+
 -- }}}
 
 -- {{{ Filled at runtime
@@ -69,13 +79,27 @@ this.vowel = function(str)
     return n
 end
 
+-- picks the key of the largest value out of a key:whatever, value:number table
+this.keyOfLargestValue = function(t)
+    local picked
+    local largest = 0
+    for key, value in pairs(t) do
+        if value > largest then
+            largest = value
+            picked = key
+        end
+    end
+    -- return largest == 0 and nil or largest
+    return picked
+end
+
 -- todo: pick this better
 this.pickPublicHouseType = function(cell)
     if cell.id:match("Guild") then
         return this.publicHouseTypes.guildhalls
     elseif cell.id:match("Temple") then
         return this.publicHouseTypes.temples
-    elseif cell.id:match("[Cc]analworks") or cell.id:match("[Ww]aistworks") then
+    elseif cell.id:match(this.canalworks) or cell.id:match(this.waistworks) then
         return this.publicHouseTypes.cantonworks
     -- elseif cell.id:match("House") then
     --     return publicHouseTypes.houses
@@ -98,6 +122,19 @@ this.checkModdedCell = function(cellId)
     end
 
     return id
+end
+
+this.isCantonWorksCell = function(cell)
+    -- for _, str in pairs(waistworks) do if cell.id:match(str) then return true end end
+    return cell.id:match(this.waistworks) or cell.id:match(this.canalworks) or cell.id:match(this.underworks)
+end
+
+this.isCantonCell = function(cell)
+    if cell.isInterior and not cell.behavesAsExterior then return false end
+    for door in cell:iterateReferences(tes3.objectType.door) do
+        if door.destination and this.isCantonWorksCell(door.destination.cell) then return true end
+    end
+    return false
 end
 -- }}}
 

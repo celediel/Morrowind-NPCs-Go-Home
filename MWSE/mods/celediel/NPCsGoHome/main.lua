@@ -1,5 +1,5 @@
 -- {{{ other files
--- ? could probably split this file out to others as well
+-- todo: too many things require too many other things, needs fix
 local config = require("celediel.NPCsGoHome.config").getConfig()
 local common = require("celediel.NPCsGoHome.common")
 local checks = require("celediel.NPCsGoHome.functions.checks")

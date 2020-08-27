@@ -1,7 +1,8 @@
--- handles finding homes or picking public spaces NPCs
+-- handles finding homes or picking public spaces for NPCs
+-- * home cell is chosen according to the following order:
+-- * NPC's actual home, i.e.: home cell name contains NPC name
 local common = require("celediel.NPCsGoHome.common")
 local config = require("celediel.NPCsGoHome.config").getConfig()
-local checks = require("celediel.NPCsGoHome.functions.checks")
 local dataTables = require("celediel.NPCsGoHome.functions.dataTables")
 
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
@@ -31,8 +32,6 @@ this.pickInnForNPC = function(npc, city)
     -- high class inns for nobles and rich merchants and such
     -- lower class inns for middle class npcs and merchants
     -- temple for commoners and the poorest people
-    -- ? pick based on barterGold and value of equipment for merchants ?
-    -- ? for others, pick based on value of equipment
 
     -- but for now pick one at random
     if common.runtimeData.publicHouses[city] and common.runtimeData.publicHouses[city][common.publicHouseTypes.inns] then
@@ -81,6 +80,8 @@ this.pickHomeForNPC = function(cell, npc)
     -- time to pick the "home"
     local name = npc.object.name
     local city = common.split(cell.name, ",")[1]
+
+    -- check if the NPC already has a house
     for door in cell:iterateReferences(tes3.objectType.door) do
         if door.destination then
             local dest = door.destination.cell
@@ -102,10 +103,9 @@ this.pickHomeForNPC = function(cell, npc)
         if dest then return dataTables.createHomedNPCTableEntry(npc, dest, cell, false) end
 
         -- if nothing was found, then we'll settle on Canton works cell, if the cell is a Canton
-        if checks.isCantonCell(cell) then
+        if common.isCantonCell(cell) then
             if common.runtimeData.publicHouses[city] and
                 common.runtimeData.publicHouses[city][common.publicHouseTypes.cantonworks] then
-                -- todo: maybe poorer NPCs in canalworks, others in waistworks ?
                 local canton = table.choice(common.runtimeData.publicHouses[city][common.publicHouseTypes.cantonworks])
                 log(common.logLevels.medium, "Picking works %s, %s for %s", canton.city, canton.name, npc.object.name)
 

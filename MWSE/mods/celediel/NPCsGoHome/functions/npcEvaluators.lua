@@ -1,5 +1,8 @@
--- handles evalutating NPCs
+-- handles evaluating NPCs
 local this = {}
+
+-- todo: logging
+local function log(level, ...) if config.logLevel >= level then common.log(...) end end
 
 -- NPCs barter gold + value of all inventory items
 this.calculateNPCWorth = function(npc, merchantCell)
@@ -33,7 +36,7 @@ this.calculateNPCWorth = function(npc, merchantCell)
         end
     end
 
-    -- caculate the total
+    -- calculate the total
     local total = 0
     for _, v in pairs(worth) do total = total + v end
 

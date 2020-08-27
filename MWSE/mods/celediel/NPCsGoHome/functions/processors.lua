@@ -11,6 +11,7 @@ local function log(level, ...) if config.logLevel >= level then common.log(...) 
 
 local this = {}
 
+-- create an in memory list of positions for a cell, to ensure multiple NPCs aren't placed in the same spot
 this.updatePositions = function(cell)
     local id = cell.id
     -- update runtime positions in cell, but don't overwrite loaded positions
