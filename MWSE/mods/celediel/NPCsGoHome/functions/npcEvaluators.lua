@@ -1,4 +1,6 @@
 -- handles evaluating NPCs
+local common = require("celediel.NPCsGoHome.common")
+
 local this = {}
 
 -- todo: logging
