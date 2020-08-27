@@ -125,9 +125,6 @@ this.processNPCs = function(cell)
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         -- for npc, _ in pairs(cellsInMemory[cell].npcs) do
         if not checks.isIgnoredNPC(npc) then
-            log(common.logLevels.large, "People change")
-            -- if not npc.data.NPCsGoHome then npc.data.NPCsGoHome = {} end
-
             -- find NPC homes
             local npcHome = config.moveNPCs and housing.pickHomeForNPC(cell, npc) or nil
 
@@ -163,8 +160,7 @@ this.processNPCs = function(cell)
     end
 
     -- now put NPCs back
-    -- if not (checks.checkTime() or checks.checkWeather(cell)) and #movedNPCs > 0 then putNPCsBack() end
-    if not (checks.checkTime() or checks.checkWeather(cell)) then this.putNPCsBack() end
+    if not (checks.checkTime() or checks.checkWeather(cell)) and #common.runtimeData.movedNPCs > 0 then this.putNPCsBack() end
 end
 
 this.processSiltStriders = function(cell)

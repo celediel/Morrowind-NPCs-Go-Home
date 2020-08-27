@@ -1,5 +1,6 @@
 -- handles evaluating NPCs
 local common = require("celediel.NPCsGoHome.common")
+local config = require("celediel.NPCsGoHome.config").getConfig()
 
 local this = {}
 
@@ -41,6 +42,7 @@ this.calculateNPCWorth = function(npc, merchantCell)
     -- calculate the total
     local total = 0
     for _, v in pairs(worth) do total = total + v end
+    log(common.logLevels.medium, "Calculated worth of %s for %s", total, npc.object.name)
 
     -- then add it to the table
     worth.total = total

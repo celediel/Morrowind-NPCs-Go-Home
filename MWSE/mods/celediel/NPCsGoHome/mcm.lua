@@ -16,7 +16,8 @@ local category = page:createCategory(common.modName)
 
 category:createDropdown({
     label = "Debug log level",
-    description = [[Enable this if you want to flood mwse.log with nonsense. Even small is huge.]],
+    description = "Enable this if you want to flood mwse.log with nonsense. Even small is huge." ..
+        "Large in Old Ebonheart spits out 16k lines each update. Don't pick that option.",
     options = {
         {label = "None", value = common.logLevels.none},
         {label = "Small", value = common.logLevels.small},

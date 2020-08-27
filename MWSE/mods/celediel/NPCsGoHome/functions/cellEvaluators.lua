@@ -4,49 +4,59 @@ local npcEvaluators = require("celediel.NPCsGoHome.functions.npcEvaluators")
 
 local this = {}
 
--- todo: logging
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
 
+-- cell worth is combined worth of all NPCs
 this.calculateCellWorth = function(cell, proprietor)
-    -- cell worth is combined worth of all NPCs
     local worth = 0
 
+    local msg = "breakdown:\n"
     for innard in cell:iterateReferences(tes3.objectType.npc) do
-        worth = worth + npcEvaluators.calculateNPCWorth(innard, innard == proprietor and cell or nil).total
+        local total = npcEvaluators.calculateNPCWorth(innard, innard == proprietor and cell or nil).total
+        worth = worth + total
+        msg = msg .. string.format("%s worth:%s, ", innard.object.name, total)
     end
 
+    log(common.logLevels.medium, "Calculated worth of %s for cell %s", worth, cell.id)
+    log(common.logLevels.large, msg:sub(1, #msg - 2)) -- strip off last ", "
     return worth
 end
 
+-- iterate NPCs in the cell, if configured amount of the population is any one
+-- faction, that's the cell's faction, otherwise, cell doesn't have a faction.
 this.pickCellFaction = function(cell)
-    -- iterate NPCs in the cell, if 2/3 the population is any one faction,
-    -- that's the cell's faction, otherwise, cell doesn't have a faction.
     local npcs = {majorityFactions = {}, allFactions = {}, total = 0}
+
+    -- count all the npcs with factions
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         local faction = npc.object.faction
 
         if faction then
-            if not npcs.allFactions[faction] then npcs.allFactions[faction] = {total = 0, percentage = 0} end
+            if not npcs.allFactions[faction.id] then npcs.allFactions[faction.id] = {total = 0, percentage = 0} end
 
-            if not npcs.allFactions[faction].master or npcs.allFactions[faction].master.object.factionIndex <
-                npc.object.factionIndex then npcs.allFactions[faction].master = npc end
+            if not npcs.allFactions[faction.id].master or npcs.allFactions[faction.id].master.object.factionIndex <
+                npc.object.factionIndex then npcs.allFactions[faction.id].master = npc end
 
-            npcs.allFactions[faction].total = npcs.allFactions[faction].total + 1
+            npcs.allFactions[faction.id].total = npcs.allFactions[faction.id].total + 1
         end
 
         npcs.total = npcs.total + 1
     end
 
-    for faction, info in pairs(npcs.allFactions) do
+    -- pick out all the factions that make up a percentage of the cell greater than the configured value
+    -- as long as the cell passes the minimum requirement check
+    for id, info in pairs(npcs.allFactions) do
         info.percentage = (info.total / npcs.total) * 100
-        if info.percentage >= config.factionIgnorePercentage then
-            -- return faction.id
-            npcs.majorityFactions[faction] = info.percentage
+        if info.percentage >= config.factionIgnorePercentage and npcs.total >= config.minimumOccupancy then
+            npcs.majorityFactions[id] = info.percentage
         end
     end
 
-    -- no faction
-    return table.empty(npcs.majorityFactions) and "none" or common.keyOfLargestValue(npcs.majorityFactions)
+    -- from the majority values, return the faction with the largest percentage, or "none"
+    local picked = common.keyOfLargestValue(npcs.majorityFactions)
+    log(common.logLevels.medium, "Picked faction %s for cell %s", picked, cell.id)
+    log(common.logLevels.large, "breakdown:\n%s", json.encode(npcs, {indent = true}))
+    return picked
 end
 
 return this

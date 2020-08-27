@@ -25,7 +25,7 @@ this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, posit
     if isHome and positions.npcs[npc.object.name] then
         pos = positions.npcs[npc.object.name].position
         ori = positions.npcs[npc.object.name].orientation
-    elseif not table.empty(common.runtimeData.positions[id]) then
+    elseif common.runtimeData.positions[id] and not table.empty(common.runtimeData.positions[id]) then
         -- pick a random position out of the positions in memory
         local choice, index = table.choice(common.runtimeData.positions[id])
         pos = choice.position
@@ -36,10 +36,10 @@ this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, posit
         ori = {0, 0, 0}
     end
 
-    log(common.logLevels.large, "Settled on position:%s, orientation:%s for %s in %s", pos, ori, npc.object.name, id)
-
     pickedPosition = tes3vector3.new(pos[1], pos[2], pos[3])
     pickedOrientation = tes3vector3.new(ori[1], ori[2], ori[3])
+
+    log(common.logLevels.large, "Settled on position:%s, orientation:%s for %s in %s", pickedPosition, pickedOrientation, npc.object.name, id)
 
     local ogPosition = position and (tes3vector3.new(position.x, position.y, position.z)) or
                            (npc.position and npc.position:copy() or zeroVector:copy())

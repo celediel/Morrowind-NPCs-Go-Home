@@ -109,6 +109,8 @@ this.isIgnoredNPC = function(npc)
     local isDead = false
     local isHostile = false
     local isVampire = false
+    -- some TR "Hired Guards" aren't actually "guards", ignore them as well
+    local isGuard = obj.isGuard or (obj.name:lower():match("guard") and true or false)
 
     if npc.mobile then
         if npc.mobile.health.current <= 0 or npc.mobile.isDead then isDead = true end
@@ -132,13 +134,13 @@ this.isIgnoredNPC = function(npc)
         "guard:%s dead:%s vampire:%s werewolf:%s dreamer:%s follower:%s hostile:%s %s%s"), --
         obj.name, npc.object.id, npc.object.baseObject and npc.object.baseObject.id or "nil", --
         config.ignored[obj.id:lower()], obj.sourceMod, config.ignored[obj.sourceMod:lower()], --
-        obj.isGuard, isDead, isVampire, isWerewolf, (obj.class and obj.class.id == "Dreamers"), --
+        isGuard, isDead, isVampire, isWerewolf, (obj.class and obj.class.id == "Dreamers"), --
         common.runtimeData.followers[npc.object.id], isHostile, obj.id:match("fargoth") and "fargoth:" or "", --
         obj.id:match("fargoth") and isFargothActive or "")
 
     return config.ignored[obj.id:lower()] or --
            config.ignored[obj.sourceMod:lower()] or --
-           obj.isGuard or --
+           isGuard or --
            isFargothActive or --
            isDead or -- don't move dead NPCS
            isHostile or --
@@ -166,8 +168,6 @@ this.isPublicHouse = function(cell)
     if not this.isInteriorCell(cell) then return false end
 
     -- gather some data about the cell
-    local worth = cellEvaluators.calculateCellWorth(cell)
-    local faction = cellEvaluators.pickCellFaction(cell)
     local typeOfPub = common.pickPublicHouseType(cell)
     local city, publicHouseName
 
@@ -187,7 +187,9 @@ this.isPublicHouse = function(cell)
 
     -- if it's a waistworks cell, it's public, with no proprietor
     if config.waistWorks == common.waist.public and cell.id:match(common.waistworks) then
-        dataTables.createPublicHouseTableEntry(cell, nil, city, publicHouseName, worth, faction)
+        dataTables.createPublicHouseTableEntry(cell, nil, city, publicHouseName,
+                                               cellEvaluators.calculateCellWorth(cell),
+                                               cellEvaluators.pickCellFaction(cell))
         return true
     end
 
@@ -199,7 +201,9 @@ this.isPublicHouse = function(cell)
                 log(common.logLevels.medium, "NPC:\'%s\' of class:\'%s\' made %s public", npc.object.name,
                     npc.object.class and npc.object.class.id or "none", cell.name)
 
-                dataTables.createPublicHouseTableEntry(cell, npc, city, publicHouseName, worth, faction)
+                dataTables.createPublicHouseTableEntry(cell, npc, city, publicHouseName,
+                                                       cellEvaluators.calculateCellWorth(cell),
+                                                       cellEvaluators.pickCellFaction(cell))
                 return true
             end
 
@@ -232,7 +236,9 @@ this.isPublicHouse = function(cell)
             config.factionIgnorePercentage then
             log(common.logLevels.medium, "%s is %s%% faction %s, marking public.", cell.name, info.percentage, faction)
 
-            dataTables.createPublicHouseTableEntry(cell, npcs.factions[faction].master, city, publicHouseName, worth, faction)
+            dataTables.createPublicHouseTableEntry(cell, npcs.factions[faction].master, city, publicHouseName,
+                                                   cellEvaluators.calculateCellWorth(cell),
+                                                   cellEvaluators.pickCellFaction(cell))
             return true
         end
     end
@@ -281,17 +287,18 @@ end
 
 -- AT NIGHT
 this.checkTime = function()
-    log(common.logLevels.large, "Current time is %s, things are closed between %s and %s",
-        tes3.worldController.hour.value, config.closeTime, config.openTime)
-    return tes3.worldController.hour.value >= config.closeTime or tes3.worldController.hour.value <= config.openTime
+    local night = tes3.worldController.hour.value >= config.closeTime or tes3.worldController.hour.value <= config.openTime
+    log(common.logLevels.large, "Current time is %.2f (%snight), things are closed between %s and %s",
+        tes3.worldController.hour.value, night and "" or "not ", config.closeTime, config.openTime)
+    return night
 end
 
 -- inclement weather
 this.checkWeather = function(cell)
     if not cell.region then return end
 
-    log(common.logLevels.large, "Weather: %s >= %s == %s", cell.region.weather.index, config.worstWeather,
-        cell.region.weather.index >= config.worstWeather)
+    log(common.logLevels.large, "Weather: current:%s >= configured worst:%s == %s", cell.region.weather.index,
+        config.worstWeather, cell.region.weather.index >= config.worstWeather)
 
     return cell.region.weather.index >= config.worstWeather
 end

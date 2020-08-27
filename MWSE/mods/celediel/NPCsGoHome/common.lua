@@ -1,5 +1,3 @@
-local inspect = require("inspect")
-
 local this = {}
 
 -- {{{ Variables and such
@@ -65,11 +63,6 @@ end
 
 this.log = function(...) mwse.log("[%s] %s", this.modName, string.format(...)) end
 
-this.inspect = function(thing)
-    this.log("Inspecting a %s", thing)
-    this.log(inspect(thing))
-end
-
 this.vowel = function(str)
     local s = string.sub(str, 1, 1)
     local n = ""
@@ -89,7 +82,6 @@ this.keyOfLargestValue = function(t)
             picked = key
         end
     end
-    -- return largest == 0 and nil or largest
     return picked
 end
 
