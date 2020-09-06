@@ -300,9 +300,9 @@ this.isIgnoredDoor = function(door, homeCellId)
             not hasOccupants
 end
 
--- AT NIGHT
 this.isNight = function()
-    local atNight = tes3.worldController.hour.value >= config.closeTime or tes3.worldController.hour.value <= config.openTime
+    local atNight = tes3.worldController.hour.value >= config.closeTime or -- AT NIGHT
+                    tes3.worldController.hour.value <= config.openTime
     log(common.logLevels.large, "Current time is %.2f (%snight), things are closed between %s and %s",
         tes3.worldController.hour.value, atNight and "" or "not ", config.closeTime, config.openTime)
 
@@ -310,13 +310,13 @@ this.isNight = function()
 end
 
 -- inclement weather
-this.isInclementWeather = function(cell)
-    if not cell.region then return false end
-    -- local index = cell.region.weather.index
+this.isInclementWeather = function()
+    if not tes3.getCurrentWeather() then return false end
+
     local index = tes3.getCurrentWeather().index
     local isBad = index >= config.worstWeather
 
-    log(common.logLevels.large, "Weather in %s: current:%s >= configured worst:%s == %s", cell.id, index,
+    log(common.logLevels.large, "Weather in %s: current:%s >= configured worst:%s == %s", tes3.getRegion().id, index,
         config.worstWeather, isBad)
 
     return isBad

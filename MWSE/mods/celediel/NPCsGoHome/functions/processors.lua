@@ -119,7 +119,7 @@ end
 
 this.processNPCs = function(cell)
     local night = checks.isNight()
-    local badWeather = checks.isInclementWeather(cell)
+    local badWeather = checks.isInclementWeather()
 
     log(common.logLevels.small, "Looking for NPCs to process in cell:%s", cell.id)
 
@@ -176,7 +176,7 @@ this.processSiltStriders = function(cell)
     for activator in cell:iterateReferences(tes3.objectType.activator) do
         log(common.logLevels.large, "Is %s a silt strider??", activator.object.id)
         if activator.object.id:match("siltstrider") then
-            if checks.isNight() or (checks.isInclementWeather(cell) and not config.keepBadWeatherNPCs) then
+            if checks.isNight() or (checks.isInclementWeather() and not config.keepBadWeatherNPCs) then
                 if not activator.disabled then
                     log(common.logLevels.medium, "Disabling silt strider %s!", activator.object.name)
                     mwscript.disable({reference = activator})
@@ -200,7 +200,7 @@ end
 this.processPets = function(cell)
     if not config.disableNPCs then return end
     local night = checks.isNight()
-    local badWeather = checks.isInclementWeather(cell)
+    local badWeather = checks.isInclementWeather()
 
     log(common.logLevels.small, "Looking for NPC pets to process in cell:%s", cell.name)
 
