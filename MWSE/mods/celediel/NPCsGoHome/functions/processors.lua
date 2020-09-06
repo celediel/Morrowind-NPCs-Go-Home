@@ -118,6 +118,8 @@ this.putNPCsBack = function()
 end
 
 this.processNPCs = function(cell)
+    local night = checks.isNight()
+    local badWeather = checks.isInclementWeather(cell)
 
     log(common.logLevels.small, "Looking for NPCs to process in cell:%s", cell.id)
 
@@ -134,8 +136,8 @@ this.processNPCs = function(cell)
                 npcHome and npcHome.home or "nowhere", npcHome and (npcHome.isHome and "." or " at night.") or ".")
 
             -- disable or move NPCs
-            if (checks.checkTime() or (checks.checkWeather(cell) and
-                (not checks.isBadWeatherNPC(npc) or (checks.isBadWeatherNPC(npc) and not config.keepBadWeatherNPCs)))) then
+            if night or (badWeather and
+                (not checks.isBadWeatherNPC(npc) or (checks.isBadWeatherNPC(npc) and not config.keepBadWeatherNPCs))) then
                 if config.disableNPCs then -- this way, even if the option is off, disabled NPCs will get reenabled
                     if npcHome then
                         this.moveNPC(npcHome)
@@ -144,6 +146,7 @@ this.processNPCs = function(cell)
                         -- npc:disable() -- ! this one sometimes causes crashes
                         mwscript.disable({reference = npc}) -- ! this one is deprecated
                         -- tes3.setEnabled({reference = npc, enabled = false}) -- ! but this one causes crashes too
+                        common.runtimeData.disabledNPCs[npc.id] = true
                     else
                         log(common.logLevels.medium, "Didn't do anything with %s", npc.object.name)
                     end
@@ -154,13 +157,16 @@ this.processNPCs = function(cell)
                     -- npc:enable()
                     mwscript.enable({reference = npc})
                     -- tes3.setEnabled({reference = npc, enabled = true})
+                    common.runtimeData.disabledNPCs[npc.id] = false
                 end
             end
         end
     end
 
     -- now put NPCs back
-    if not (checks.checkTime() or checks.checkWeather(cell)) and #common.runtimeData.movedNPCs > 0 then this.putNPCsBack() end
+    if not night and not badWeather and #common.runtimeData.movedNPCs > 0 then
+        this.putNPCsBack()
+    end
 end
 
 this.processSiltStriders = function(cell)
@@ -170,7 +176,7 @@ this.processSiltStriders = function(cell)
     for activator in cell:iterateReferences(tes3.objectType.activator) do
         log(common.logLevels.large, "Is %s a silt strider??", activator.object.id)
         if activator.object.id:match("siltstrider") then
-            if checks.checkTime() or (checks.checkWeather(cell) and not config.keepBadWeatherNPCs) then
+            if checks.isNight() or (checks.isInclementWeather(cell) and not config.keepBadWeatherNPCs) then
                 if not activator.disabled then
                     log(common.logLevels.medium, "Disabling silt strider %s!", activator.object.name)
                     mwscript.disable({reference = activator})
@@ -193,12 +199,16 @@ end
 -- deal with trader's guars, and other npc linked creatures/whatever
 this.processPets = function(cell)
     if not config.disableNPCs then return end
+    local night = checks.isNight()
+    local badWeather = checks.isInclementWeather(cell)
 
     log(common.logLevels.small, "Looking for NPC pets to process in cell:%s", cell.name)
 
     for creature in cell:iterateReferences(tes3.objectType.creature) do
-        if checks.isNPCPet(creature) then
-            if checks.checkTime() then
+        local isPet, linkedToTravel = checks.isNPCPet(creature)
+        if isPet then
+            if night or (badWeather and
+                (not linkedToTravel or (linkedToTravel and not config.keepBadWeatherNPCs))) then
                 -- disable
                 if not creature.disabled then
                     log(common.logLevels.medium, "Disabling NPC Pet %s!", creature.object.id)
@@ -217,6 +227,7 @@ end
 
 this.processDoors = function(cell)
     if not config.lockDoors then return end
+    local night = checks.isNight()
 
     log(common.logLevels.small, "Looking for doors to process in cell:%s", cell.id)
 
@@ -232,7 +243,7 @@ this.processDoors = function(cell)
             log(common.logLevels.large, "Found %slocked %s with destination %s",
                 door.data.NPCsGoHome.alreadyLocked and "" or "un", door.id, door.destination.cell.id)
 
-            if checks.checkTime() then
+            if night then
                 if not door.data.NPCsGoHome.alreadyLocked then
                     log(common.logLevels.medium, "locking: %s to %s", door.object.name, door.destination.cell.id)
 
