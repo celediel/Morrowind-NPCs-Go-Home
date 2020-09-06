@@ -52,7 +52,7 @@ this.pickCellFaction = function(cell)
         end
     end
 
-    -- from the majority values, return the faction with the largest percentage, or "none"
+    -- from the majority values, return the faction with the largest percentage, or nil
     local picked = common.keyOfLargestValue(npcs.majorityFactions)
     log(common.logLevels.medium, "Picked faction %s for cell %s", picked, cell.id)
     log(common.logLevels.large, "breakdown:\n%s", json.encode(npcs, {indent = true}))

@@ -7,6 +7,7 @@ this.version = "0.0.1"
 this.modInfo = "Move NPCs to their homes, or public houses (or just disable them), lock doors, " ..
                    "and prevent interaction after hours, selectively disable NPCs in inclement weather"
 this.configPath = "NPCSGOHOME"
+this.logString = this.modName:gsub("%s?%b()%s?","")
 
 -- for config
 this.logLevels = {none = 0, small = 1, medium = 2, large = 3}
@@ -45,6 +46,8 @@ this.runtimeData = {
     },
     -- NPCs who have been moved
     movedNPCs = {},
+    -- NPCs who have been disabled
+    disabledNPCs = {},
     -- positions that haven't been used
     positions = {},
     -- player companions
@@ -61,10 +64,10 @@ this.split = function(input, sep)
     return output
 end
 
-this.log = function(...) mwse.log("[%s] %s", this.modName, string.format(...)) end
+this.log = function(...) mwse.log("[%s] %s", this.logString, string.format(...)) end
 
-this.vowel = function(str)
-    local s = string.sub(str, 1, 1)
+this.vowel = function(word)
+    local s = string.sub(word, 1, 1)
     local n = ""
 
     if string.match(s, "[AOEUIaoeui]") then n = "n" end

@@ -102,6 +102,14 @@ this.fargothCheck = function()
     return fargothJournal > 10 and fargothJournal <= 30
 end
 
+this.offersTravel = function(npc)
+    if not npc.object.aiConfig.travelDestinations then return false end
+
+    for _ in tes3.iterate(npc.object.aiConfig.travelDestinations) do return true end
+
+    return false
+end
+
 this.isIgnoredNPC = function(npc)
     local obj = npc.baseObject and npc.baseObject or npc.object
 
@@ -129,33 +137,37 @@ this.isIgnoredNPC = function(npc)
     local isWerewolf = mwscript.getSpellEffects({reference = npc, spell = "werewolf vision"})
     -- local isVampire = mwscript.getSpellEffects({reference = npc, spell = "vampire sun damage"})
 
+    -- LuaFormatter off
     -- this just keeps getting uglier but it's debug logging so whatever I don't care
-    log(common.logLevels.large, ("Checking NPC:%s (%s or %s): id blocked:%s, %s blocked:%s " .. --
-        "guard:%s dead:%s vampire:%s werewolf:%s dreamer:%s follower:%s hostile:%s %s%s"), --
-        obj.name, npc.object.id, npc.object.baseObject and npc.object.baseObject.id or "nil", --
-        config.ignored[obj.id:lower()], obj.sourceMod, config.ignored[obj.sourceMod:lower()], --
-        isGuard, isDead, isVampire, isWerewolf, (obj.class and obj.class.id == "Dreamers"), --
-        common.runtimeData.followers[npc.object.id], isHostile, obj.id:match("fargoth") and "fargoth:" or "", --
+    log(common.logLevels.large, ("Checking NPC:%s (%s or %s): id blocked:%s, %s blocked:%s " ..
+        "guard:%s dead:%s vampire:%s werewolf:%s dreamer:%s follower:%s hostile:%s %s%s"),
+        obj.name, npc.object.id, npc.object.baseObject and npc.object.baseObject.id or "nil",
+        config.ignored[obj.id:lower()], obj.sourceMod, config.ignored[obj.sourceMod:lower()],
+        isGuard, isDead, isVampire, isWerewolf, (obj.class and obj.class.id == "Dreamers"),
+        common.runtimeData.followers[npc.object.id], isHostile, obj.id:match("fargoth") and "fargoth:" or "",
         obj.id:match("fargoth") and isFargothActive or "")
 
-    return config.ignored[obj.id:lower()] or --
-           config.ignored[obj.sourceMod:lower()] or --
-           isGuard or --
-           isFargothActive or --
-           isDead or -- don't move dead NPCS
-           isHostile or --
-           common.runtimeData.followers[npc.object.id] or -- ignore followers
-           isVampire or --
-           isWerewolf or --
-           (obj.class and obj.class.id == "Dreamers") --
+    return config.ignored[obj.id:lower()] or
+           config.ignored[obj.sourceMod:lower()] or
+           isGuard or
+           isFargothActive or
+           isDead or
+           isHostile or
+           common.runtimeData.followers[npc.object.id] or
+           isVampire or
+           isWerewolf or
+           (obj.class and obj.class.id == "Dreamers")
+    -- LuaFormatter on
 end
 
-this.isNPCPet = function(creature)
+this.isNPCPet = function(creature) -- > isPet, isLinkedToTravelNPC
     local obj = creature.baseObject and creature.baseObject or creature.object
 
     -- todo: more pets?
     if obj.id:match("guar") and obj.mesh:match("pack") then
         return true
+    elseif obj.id:match("_[Hh]rs") and obj.mesh:match("_[Hh]orse") then
+        return true, true
     else
         return false
     end
@@ -230,10 +242,13 @@ this.isPublicHouse = function(cell)
             cell.name, faction, config.ignored[faction.id], faction.playerJoined, info.total, info.percentage,
             npcs.total)
 
-        -- less than 3 NPCs can't possibly be a public house unless it's a Blades house
+        -- log(common.logLevels.large, "ignored or joined:%s, occupants or blades:%s, faction percent:%s", (config.ignored[faction.id] or faction.playerJoined),
+        --     (npcs.total >= config.minimumOccupancy or faction == "Blades"), (info.percentage >= config.factionIgnorePercentage))
+
+        -- less than configured amount of NPCs can't be a public house unless it's a Blades house
         if (config.ignored[faction.id] or faction.playerJoined) and
-            (npcs.total >= config.minimumOccupancy or faction == "Blades") and info.percentage >=
-            config.factionIgnorePercentage then
+            (npcs.total >= config.minimumOccupancy or faction == "Blades") and
+            (info.percentage >= config.factionIgnorePercentage) then
             log(common.logLevels.medium, "%s is %s%% faction %s, marking public.", cell.name, info.percentage, faction)
 
             dataTables.createPublicHouseTableEntry(cell, npcs.factions[faction].master, city, publicHouseName,
@@ -286,35 +301,33 @@ this.isIgnoredDoor = function(door, homeCellId)
 end
 
 -- AT NIGHT
-this.checkTime = function()
-    local night = tes3.worldController.hour.value >= config.closeTime or tes3.worldController.hour.value <= config.openTime
+this.isNight = function()
+    local atNight = tes3.worldController.hour.value >= config.closeTime or tes3.worldController.hour.value <= config.openTime
     log(common.logLevels.large, "Current time is %.2f (%snight), things are closed between %s and %s",
-        tes3.worldController.hour.value, night and "" or "not ", config.closeTime, config.openTime)
-    return night
+        tes3.worldController.hour.value, atNight and "" or "not ", config.closeTime, config.openTime)
+
+    return atNight
 end
 
 -- inclement weather
-this.checkWeather = function(cell)
-    if not cell.region then return end
+this.isInclementWeather = function(cell)
+    if not cell.region then return false end
+    -- local index = cell.region.weather.index
+    local index = tes3.getCurrentWeather().index
+    local isBad = index >= config.worstWeather
 
-    log(common.logLevels.large, "Weather: current:%s >= configured worst:%s == %s", cell.region.weather.index,
-        config.worstWeather, cell.region.weather.index >= config.worstWeather)
+    log(common.logLevels.large, "Weather in %s: current:%s >= configured worst:%s == %s", cell.id, index,
+        config.worstWeather, isBad)
 
-    return cell.region.weather.index >= config.worstWeather
+    return isBad
 end
 
 -- travel agents, their steeds, and argonians stick around
 this.isBadWeatherNPC = function(npc)
-    local obj = npc.baseObject and npc.baseObject or npc.object
-    if not obj then return end
+    log(common.logLevels.large, "NPC Inclement Weather: %s is %s%s", npc.object.name, npc.object.race.id,
+        this.offersTravel(npc) and ", travel agent" or "")
 
-    log(common.logLevels.large, "NPC Inclement Weather: %s is %s, %s", npc.object.name, npc.object.class.name,
-        npc.object.race.id)
-
-    -- todo: better detection of NPCs who offer travel services
-    -- found a rogue "shipmaster" in molag mar
-    return obj.class.name == "Caravaner" or obj.class.name == "Gondolier" or obj.class.name == "Shipmaster" or
-               obj.race.id == "Argonian"
+    return this.offersTravel(npc) or npc.object.race.id == "Argonian"
 end
 
 return this

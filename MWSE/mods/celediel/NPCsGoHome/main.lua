@@ -11,9 +11,6 @@ local processors = require("celediel.NPCsGoHome.functions.processors")
 -- timers
 local updateTimer
 
--- references to common.runtimeData
-local publicHouses, homes, movedNPCs, followers
-
 -- }}}
 
 -- {{{ helper functions
@@ -36,7 +33,7 @@ end
 -- {{{ cell change checks
 
 local function checkEnteredNPCHome(cell)
-    local home = homes.byCell[cell.id]
+    local home = common.runtimeData.homes.byCell[cell.id]
     if home then
         local msg = string.format("Entering home of %s, %s", home.name, home.homeName)
         log(common.logLevels.small, msg)
@@ -47,8 +44,8 @@ end
 local function checkEnteredPublicHouse(cell, city)
     local typeOfPub = common.pickPublicHouseType(cell)
 
-    local publicHouse = publicHouses[city] and
-                            (publicHouses[city][typeOfPub] and publicHouses[city][typeOfPub][cell.name])
+    local publicHouse = common.runtimeData.publicHouses[city] and
+                            (common.runtimeData.publicHouses[city][typeOfPub] and common.runtimeData.publicHouses[city][typeOfPub][cell.name])
 
     if publicHouse then
         local msg = string.format("Entering public space %s, a%s %s in the town of %s.", publicHouse.name,
@@ -91,7 +88,7 @@ end
 local function updateCells()
     log(common.logLevels.medium, "Updating active cells!")
 
-    followers = buildFollowerList()
+    common.runtimeData.followers = buildFollowerList()
     processors.searchCellsForPositions()
 
     for _, cell in pairs(tes3.getActiveCells()) do
@@ -106,7 +103,7 @@ local function updatePlayerTrespass(cell, previousCell)
     local inCity = previousCell and (previousCell.id:match(cell.id) or cell.id:match(previousCell.id))
 
     if checks.isInteriorCell(cell) and not checks.isIgnoredCell(cell) and not checks.isPublicHouse(cell) and inCity then
-        if checks.checkTime() then
+        if checks.isNight() then
             tes3.player.data.NPCsGoHome.intruding = true
         else
             tes3.player.data.NPCsGoHome.intruding = false
@@ -133,11 +130,9 @@ end
 
 local function onLoaded()
     tes3.player.data.NPCsGoHome = tes3.player.data.NPCsGoHome or {}
-    -- tes3.player.data.NPCsGoHome.movedNPCs = tes3.player.data.NPCsGoHome.movedNPCs or {}
-    -- movedNPCs = tes3.player.data.NPCsGoHome.movedNPCs or {}
     if tes3.player.cell then processors.searchCellsForNPCs() end
 
-    followers = buildFollowerList()
+    common.runtimeData.followers = buildFollowerList()
 
     if not updateTimer or (updateTimer and updateTimer.state ~= timer.active) then
         updateTimer = timer.start({
@@ -151,7 +146,7 @@ end
 
 local function onCellChanged(e)
     updateCells()
-    followers = buildFollowerList()
+    common.runtimeData.followers = buildFollowerList()
     updatePlayerTrespass(e.cell, e.previousCell)
     checkEnteredNPCHome(e.cell)
     if e.cell.name then -- exterior wilderness cells don't have name
@@ -166,7 +161,7 @@ local function onKeyDown(e)
         -- log(common.logLevels.small, common.inspect(common.runtimeData))
         log(common.logLevels.none, json.encode(common.runtimeData, { indent = true }))
     end
-    -- if ctrl log position data formattet for positions.lua
+    -- if ctrl log position data formatted for positions.lua
     if e.isControlDown then
         log(common.logLevels.none, "{position = %s, orientation = %s,", tes3.player.position, tes3.player.orientation)
     end
@@ -176,12 +171,6 @@ end
 
 -- {{{ init
 local function onInitialized()
-    -- set up runtime data references
-    publicHouses = common.runtimeData.publicHouses
-    homes = common.runtimeData.homes
-    movedNPCs = common.runtimeData.movedNPCs
-    followers = common.runtimeData.followers
-
     -- Register events
     log(common.logLevels.small, "Registering events...")
     event.register("loaded", onLoaded)
