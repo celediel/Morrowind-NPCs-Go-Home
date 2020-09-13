@@ -311,7 +311,7 @@ end
 
 -- inclement weather
 this.isInclementWeather = function()
-    if not tes3.getCurrentWeather() then return false end
+    if not tes3.getCurrentWeather() or this.isInteriorCell(tes3.getPlayerCell()) then return false end
 
     local index = tes3.getCurrentWeather().index
     local isBad = index >= config.worstWeather
