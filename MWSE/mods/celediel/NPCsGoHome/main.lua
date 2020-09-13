@@ -22,7 +22,7 @@ local function buildFollowerList()
     local f = {}
     -- build our followers list
     for friend in tes3.iterate(tes3.mobilePlayer.friendlyActors) do
-        if friend ~= tes3.player then -- ? why is the player friendly towards the player ?
+        if friend ~= tes3.mobilePlayer then -- ? why is the player friendly towards the player ?
             f[friend.object.id] = true
             log(common.logLevels.large, "%s is follower", friend.object.id)
         end
