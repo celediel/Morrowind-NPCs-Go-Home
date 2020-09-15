@@ -222,16 +222,26 @@ this.isPublicHouse = function(cell)
             local faction = npc.object.faction
 
             if faction then
-                if not npcs.factions[faction] then npcs.factions[faction] = {total = 0, percentage = 0} end
+                if not npcs.factions[faction.id] then npcs.factions[faction.id] = {ref = faction, total = 0, percentage = 0} end
 
-                if not npcs.factions[faction].master or npcs.factions[faction].master.object.factionIndex <
-                    npc.object.factionIndex then npcs.factions[faction].master = npc end
+                if not npcs.factions[faction.id].master or npcs.factions[faction.id].master.object.factionIndex <
+                    npc.object.factionIndex then npcs.factions[faction.id].master = npc end
 
-                npcs.factions[faction].total = npcs.factions[faction].total + 1
+                npcs.factions[faction.id].total = npcs.factions[faction.id].total + 1
             end
 
             npcs.total = npcs.total + 1
         end
+    end
+
+    -- Temples are always public
+    if npcs.factions["Temple"] and cell.name:lower():match("temple") then
+        local master = npcs.factions["Temple"].master
+        log(common.logLevels.medium, "%s is a temple, and %s, %s is the ranking member", cell.id, master.object.name, master.object.class)
+        dataTables.createPublicHouseTableEntry(cell, master, city, publicHouseName,
+                                               cellEvaluators.calculateCellWorth(cell),
+                                               cellEvaluators.pickCellFaction(cell))
+        return true
     end
 
     -- no NPCs of ignored classes, so let's check out factions
@@ -239,14 +249,14 @@ this.isPublicHouse = function(cell)
         info.percentage = (info.total / npcs.total) * 100
         log(common.logLevels.large,
             "No NPCs of ignored class in %s, checking faction %s (ignored: %s, player joined: %s) with %s (%s%%) vs total %s",
-            cell.name, faction, config.ignored[faction.id], faction.playerJoined, info.total, info.percentage,
+            cell.name, faction, config.ignored[faction], info.ref.playerJoined, info.total, info.percentage,
             npcs.total)
 
         -- log(common.logLevels.large, "ignored or joined:%s, occupants or blades:%s, faction percent:%s", (config.ignored[faction.id] or faction.playerJoined),
         --     (npcs.total >= config.minimumOccupancy or faction == "Blades"), (info.percentage >= config.factionIgnorePercentage))
 
         -- less than configured amount of NPCs can't be a public house unless it's a Blades house
-        if (config.ignored[faction.id] or faction.playerJoined) and
+        if (config.ignored[faction] or info.ref.playerJoined) and
             (npcs.total >= config.minimumOccupancy or faction == "Blades") and
             (info.percentage >= config.factionIgnorePercentage) then
             log(common.logLevels.medium, "%s is %s%% faction %s, marking public.", cell.name, info.percentage, faction)
@@ -331,3 +341,5 @@ this.isBadWeatherNPC = function(npc)
 end
 
 return this
+
+-- vim:set fdm=marker
