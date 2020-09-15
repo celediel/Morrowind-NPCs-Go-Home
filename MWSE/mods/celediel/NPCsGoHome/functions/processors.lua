@@ -117,15 +117,15 @@ this.putNPCsBack = function()
     interop.setRuntimeData(common.runtimeData)
 end
 
+-- todo: this needs to be rewritten
 this.processNPCs = function(cell)
     local night = checks.isNight()
-    local badWeather = checks.isInclementWeather()
+    local badWeather = cell.name and checks.isInclementWeather() or false -- ignore weather in "Region" cells
 
     log(common.logLevels.small, "Looking for NPCs to process in cell:%s", cell.id)
 
     -- iterate NPCs in the cell, move them to their homes, and keep track of moved NPCs so we can move them back later
     for npc in cell:iterateReferences(tes3.objectType.npc) do
-        -- for npc, _ in pairs(cellsInMemory[cell].npcs) do
         if not checks.isIgnoredNPC(npc) then
             -- find NPC homes
             local npcHome = config.moveNPCs and housing.pickHomeForNPC(cell, npc) or nil
@@ -157,7 +157,7 @@ this.processNPCs = function(cell)
                     -- npc:enable()
                     mwscript.enable({reference = npc})
                     -- tes3.setEnabled({reference = npc, enabled = true})
-                    common.runtimeData.disabledNPCs[npc.id] = false
+                    common.runtimeData.disabledNPCs[npc.id] = nil
                 end
             end
         end
