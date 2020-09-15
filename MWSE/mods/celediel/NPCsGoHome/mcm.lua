@@ -3,6 +3,15 @@ local common = require("celediel.NPCsGoHome.common")
 
 local function createTableVar(id) return mwse.mcm.createTableVariable({id = id, table = config}) end
 
+-- LinQ could do this in one line lol
+local function allTheThings(thingType, useKey)
+    local things = {}
+    for key, value in pairs(thingType) do
+        table.insert(things, string.lower(useKey and (key.id or key) or (value.id or value)))
+    end
+    return things
+end
+
 local template = mwse.mcm.createTemplate({name = common.modName})
 template:saveOnClose(common.configPath, config)
 
@@ -87,7 +96,7 @@ category:createDropdown({
 
 category:createSlider({
     label = "Close Time",
-    description = "Time when people \"go home\" and doors lock",
+    description = "Time when people go home and doors lock",
     min = 0,
     max = 24,
     step = 1,
@@ -97,7 +106,7 @@ category:createSlider({
 
 category:createSlider({
     label = "Open Time",
-    description = "Time when people \"wake up\" and doors unlock",
+    description = "Time when people wake up and doors unlock",
     min = 0,
     max = 24,
     step = 1,
@@ -159,36 +168,9 @@ template:createExclusionsPage({
     filters = {
         {label = "Plugins", type = "Plugin"},
         {label = "NPCs", type = "Object", objectType = tes3.objectType.npc},
-        {
-            label = "Cells",
-            callback = (function()
-                local CellNames = {}
-                for cell, _ in pairs(tes3.dataHandler.nonDynamicData.cells) do
-                    table.insert(CellNames, cell:lower())
-                end
-                return CellNames
-            end)
-        },
-        {
-            label = "Factions",
-            callback = function()
-                local factions = {}
-                for _, faction in pairs(tes3.dataHandler.nonDynamicData.factions) do
-                    table.insert(factions, faction.id:lower())
-                end
-                return factions
-            end
-        },
-        {
-            label = "Classes",
-            callback = function()
-                local classes = {}
-                for _, class in pairs(tes3.dataHandler.nonDynamicData.classes) do
-                    table.insert(classes, class.id:lower())
-                end
-                return classes
-            end
-        }
+        {label = "Cells", callback = function() return allTheThings(tes3.dataHandler.nonDynamicData.cells, true) end},
+        {label = "Factions", callback = function() return allTheThings(tes3.dataHandler.nonDynamicData.factions) end},
+        {label = "Classes", callback = function() return allTheThings(tes3.dataHandler.nonDynamicData.classes) end}
     }
 })
 
