@@ -6,9 +6,6 @@ local defaultConfig = {
     ignored = {
         ["Balmora, Caius Cosades' House"] = true,
         ["Publican"] = true, -- inns are public
-        -- temples are public too
-        ["Temple"] = true,
-        ["T_Mw_Temple"] = true
     },
     closeTime = 21,
     openTime = 7,
