@@ -7,6 +7,7 @@ local this = {}
 -- todo: logging
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
 
+-- todo: check type of clothing/armour equipped: common, expensive, etc.
 -- NPCs barter gold + value of all inventory items
 this.calculateNPCWorth = function(npc, merchantCell)
     -- start with this

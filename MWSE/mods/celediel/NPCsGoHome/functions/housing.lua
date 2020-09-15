@@ -12,7 +12,6 @@ local contextualNPCs = {"^AM_"}
 
 local this = {}
 
--- ? I honestly don't know if there are any wandering NPCs that "live" in close-by manors, but I wrote this anyway
 this.livesInManor = function(cellName, npcName)
     if not cellName or (cellName and not string.find(cellName, "Manor")) then return end
 
@@ -71,15 +70,15 @@ end
 
 -- looks through doors to find a cell that matches a wandering NPCs name
 this.pickHomeForNPC = function(cell, npc)
-    -- wilderness cells don't have name
-    if not cell.name then return end
-
     -- don't move contextual, such as Animated Morrowind, NPCs at all
     for _, str in pairs(contextualNPCs) do if npc.object.id:match(str) then return end end
 
     -- time to pick the "home"
-    local name = npc.object.name
-    local city = common.split(cell.name, ",")[1]
+    local name = npc.object.name:gsub(" the .*$","") -- remove "the whatever" from NPCs name
+    local city = cell.name and common.split(cell.name, ",")[1] or "wilderness"
+
+    -- don't need to pick a home if we already have one
+    if common.runtimeData.homes.byName[name] then return common.runtimeData.homes.byName[name] end
 
     -- check if the NPC already has a house
     for door in cell:iterateReferences(tes3.objectType.door) do
@@ -88,9 +87,7 @@ this.pickHomeForNPC = function(cell, npc)
 
             -- essentially, if npc full name, or surname matches the cell name
             if dest.id:match(name) or this.livesInManor(dest.name, name) then
-                -- already have a home, don't create the table dataTables again
-                return common.runtimeData.homes.byName[name] and common.runtimeData.homes.byName[name] or
-                           dataTables.createHomedNPCTableEntry(npc, dest, cell, true)
+                return dataTables.createHomedNPCTableEntry(npc, dest, cell, true)
             end
         end
     end
