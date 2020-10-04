@@ -40,11 +40,16 @@ category:createYesNoButton({label = "Disable non-Guard NPCs at night?", variable
 
 category:createYesNoButton({
     label = "Move NPCs into their homes at night and in bad weather instead of disabling them?",
+    description = "NOTE: Without the proper positions in data/positions.lua this could result in bad placement!!!\n\n"..
+        "Make a PR with some more positions if you feel like it.",
     variable = createTableVar("moveNPCs")
 })
 
 category:createYesNoButton({
     label = "Move \"homeless\" NPCs to public spaces at night and in bad weather instead of disabling them?",
+    description = "NOTE: Without the proper positions in data/positions.lua this could result in bad placement, "..
+        "and if multiple NPCs are placed in the same spot, they might DIE!!!\n\n" ..
+        "Make a PR with some more positions if you feel like it.",
     variable = createTableVar("homelessWanderersToPublicHouses")
 })
 
