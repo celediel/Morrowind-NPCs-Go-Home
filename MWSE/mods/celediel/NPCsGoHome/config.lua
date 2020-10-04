@@ -1,6 +1,6 @@
 local common = require("celediel.NPCsGoHome.common")
 
--- todo: clean this up
+-- todo: clean this up some more
 local defaultConfig = {
     -- general settings
     ignored = {
@@ -25,7 +25,7 @@ local defaultConfig = {
     },
     worstWeather = tes3.weather.thunder,
     factionIgnorePercentage = 66,
-    minimumOccupancy = 3,
+    minimumOccupancy = 4,
     homelessWanderersToPublicHouses = false, -- move NPCs to public houses if they don't have a home
     disableInteraction = true,
     -- door settings
