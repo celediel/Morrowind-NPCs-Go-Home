@@ -145,6 +145,7 @@ local function onLoaded()
 end
 
 local function onCellChanged(e)
+    processors.searchCellsForNPCs()
     updateCells()
     common.runtimeData.followers = buildFollowerList()
     updatePlayerTrespass(e.cell, e.previousCell)
@@ -163,6 +164,9 @@ local function onKeyDown(e)
     end
     -- if ctrl log position data formatted for positions.lua
     if e.isControlDown then
+        local pos = tostring(tes3.player.position):gsub("%(", "{"):gsub("%)", "}")
+        local ori = tostring(tes3.player.orientation):gsub("%(", "{"):gsub("%)", "}")
+
         log(common.logLevels.none, "[MAIN] {position = %s, orientation = %s},", pos, ori)
     end
 end
