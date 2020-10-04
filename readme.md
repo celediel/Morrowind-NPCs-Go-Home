@@ -21,12 +21,12 @@ A no-longer-lightweight fork of [OEA's Lightweight Lua Scheduling](https://www.n
 - Inclement weather toggle removed, in favour of dropdown with "None" option
 - Travel agents, their silt striders, and configured races/classes optionally stay in inclement weather
 - When locking doors, cells that contain NPCs of any class on the ignore list are left alone
-  - Cells that are >= 75% (configurable) one faction will be public, if that faction is on the ignore list
+  - Cells that are >= 67% (configurable) one faction will be public, if that faction is on the ignore list
+  - Cells of player joined factions are also public
   - Additionally, NPCs in those cells can still be interacted with
 - Cells with no NPCs are not locked
 - Ignore list now supports NPC class and faction. Any interior cell with an NPC of
   ignored class or faction will not be locked, or have its NPCS disabled.
-- Cells of player joined factions are not locked
 
 ### Debug / Devel Stuff ###
 
