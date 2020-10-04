@@ -10,18 +10,18 @@ A no-longer-lightweight fork of [OEA's Lightweight Lua Scheduling](https://www.n
   - Outside NPCs who have homes (local cell that contains their name, i.e.: NPC Fargoth and cell "Seyda Neen, Fargoth's House") are currently paired with the inside cell of their home
   - Other NPCs are configurably paired with local public houses (Inns, temples, and guildhalls of their faction)
 - Option to move NPCs into their home rather than disable them
-    - working on a better variety of positions in cells
+    - Working on a better variety of positions in cells
 - Moved NPCs persist on save/load
 
 ### Other Stuff ###
 
-- timer for updating everything, configurable interval
-- disabled NPCs are reenabled even if the option to disable NPCs is off
+- Timer for updating everything, configurable interval
+- Disabled NPCs are reenabled even if the option to disable NPCs is off
 - Silt Striders and pack guars are disabled as well
 - Inclement weather toggle removed, in favour of dropdown with "None" option
 - Travel agents, their silt striders, and configured races/classes optionally stay in inclement weather
 - When locking doors, cells that contain NPCs of any class on the ignore list are left alone
-  - cells that are >= 75% (configurable) one faction will be public, if that faction is on the ignore list
+  - Cells that are >= 75% (configurable) one faction will be public, if that faction is on the ignore list
   - Additionally, NPCs in those cells can still be interacted with
 - Cells with no NPCs are not locked
 - Ignore list now supports NPC class and faction. Any interior cell with an NPC of
@@ -39,11 +39,11 @@ A no-longer-lightweight fork of [OEA's Lightweight Lua Scheduling](https://www.n
 
 ## TODO ##
 
-- move non-faction NPCs who don't have homes to temples or inns based on their "worth"
-- pick temple for the poorest NPCs, or classed inns based on NPC/inn "worth"
+- Move non-faction NPCs who don't have homes to temples or inns based on their "worth"
+- Pick temple for the poorest NPCs, or classed inns based on NPC/inn "worth"
 
 ## Known issues ##
 
 - ~~If NPCs in a town are moved, and the player moves far away from that town before they're moved back, then
   saves and reloads, those NPCs will probably stay moved.~~ should be fixed
-- it's probably one big bowl of spaghetti
+- It's probably one big bowl of spaghetti
