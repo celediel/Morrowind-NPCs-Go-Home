@@ -104,7 +104,8 @@ local function disableOrMove(npc, cell)
     local npcHome = config.moveNPCs and housing.pickHomeForNPC(cell, npc) or nil
     if npcHome then
         moveNPC(npcHome)
-    else
+    elseif cell.name or (not cell.name and config.disableNPCsInWilderness) then
+        -- todo: re-enable NPCs in wilderness if this config option is changed
         disableNPC(npc)
     end
 end
@@ -122,7 +123,8 @@ end
 -- search in a specific cell for moved or disabled NPCs
 local function checkForMovedOrDisabledNPCs(cell)
     -- NPCs don't get moved to exterior cells, so no need to check them for moved NPCs
-    if not checks.isInteriorCell(cell) then return end
+    -- NPCs do get disabled in interior cells though
+    -- if not checks.isInteriorCell(cell) then return end
 
     log(common.logLevels.medium, "[PROC] Looking for moved NPCs in cell %s", cell.id)
     for npc in cell:iterateReferences(tes3.objectType.npc) do

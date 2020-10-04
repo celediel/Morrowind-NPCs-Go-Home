@@ -13,6 +13,7 @@ local defaultConfig = {
     showMessages = true,
     -- npc settings
     disableNPCs = true,
+    disableNPCsInWilderness = false,
     moveNPCs = true, -- move NPCs to homes
     keepBadWeatherNPCs = true,
     -- classes and races that are ignored during inclement weather

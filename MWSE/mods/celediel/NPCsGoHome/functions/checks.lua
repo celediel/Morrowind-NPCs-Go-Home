@@ -4,12 +4,6 @@ local config = require("celediel.NPCsGoHome.config").getConfig()
 local dataTables = require("celediel.NPCsGoHome.functions.dataTables")
 local cellEvaluators = require("celediel.NPCsGoHome.functions.cellEvaluators")
 
--- {{{ local variables and such
-
--- city name if cell.name is nil
-local wilderness = "Wilderness"
--- }}}
-
 -- {{{ local functions
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
 
@@ -80,15 +74,10 @@ this.isCityCell = function(internalCellId, externalCellId)
 end
 
 this.isIgnoredCell = function(cell)
-    log(common.logLevels.large, "[CHECKS] %s is %s, %s is %s", cell.id,
-        config.ignored[cell.id] and "ignored" or "not ignored", cell.sourceMod,
-        config.ignored[cell.sourceMod] and "ignored" or "not ignored")
+    log(common.logLevels.large, "[CHECKS] %s is %s", cell.id,
+        config.ignored[cell.id:lower()] and "ignored" or "not ignored")
 
-    -- don't do things in the wilderness
-    -- local wilderness = false
-    -- if not cell.name then wilderness = true end
-
-    return config.ignored[cell.id] or config.ignored[cell.sourceMod] -- or wilderness
+    return config.ignored[cell.id:lower()] -- or config.ignored[cell.sourceMod:lower()] -- or wilderness
 end
 
 -- ! this one depends on tes3 ! --
@@ -165,8 +154,10 @@ this.isNPCPet = function(creature) -- > isPet, isLinkedToTravelNPC
     local obj = creature.baseObject and creature.baseObject or creature.object
 
     -- todo: more pets?
+    -- pack guars
     if obj.id:match("guar") and obj.mesh:match("pack") then
         return true
+        -- imperial carriages
     elseif obj.id:match("_[Hh]rs") and obj.mesh:match("_[Hh]orse") then
         return true, true
     else
@@ -188,7 +179,7 @@ this.isPublicHouse = function(cell)
         city = common.split(cell.name, ",")[1]
         publicHouseName = common.split(cell.name, ",")[2]:gsub("^%s", "")
     else
-        city = wilderness
+        city = "Wilderness"
         publicHouseName = cell.id
     end
 
