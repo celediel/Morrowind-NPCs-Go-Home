@@ -17,7 +17,7 @@ this.calculateCellWorth = function(cell, proprietor)
         msg = msg .. string.format("%s worth:%s, ", innard.object.name, total)
     end
 
-    log(common.logLevels.medium, "Calculated worth of %s for cell %s", worth, cell.id)
+    log(common.logLevels.medium, "[CELLEVAL] Calculated worth of %s for cell %s", worth, cell.id)
     log(common.logLevels.large, msg:sub(1, #msg - 2)) -- strip off last ", "
     return worth
 end
@@ -54,8 +54,8 @@ this.pickCellFaction = function(cell)
 
     -- from the majority values, return the faction with the largest percentage, or nil
     local picked = common.keyOfLargestValue(npcs.majorityFactions)
-    log(common.logLevels.medium, "Picked faction %s for cell %s", picked, cell.id)
-    log(common.logLevels.large, "breakdown:\n%s", json.encode(npcs, {indent = true}))
+    log(common.logLevels.medium, "[CELLEVAL] Picked faction %s for cell %s", picked, cell.id)
+    log(common.logLevels.large, "[CELLEVAL] breakdown:\n%s", json.encode(npcs, {indent = true}))
     return picked
 end
 

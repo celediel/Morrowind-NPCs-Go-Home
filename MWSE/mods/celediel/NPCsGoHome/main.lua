@@ -24,7 +24,7 @@ local function buildFollowerList()
     for friend in tes3.iterate(tes3.mobilePlayer.friendlyActors) do
         if friend ~= tes3.mobilePlayer then -- ? why is the player friendly towards the player ?
             f[friend.object.id] = true
-            log(common.logLevels.large, "%s is follower", friend.object.id)
+            log(common.logLevels.large, "[MAIN] %s is follower", friend.object.id)
         end
     end
     return f
@@ -86,13 +86,13 @@ local function applyChanges(cell)
 end
 
 local function updateCells()
-    log(common.logLevels.medium, "Updating active cells!")
+    log(common.logLevels.medium, "[MAIN] Updating active cells!")
 
     common.runtimeData.followers = buildFollowerList()
     processors.searchCellsForPositions()
 
     for _, cell in pairs(tes3.getActiveCells()) do
-        log(common.logLevels.large, "Applying changes to cell %s", cell.id)
+        log(common.logLevels.large, "[MAIN] Applying changes to cell %s", cell.id)
         applyChanges(cell)
     end
 end
@@ -111,7 +111,7 @@ local function updatePlayerTrespass(cell, previousCell)
     else
         tes3.player.data.NPCsGoHome.intruding = false
     end
-    log(common.logLevels.small, "Updating player trespass status to %s", tes3.player.data.NPCsGoHome.intruding)
+    log(common.logLevels.small, "[MAIN] Updating player trespass status to %s", tes3.player.data.NPCsGoHome.intruding)
 end
 
 -- }}}
@@ -163,7 +163,7 @@ local function onKeyDown(e)
     end
     -- if ctrl log position data formatted for positions.lua
     if e.isControlDown then
-        log(common.logLevels.none, "{position = %s, orientation = %s,", tes3.player.position, tes3.player.orientation)
+        log(common.logLevels.none, "[MAIN] {position = %s, orientation = %s},", pos, ori)
     end
 end
 
@@ -172,7 +172,7 @@ end
 -- {{{ init
 local function onInitialized()
     -- Register events
-    log(common.logLevels.small, "Registering events...")
+    log(common.logLevels.small, "[MAIN] Registering events...")
     event.register("loaded", onLoaded)
     event.register("cellChanged", onCellChanged)
     event.register("activate", onActivated)
@@ -180,7 +180,7 @@ local function onInitialized()
     -- debug events
     event.register("keyDown", onKeyDown, { filter = tes3.scanCode.c } )
 
-    log(common.logLevels.none, "Successfully initialized")
+    log(common.logLevels.none, "[MAIN] Successfully initialized")
 end
 
 event.register("initialized", onInitialized)

@@ -43,7 +43,7 @@ this.calculateNPCWorth = function(npc, merchantCell)
     -- calculate the total
     local total = 0
     for _, v in pairs(worth) do total = total + v end
-    log(common.logLevels.medium, "Calculated worth of %s for %s", total, npc.object.name)
+    log(common.logLevels.medium, "[NPCEVAL] Calculated worth of %s for %s", total, npc.object.name)
 
     -- then add it to the table
     worth.total = total

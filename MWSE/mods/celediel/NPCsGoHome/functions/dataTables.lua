@@ -16,7 +16,7 @@ this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, posit
     -- mod support for different positions in cells
     local id = common.checkModdedCell(home.id)
 
-    log(common.logLevels.medium, "Found %s for %s: %s... adding it to in memory table...",
+    log(common.logLevels.medium, "[DTAB] Found %s for %s: %s... adding it to in memory table...",
         isHome and "home" or "public house", npc.object.name, id)
 
     -- pick the position and orientation the NPC will be placed at
@@ -39,7 +39,7 @@ this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, posit
     pickedPosition = tes3vector3.new(pos[1], pos[2], pos[3])
     pickedOrientation = tes3vector3.new(ori[1], ori[2], ori[3])
 
-    log(common.logLevels.large, "Settled on position:%s, orientation:%s for %s in %s", pickedPosition, pickedOrientation, npc.object.name, id)
+    log(common.logLevels.large, "[DTAB] Settled on position:%s, orientation:%s for %s in %s", pickedPosition, pickedOrientation, npc.object.name, id)
 
     local ogPosition = position and (tes3vector3.new(position.x, position.y, position.z)) or
                            (npc.position and npc.position:copy() or zeroVector:copy())
