@@ -118,7 +118,7 @@ this.isIgnoredNPC = function(npc)
     local isHostile = false
     local isVampire = false
     -- some TR "Hired Guards" aren't actually "guards", ignore them as well
-    local isGuard = obj.isGuard or (obj.name:lower():match("guard") and true or false)
+    local isGuard = obj.isGuard or (obj.name and (obj.name:lower():match("guard") and true or false) or false) -- maybe this should just be an if else
 
     if npc.mobile then
         if npc.mobile.health.current <= 0 or npc.mobile.isDead then isDead = true end
@@ -337,7 +337,7 @@ this.isBadWeatherNPC = function(npc)
     log(common.logLevels.large, "[CHECKS] NPC Inclement Weather: %s is %s%s", npc.object.name, npc.object.race.id,
         this.offersTravel(npc) and ", travel agent" or "")
 
-    return this.offersTravel(npc) or npc.object.race.id == "Argonian"
+    return this.offersTravel(npc) or config.badWeatherClassRace[npc.object.race.id] or config.badWeatherClassRace[npc.object.class.id]
 end
 
 return this
