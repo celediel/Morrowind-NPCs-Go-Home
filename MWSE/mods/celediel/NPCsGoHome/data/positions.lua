@@ -432,19 +432,19 @@ return {
 
         -- {{{ Ebonheart
         ["Ebonheart, Six Fishes"] = {
-            {position = { 290.34,561.52,2.00 }, orientation = { 0.00,0.00,1.65 }},
-            {position = { 283.08,482.31,2.00 }, orientation = { 0.00,0.00,1.52 }},
-            {position = { 306.77,347.78,2.00 }, orientation = { 0.00,0.00,1.05 }},
-            {position = { 456.64,294.88,2.00 }, orientation = { 0.00,0.00,-0.35 }},
-            {position = { 194.05,340.76,2.00 }, orientation = { 0.00,0.00,-0.89 }},
-            {position = { 42.56,476.67,2.00 }, orientation = { 0.00,0.00,2.32 }},
-            {position = { -35.04,244.08,2.00 }, orientation = { 0.00,0.00,2.31 }},
-            {position = { -29.01,88.22,2.00 }, orientation = { 0.00,0.00,0.66 }},
-            {position = { 96.12,85.94,2.00 }, orientation = { 0.00,0.00,-0.63 }},
-            {position = { 87.74,233.73,2.00 }, orientation = { 0.00,0.00,-2.39 }},
-            {position = { -90.63,-88.38,2.00 }, orientation = { 0.00,0.00,-2.20 }},
-            {position = { -267.03,-58.82,2.00 }, orientation = { 0.00,0.00,2.55 }},
-            {position = { 64.28,-290.37,2.00 }, orientation = { 0.00,0.00,-0.92 }},
+            {position = {290.34, 561.52, 2.00}, orientation = {0.00, 0.00, 1.65}},
+            {position = {283.08, 482.31, 2.00}, orientation = {0.00, 0.00, 1.52}},
+            {position = {306.77, 347.78, 2.00}, orientation = {0.00, 0.00, 1.05}},
+            {position = {456.64, 294.88, 2.00}, orientation = {0.00, 0.00, -0.35}},
+            {position = {194.05, 340.76, 2.00}, orientation = {0.00, 0.00, -0.89}},
+            {position = {42.56, 476.67, 2.00}, orientation = {0.00, 0.00, 2.32}},
+            {position = {-35.04, 244.08, 2.00}, orientation = {0.00, 0.00, 2.31}},
+            {position = {-29.01, 88.22, 2.00}, orientation = {0.00, 0.00, 0.66}},
+            {position = {96.12, 85.94, 2.00}, orientation = {0.00, 0.00, -0.63}},
+            {position = {87.74, 233.73, 2.00}, orientation = {0.00, 0.00, -2.39}},
+            {position = {-90.63, -88.38, 2.00}, orientation = {0.00, 0.00, -2.20}},
+            {position = {-267.03, -58.82, 2.00}, orientation = {0.00, 0.00, 2.55}},
+            {position = {64.28, -290.37, 2.00}, orientation = {0.00, 0.00, -0.92}}
         },
         -- }}}
 
