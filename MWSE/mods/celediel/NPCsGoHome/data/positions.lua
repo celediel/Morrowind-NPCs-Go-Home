@@ -31,7 +31,7 @@ return {
         ["Nadene Rotheran"] = {position = {4173.37, 4272.18, 14623.57}, orientation = {0.00, 0.00, -2.65}},
 
         -- Caldera
-        ["Caldera, Nedhelas' House"] = {position = {-235.15, 3.21, -123.42}, orientation = {0.00, 0.00, 1.77}}
+        ["Nedhelas"] = {position = {-235.15, 3.21, -123.42}, orientation = {0.00, 0.00, 1.77}}
     },
 
     -- todo: find a way to pick this with code instead
