@@ -64,8 +64,8 @@ end
 local function putNPCsBack(npcData)
     for i = #npcData, 1, -1 do
         local data = table.remove(npcData, i)
-        log(common.logLevels.medium, "[PROC] Moving %s back outside to %s (%s, %s, %s)", data.npc.object.name, data.ogPlace.id,
-            data.ogPosition.x, data.ogPosition.y, data.ogPosition.z)
+        log(common.logLevels.medium, "[PROC] Moving %s back outside to %s (%s, %s, %s)", data.npc.object.name,
+            data.ogPlace.id, data.ogPosition.x, data.ogPosition.y, data.ogPosition.z)
 
         -- unset NPC data so we don't try to move them on load
         data.npc.data.NPCsGoHome = nil
@@ -127,10 +127,12 @@ local function checkForMovedOrDisabledNPCs(cell)
     log(common.logLevels.medium, "[PROC] Looking for moved NPCs in cell %s", cell.id)
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         if npc.data and npc.data.NPCsGoHome then
-            log(common.logLevels.large, "[PROC] %s has NPCsGoHome data, deciding if disabled or moved...%s", npc, json.encode(npc.data.NPCsGoHome))
+            log(common.logLevels.large, "[PROC] %s has NPCsGoHome data, deciding if disabled or moved...%s", npc,
+                json.encode(npc.data.NPCsGoHome))
+            local badWeather = checks.isBadWeatherNPC(npc)
             if npc.data.NPCsGoHome.disabled then
                 -- disabled NPC
-                if checks.isBadWeatherNPC(npc) then
+                if badWeather then
                     common.runtimeData.disabledBadWeatherNPCs[npc.id] = npc
                     -- table.insert(common.runtimeData.disabledBadWeatherNPCs, npc)
                 else
@@ -139,8 +141,17 @@ local function checkForMovedOrDisabledNPCs(cell)
                 end
             else
                 -- homed NPC
-                dataTables.createHomedNPCTableEntry(npc, cell, tes3.getCell(npc.data.NPCsGoHome.cell), true,
-                                                    npc.data.NPCsGoHome.position, npc.data.NPCsGoHome.orientation)
+                local homeData = dataTables.createHomedNPCTableEntry(npc, cell,
+                                                                     tes3.getCell({id = npc.data.NPCsGoHome.cell}),
+                                                                     true, npc.data.NPCsGoHome.position,
+                                                                     npc.data.NPCsGoHome.orientation)
+
+                -- add to in memory table
+                if badWeather then
+                    table.insert(common.runtimeData.movedBadWeatherNPCs, homeData)
+                else
+                    table.insert(common.runtimeData.movedNPCs, homeData)
+                end
             end
         end
     end
@@ -193,6 +204,7 @@ this.processNPCs = function(cell)
             end
         end
 
+        -- LuaFormatter off
         -- check for bad weather NPCs that have been disabled, and re-enable them
         if not common.isEmptyTable(common.runtimeData.movedBadWeatherNPCs) then putNPCsBack(common.runtimeData.movedBadWeatherNPCs) end
         if not common.isEmptyTable(common.runtimeData.disabledBadWeatherNPCs) then reEnableNPCs(common.runtimeData.disabledBadWeatherNPCs) end
@@ -209,6 +221,7 @@ this.processNPCs = function(cell)
         if not common.isEmptyTable(common.runtimeData.movedBadWeatherNPCs) then putNPCsBack(common.runtimeData.movedBadWeatherNPCs) end
         if not common.isEmptyTable(common.runtimeData.disabledNPCs) then reEnableNPCs(common.runtimeData.disabledNPCs) end
         if not common.isEmptyTable(common.runtimeData.disabledBadWeatherNPCs) then reEnableNPCs(common.runtimeData.disabledBadWeatherNPCs) end
+        -- LuaFormatter on
     end
 end
 
@@ -301,7 +314,8 @@ this.processDoors = function(cell)
                     tes3.setLockLevel({reference = door, level = 0})
                     tes3.unlock({reference = door})
 
-                    log(common.logLevels.medium, "[PROC] unlocking: %s to %s", door.object.name, door.destination.cell.id)
+                    log(common.logLevels.medium, "[PROC] unlocking: %s to %s", door.object.name,
+                        door.destination.cell.id)
                 end
             end
 

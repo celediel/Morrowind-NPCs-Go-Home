@@ -23,7 +23,7 @@ end
 -- very todd workaround
 local function getFightFromSpawnedReference(id)
     -- Spawn a reference of the given id in toddtest
-    local toddTest = tes3.getCell("toddtest")
+    local toddTest = tes3.getCell({id = "toddtest"})
     log(common.logLevels.medium, "[CHECKS] Spawning %s in %s", id, toddTest.id)
 
     local ref = tes3.createReference({

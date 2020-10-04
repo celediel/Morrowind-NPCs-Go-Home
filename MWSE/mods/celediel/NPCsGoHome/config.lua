@@ -13,7 +13,7 @@ local defaultConfig = {
     showMessages = true,
     -- npc settings
     disableNPCs = true,
-    moveNPCs = true,
+    moveNPCs = true, -- move NPCs to homes
     keepBadWeatherNPCs = true,
     -- classes and races that are ignored during inclement weather
     badWeatherClassRace = {
@@ -26,7 +26,7 @@ local defaultConfig = {
     worstWeather = tes3.weather.thunder,
     factionIgnorePercentage = 66,
     minimumOccupancy = 3,
-    homelessWanderersToPublicHouses = false,
+    homelessWanderersToPublicHouses = false, -- move NPCs to public houses if they don't have a home
     disableInteraction = true,
     -- door settings
     lockDoors = true,

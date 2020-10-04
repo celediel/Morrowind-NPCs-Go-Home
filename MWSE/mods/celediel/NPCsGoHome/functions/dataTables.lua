@@ -16,8 +16,8 @@ this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, posit
     -- mod support for different positions in cells
     local id = common.checkModdedCell(home.id)
 
-    log(common.logLevels.medium, "[DTAB] Found %s for %s: %s... adding it to in memory table...",
-        isHome and "home" or "public house", npc.object.name, id)
+    log(common.logLevels.medium, "[DTAB] Found %s for %s from %s: %s... adding it to in memory table...",
+        isHome and "home" or "public house", npc.object.name, startingPlace.id, id)
 
     -- pick the position and orientation the NPC will be placed at
     local pickedPosition, pickedOrientation, pos, ori

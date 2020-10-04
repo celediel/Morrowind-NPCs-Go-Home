@@ -18,6 +18,7 @@ Forked from 1.1 of [OEA's Lightweight Lua Scheduling](https://www.nexusmods.com/
 - NPC "homes"
   - Outside NPCs who have homes are currently paired with the inside cell of their home
   - Other NPCs are configurably paired with local public houses (Inns, temples, and guildhalls of their faction)
+- Moved NPCs persist on save/load
 
 ## WIP ##
 
@@ -29,10 +30,6 @@ Forked from 1.1 of [OEA's Lightweight Lua Scheduling](https://www.nexusmods.com/
     gold and if a merchant with a cell, the worth of items in containers in that
     cell that the NPC sells is added, and the total of all calculated values
 - Public houses are classed based on the worth of NPCs in the cell
-- Moved NPCs persist on save/load
-  - works if the game is still running when the save is loaded
-  - if the game is launched fresh, and a save with moved/disabled NPCs is loaded, it's still broken
-    - ? WHY ?
 
 ## TODO ##
 
@@ -43,5 +40,3 @@ Forked from 1.1 of [OEA's Lightweight Lua Scheduling](https://www.nexusmods.com/
 
 - If NPCs in a town are moved, and the player moves far away from that town before they're moved back, then
   saves and reloads, those NPCs will probably stay moved.
-- Launching the game and loading a save with moved/disabled NPCs, they won't be put back/enabled.
-  - send help
