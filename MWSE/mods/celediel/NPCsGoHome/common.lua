@@ -46,8 +46,12 @@ this.runtimeData = {
     },
     -- NPCs who have been moved
     movedNPCs = {},
+    -- NPCs who stick around in bad weather and have been moved
+    movedBadWeatherNPCs = {},
     -- NPCs who have been disabled
     disabledNPCs = {},
+    -- NPCs who stick around in bad weather and have been disabled
+    disabledBadWeatherNPCs = {},
     -- positions that haven't been used
     positions = {},
     -- player companions
@@ -130,6 +134,11 @@ this.isCantonCell = function(cell)
         if door.destination and this.isCantonWorksCell(door.destination.cell) then return true end
     end
     return false
+end
+
+this.isEmptyTable = function(t)
+    for _ in pairs(t) do return false end
+    return true
 end
 -- }}}
 
