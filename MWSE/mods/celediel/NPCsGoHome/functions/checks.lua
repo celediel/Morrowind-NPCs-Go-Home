@@ -139,7 +139,7 @@ this.isIgnoredNPC = function(npc)
 
     -- LuaFormatter off
     -- this just keeps getting uglier but it's debug logging so whatever I don't care
-    log(common.logLevels.large, ("Checking NPC:%s (%s or %s): id blocked:%s, %s blocked:%s " ..
+    log(common.logLevels.large, ("[CHECKS] Checking NPC:%s (%s or %s): id blocked:%s, %s blocked:%s " ..
         "guard:%s dead:%s vampire:%s werewolf:%s dreamer:%s follower:%s hostile:%s %s%s"),
         obj.name, npc.object.id, npc.object.baseObject and npc.object.baseObject.id or "nil",
         config.ignored[obj.id:lower()], obj.sourceMod, config.ignored[obj.sourceMod:lower()],
@@ -248,7 +248,7 @@ this.isPublicHouse = function(cell)
     for faction, info in pairs(npcs.factions) do
         info.percentage = (info.total / npcs.total) * 100
         log(common.logLevels.large,
-            "No NPCs of ignored class in %s, checking faction %s (ignored: %s, player joined: %s) with %s (%s%%) vs total %s",
+            "[CHECKS] No NPCs of ignored class in %s, checking faction %s (ignored: %s, player joined: %s) with %s (%s%%) vs total %s",
             cell.name, faction, config.ignored[faction], info.ref.playerJoined, info.total, info.percentage,
             npcs.total)
 

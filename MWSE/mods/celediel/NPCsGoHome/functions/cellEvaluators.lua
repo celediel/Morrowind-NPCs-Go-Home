@@ -18,7 +18,7 @@ this.calculateCellWorth = function(cell, proprietor)
     end
 
     log(common.logLevels.medium, "[CELLEVAL] Calculated worth of %s for cell %s", worth, cell.id)
-    log(common.logLevels.large, msg:sub(1, #msg - 2)) -- strip off last ", "
+    log(common.logLevels.large, "[CELLEVAL] " .. msg:sub(1, #msg - 2)) -- strip off last ", "
     return worth
 end
 

@@ -36,7 +36,7 @@ local function checkEnteredNPCHome(cell)
     local home = common.runtimeData.homes.byCell[cell.id]
     if home then
         local msg = string.format("Entering home of %s, %s", home.name, home.homeName)
-        log(common.logLevels.small, msg)
+        log(common.logLevels.small, "[MAIN] " .. msg)
         -- message(msg) -- this one is mostly for debugging, so it doesn't need to be shown
     end
 end
@@ -57,7 +57,7 @@ local function checkEnteredPublicHouse(cell, city)
                                     publicHouse.proprietor.object.class)
         end
 
-        log(common.logLevels.small, msg)
+        log(common.logLevels.small, "[MAIN] " .. msg)
         message(msg) -- this one is more informative, and not entirely for debugging, and reminiscent of Daggerfall's messages
     end
 end
