@@ -87,15 +87,6 @@ local function putNPCsBack(npcData)
 end
 
 local function reEnableNPCs(npcs)
-    -- for i = #npcs, 1, -1 do
-    --     local npc = table.remove(npcs, i)
-    --     log(common.logLevels.medium, "[PROC] Enabling homeless %s", npc.object.name)
-    --     -- npc:enable()
-    --     mwscript.enable({reference = npc})
-
-    --     npc.data.NPCsGoHome = nil
-    -- end
-
     for id, ref in pairs(npcs) do
         log(common.logLevels.medium, "[PROC] Enabling homeless %s", ref.object.name)
 
