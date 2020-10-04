@@ -4,6 +4,7 @@ local config = require("celediel.NPCsGoHome.config").getConfig()
 local common = require("celediel.NPCsGoHome.common")
 local checks = require("celediel.NPCsGoHome.functions.checks")
 local processors = require("celediel.NPCsGoHome.functions.processors")
+local inspect = require("inspect")
 -- }}}
 
 -- {{{ variables and such
@@ -159,8 +160,11 @@ end
 local function onKeyDown(e)
     -- if alt log runtimeData
     if e.isAltDown then
-        -- log(common.logLevels.small, common.inspect(common.runtimeData))
-        log(common.logLevels.none, json.encode(common.runtimeData, { indent = true }))
+        -- ! this crashes my fully modded setup and I dunno why
+        -- ? doesn't crash my barely modded testing setup though
+        -- log(common.logLevels.none, json.encode(common.runtimeData, { indent = true }))
+        -- inspect handles userdata and tables within tables badly
+        log(common.logLevels.none, inspect(common.runtimeData))
     end
     -- if ctrl log position data formatted for positions.lua
     if e.isControlDown then
