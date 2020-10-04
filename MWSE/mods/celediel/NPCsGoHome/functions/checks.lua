@@ -50,8 +50,8 @@ local this = {}
 this.isInteriorCell = function(cell)
     if not cell then return end
 
-    log(common.logLevels.large, "[CHECKS] Cell %s: interior: %s, behaves as exterior: %s therefore returning %s", cell.id,
-        cell.isInterior, cell.behavesAsExterior, cell.isInterior and not cell.behavesAsExterior)
+    log(common.logLevels.large, "[CHECKS] Cell %s: interior: %s, behaves as exterior: %s therefore returning %s",
+        cell.id, cell.isInterior, cell.behavesAsExterior, cell.isInterior and not cell.behavesAsExterior)
 
     return cell.isInterior and not cell.behavesAsExterior
 end
@@ -69,8 +69,8 @@ this.isCityCell = function(internalCellId, externalCellId)
     local _, _, externalCity = string.find(externalCellId, cityMatch)
 
     if externalCity and externalCity == internalCity then
-        log(common.logLevels.large, "[CHECKS] hard mode city: %s in %s, %s == %s", internalCellId, externalCellId, externalCity,
-            internalCity)
+        log(common.logLevels.large, "[CHECKS] hard mode city: %s in %s, %s == %s", internalCellId, externalCellId,
+            externalCity, internalCity)
         return true
     end
 
@@ -80,8 +80,9 @@ this.isCityCell = function(internalCellId, externalCellId)
 end
 
 this.isIgnoredCell = function(cell)
-    log(common.logLevels.large, "[CHECKS] %s is %s, %s is %s", cell.id, config.ignored[cell.id] and "ignored" or "not ignored",
-        cell.sourceMod, config.ignored[cell.sourceMod] and "ignored" or "not ignored")
+    log(common.logLevels.large, "[CHECKS] %s is %s, %s is %s", cell.id,
+        config.ignored[cell.id] and "ignored" or "not ignored", cell.sourceMod,
+        config.ignored[cell.sourceMod] and "ignored" or "not ignored")
 
     -- don't do things in the wilderness
     -- local wilderness = false
@@ -222,7 +223,9 @@ this.isPublicHouse = function(cell)
             local faction = npc.object.faction
 
             if faction then
-                if not npcs.factions[faction.id] then npcs.factions[faction.id] = {ref = faction, total = 0, percentage = 0} end
+                if not npcs.factions[faction.id] then
+                    npcs.factions[faction.id] = {ref = faction, total = 0, percentage = 0}
+                end
 
                 if not npcs.factions[faction.id].master or npcs.factions[faction.id].master.object.factionIndex <
                     npc.object.factionIndex then npcs.factions[faction.id].master = npc end
@@ -237,7 +240,8 @@ this.isPublicHouse = function(cell)
     -- Temples are always public
     if npcs.factions["Temple"] and cell.name:lower():match("temple") then
         local master = npcs.factions["Temple"].master
-        log(common.logLevels.medium, "[CHECKS] %s is a temple, and %s, %s is the ranking member", cell.id, master.object.name, master.object.class)
+        log(common.logLevels.medium, "[CHECKS] %s is a temple, and %s, %s is the ranking member", cell.id,
+            master.object.name, master.object.class)
         dataTables.createPublicHouseTableEntry(cell, master, city, publicHouseName,
                                                cellEvaluators.calculateCellWorth(cell),
                                                cellEvaluators.pickCellFaction(cell))
@@ -249,8 +253,7 @@ this.isPublicHouse = function(cell)
         info.percentage = (info.total / npcs.total) * 100
         log(common.logLevels.large,
             "[CHECKS] No NPCs of ignored class in %s, checking faction %s (ignored: %s, player joined: %s) with %s (%s%%) vs total %s",
-            cell.name, faction, config.ignored[faction], info.ref.playerJoined, info.total, info.percentage,
-            npcs.total)
+            cell.name, faction, config.ignored[faction], info.ref.playerJoined, info.total, info.percentage, npcs.total)
 
         -- log(common.logLevels.large, "[CHECKS] ignored or joined:%s, occupants or blades:%s, faction percent:%s", (config.ignored[faction.id] or faction.playerJoined),
         --     (npcs.total >= config.minimumOccupancy or faction == "Blades"), (info.percentage >= config.factionIgnorePercentage))
@@ -259,7 +262,8 @@ this.isPublicHouse = function(cell)
         if (config.ignored[faction] or info.ref.playerJoined) and
             (npcs.total >= config.minimumOccupancy or faction == "Blades") and
             (info.percentage >= config.factionIgnorePercentage) then
-            log(common.logLevels.medium, "[CHECKS] %s is %s%% faction %s, marking public.", cell.name, info.percentage, faction)
+            log(common.logLevels.medium, "[CHECKS] %s is %s%% faction %s, marking public.", cell.name, info.percentage,
+                faction)
 
             dataTables.createPublicHouseTableEntry(cell, npcs.factions[faction].master, city, publicHouseName,
                                                    cellEvaluators.calculateCellWorth(cell),
@@ -326,8 +330,8 @@ this.isInclementWeather = function()
     local index = tes3.getCurrentWeather().index
     local isBad = index >= config.worstWeather
 
-    log(common.logLevels.large, "[CHECKS] Weather in %s: current:%s >= configured worst:%s, weather is %s", tes3.getRegion().id, index,
-        config.worstWeather, isBad and "bad" or "great")
+    log(common.logLevels.large, "[CHECKS] Weather in %s: current:%s >= configured worst:%s, weather is %s",
+        tes3.getRegion().id, index, config.worstWeather, isBad and "bad" or "great")
 
     return isBad
 end
@@ -337,7 +341,8 @@ this.isBadWeatherNPC = function(npc)
     log(common.logLevels.large, "[CHECKS] NPC Inclement Weather: %s is %s%s", npc.object.name, npc.object.race.id,
         this.offersTravel(npc) and ", travel agent" or "")
 
-    return this.offersTravel(npc) or config.badWeatherClassRace[npc.object.race.id] or config.badWeatherClassRace[npc.object.class.id]
+    return this.offersTravel(npc) or config.badWeatherClassRace[npc.object.race.id] or
+               config.badWeatherClassRace[npc.object.class.id]
 end
 
 return this

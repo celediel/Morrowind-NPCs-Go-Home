@@ -70,8 +70,8 @@ this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, posit
     return entry
 end
 
-this.createPublicHouseTableEntry = function(publicCell, proprietor, city, name, cellWorth, cellFaction)
-    local typeOfPub = common.pickPublicHouseType(publicCell)
+this.createPublicHouseTableEntry = function(publicCell, proprietor, city, name, cellWorth, cellFaction, type)
+    local typeOfPub = type or common.pickPublicHouseType(publicCell) -- use shitty type picker if none specified
 
     local proprietorName = proprietor and proprietor.object.name or "no one"
 
