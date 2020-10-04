@@ -1,30 +1,36 @@
 # NPCs Go Home #
 
-Forked from 1.1 of [OEA's Lightweight Lua Scheduling](https://www.nexusmods.com/morrowind/mods/48584) (I implemented most of the changes from 1.2 though)
+A no-longer-lightweight fork of [OEA's Lightweight Lua Scheduling](https://www.nexusmods.com/morrowind/mods/48584) version 1.1 (I implemented most of the changes from 1.2 though)
 
 ## Things I've Added, Changed or Fixed ##
+
+### The "Big" Stuff ###
+
+- NPC "homes"
+  - Outside NPCs who have homes (local cell that contains their name, i.e.: NPC Fargoth and cell "Seyda Neen, Fargoth's House") are currently paired with the inside cell of their home
+  - Other NPCs are configurably paired with local public houses (Inns, temples, and guildhalls of their faction)
+- Option to move NPCs into their home rather than disable them
+    - working on a better variety of positions in cells
+- Moved NPCs persist on save/load
+
+### Other Stuff ###
 
 - timer for updating everything, configurable interval
 - disabled NPCs are reenabled even if the option to disable NPCs is off
 - Silt Striders and pack guars are disabled as well
 - Inclement weather toggle removed, in favour of dropdown with "None" option
-- Travel agents, their silt striders, and argonians configurably stay in inclement weather
+- Travel agents, their silt striders, and configured races/classes optionally stay in inclement weather
 - When locking doors, cells that contain NPCs of any class on the ignore list are left alone
   - cells that are >= 75% (configurable) one faction will be public, if that faction is on the ignore list
   - Additionally, NPCs in those cells can still be interacted with
 - Cells with no NPCs are not locked
 - Ignore list now supports NPC class and faction. Any interior cell with an NPC of
   ignored class or faction will not be locked, or have its NPCS disabled.
-- NPC "homes"
-  - Outside NPCs who have homes are currently paired with the inside cell of their home
-  - Other NPCs are configurably paired with local public houses (Inns, temples, and guildhalls of their faction)
-- Moved NPCs persist on save/load
+- Cells of player joined factions are not locked
 
 ## WIP ##
 
-- Option to move NPCs into their "home" rather than disable them
-  - Kinda wonky? sometimes they die and I think it's because of placing numerous NPCs in the same spot
-    - working on a better variety of positions in cells
+- Currently NPCs without a home are moved into local cells with matching faction, or a random public cell
 - NPCs are classed based on the worth of their equipped items, and inventory
   - NPC worth is a table of: equipped items worth, inventory items worth, barter
     gold and if a merchant with a cell, the worth of items in containers in that
@@ -38,5 +44,6 @@ Forked from 1.1 of [OEA's Lightweight Lua Scheduling](https://www.nexusmods.com/
 
 ## Known issues ##
 
-- If NPCs in a town are moved, and the player moves far away from that town before they're moved back, then
-  saves and reloads, those NPCs will probably stay moved.
+- ~~If NPCs in a town are moved, and the player moves far away from that town before they're moved back, then
+  saves and reloads, those NPCs will probably stay moved.~~ should be fixed
+- it's probably one big bowl of spaghetti
