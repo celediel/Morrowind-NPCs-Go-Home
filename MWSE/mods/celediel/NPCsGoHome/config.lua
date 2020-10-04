@@ -5,7 +5,7 @@ local defaultConfig = {
     -- general settings
     ignored = {
         ["Balmora, Caius Cosades' House"] = true,
-        ["Publican"] = true, -- inns are public
+        ["Publican"] = true -- inns are public
     },
     closeTime = 21,
     openTime = 7,
@@ -15,6 +15,14 @@ local defaultConfig = {
     disableNPCs = true,
     moveNPCs = true,
     keepBadWeatherNPCs = true,
+    -- classes and races that are ignored during inclement weather
+    badWeatherClassRace = {
+        ["argonian"] = true,
+        ["t_pya_seaelf"] = true,
+        ["pilgrim"] = true,
+        ["t_cyr_pilgrim"] = true,
+        ["t_sky_pilgrim"] = true
+    },
     worstWeather = tes3.weather.thunder,
     factionIgnorePercentage = 66,
     minimumOccupancy = 3,

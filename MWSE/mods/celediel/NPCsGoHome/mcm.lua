@@ -6,9 +6,7 @@ local function createTableVar(id) return mwse.mcm.createTableVariable({id = id, 
 -- LinQ could do this in one line lol
 local function allTheThings(thingType, useKey)
     local things = {}
-    for key, value in pairs(thingType) do
-        table.insert(things, string.lower(useKey and (key.id or key) or (value.id or value)))
-    end
+    for key, value in pairs(thingType) do table.insert(things, string.lower(useKey and key or (value.id or value))) end
     return things
 end
 
@@ -152,6 +150,7 @@ category:createYesNoButton({
     variable = createTableVar("showMessages")
 })
 
+-- todo: separate ignored things from things that make cells public
 template:createExclusionsPage({
     label = "Ignored things",
     description = ("NPCs on the Ignored list will not disappear at night, and will be available to talk to if indoors. " ..
@@ -171,6 +170,18 @@ template:createExclusionsPage({
         {label = "Cells", callback = function() return allTheThings(tes3.dataHandler.nonDynamicData.cells, true) end},
         {label = "Factions", callback = function() return allTheThings(tes3.dataHandler.nonDynamicData.factions) end},
         {label = "Classes", callback = function() return allTheThings(tes3.dataHandler.nonDynamicData.classes) end}
+    }
+})
+
+template:createExclusionsPage({
+    label = "Inclement Weather Classes/Races",
+    description = "Classes and races on this list will not be disabled or moved during configured inclement weather." ..
+        "All NPCs that offer travel services are ignored during inclement weather regardless of race or class.",
+    showAllBlocked = false,
+    variable = createTableVar("badWeatherClassRace"),
+    filters = {
+        {label = "Classes", callback = function() return allTheThings(tes3.dataHandler.nonDynamicData.classes) end},
+        {label = "Races", callback = function() return allTheThings(tes3.dataHandler.nonDynamicData.races) end}
     }
 })
 
