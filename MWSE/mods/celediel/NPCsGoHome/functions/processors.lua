@@ -223,8 +223,10 @@ this.processNPCs = function(cell)
 
         -- LuaFormatter off
         -- check for bad weather NPCs that have been disabled, and re-enable them
-        if not common.isEmptyTable(common.runtimeData.movedBadWeatherNPCs) then putNPCsBack(common.runtimeData.movedBadWeatherNPCs) end
-        if not common.isEmptyTable(common.runtimeData.disabledBadWeatherNPCs) then reEnableNPCs(common.runtimeData.disabledBadWeatherNPCs) end
+        if config.keepBadWeatherNPCs then
+            if not common.isEmptyTable(common.runtimeData.movedBadWeatherNPCs) then putNPCsBack(common.runtimeData.movedBadWeatherNPCs) end
+            if not common.isEmptyTable(common.runtimeData.disabledBadWeatherNPCs) then reEnableNPCs(common.runtimeData.disabledBadWeatherNPCs) end
+        end
     elseif night then
         log(common.logLevels.large, "[PROC] !!Good or bad weather and night!!")
         -- at night, weather doesn't matter, disable everyone
