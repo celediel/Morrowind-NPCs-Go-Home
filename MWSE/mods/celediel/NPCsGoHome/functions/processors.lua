@@ -63,20 +63,22 @@ end
 
 local function putNPCsBack(npcData)
     for i = #npcData, 1, -1 do
-        local data = table.remove(npcData, i)
-        log(common.logLevels.medium, "[PROC] Moving %s back outside to %s (%s, %s, %s)", data.npc.object.name,
-            data.ogPlace.id, data.ogPosition.x, data.ogPosition.y, data.ogPosition.z)
+        -- if npcData[i].npc.object then
+            local data = table.remove(npcData, i)
+            log(common.logLevels.medium, "[PROC] Moving %s back outside to %s (%s, %s, %s)", data.npc.object.name,
+                data.ogPlace.id, data.ogPosition.x, data.ogPosition.y, data.ogPosition.z)
 
-        -- unset NPC data so we don't try to move them on load
-        data.npc.data.NPCsGoHome = nil
+            -- unset NPC data so we don't try to move them on load
+            data.npc.data.NPCsGoHome = nil
 
-        -- and put them back
-        tes3.positionCell({
-            cell = data.ogPlace,
-            reference = data.npc,
-            position = data.ogPosition,
-            orientation = data.ogPlace
-        })
+            -- and put them back
+            tes3.positionCell({
+                cell = data.ogPlace,
+                reference = data.npc,
+                position = data.ogPosition,
+                orientation = data.ogPlace
+            })
+        -- end
     end
 
     -- reset loaded position data
@@ -88,12 +90,16 @@ end
 
 local function reEnableNPCs(npcs)
     for id, ref in pairs(npcs) do
-        log(common.logLevels.medium, "[PROC] Enabling homeless %s", ref.object.name)
+        -- if the player moves too far away, trying to enable NPCs causes crashes
+        -- leave them in the runtimeData until they can be re-enabled
+        if ref and ref.object then
+            log(common.logLevels.medium, "[PROC] Enabling homeless %s", ref.object.name)
 
-        -- ref:enable()
-        mwscript.enable({reference = ref})
-        ref.data.NPCsGoHome = nil
-        npcs[id] = nil
+            -- ref:enable()
+            mwscript.enable({reference = ref})
+            ref.data.NPCsGoHome = nil
+            npcs[id] = nil
+        end
     end
 
     interop.setRuntimeData(common.runtimeData)
@@ -104,8 +110,7 @@ local function disableOrMove(npc, cell)
     local npcHome = config.moveNPCs and housing.pickHomeForNPC(cell, npc) or nil
     if npcHome then
         moveNPC(npcHome)
-    elseif cell.name or (not cell.name and config.disableNPCsInWilderness) then
-        -- todo: re-enable NPCs in wilderness if this config option is changed
+    else
         disableNPC(npc)
     end
 end
@@ -122,10 +127,6 @@ end
 
 -- search in a specific cell for moved or disabled NPCs
 local function checkForMovedOrDisabledNPCs(cell)
-    -- NPCs don't get moved to exterior cells, so no need to check them for moved NPCs
-    -- NPCs do get disabled in interior cells though
-    -- if not checks.isInteriorCell(cell) then return end
-
     log(common.logLevels.medium, "[PROC] Looking for moved NPCs in cell %s", cell.id)
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         if npc.data and npc.data.NPCsGoHome then
@@ -194,10 +195,18 @@ this.processNPCs = function(cell)
     local night = checks.isNight()
     local badWeather = checks.isInclementWeather()
 
+    if not cell.name and config.disableNPCsInWilderness then
+        -- shitty way of implementing this config option and enabling NPCs when it's off
+        -- but at least it's better than trying to keep track of NPCs that have been disabled in the wilderness
+        log(common.logLevels.medium, "[PROC] Shitty hack ACTIVATE! It's now not night, and the weather is great.")
+        night = false
+        badWeather = false
+    end
+
     log(common.logLevels.small, "[PROC] Looking for NPCs to process in cell:%s", cell.id)
 
     if badWeather and not night then
-        log(common.logLevels.medium, "[PROC] !!Bad weather and not night!!")
+        log(common.logLevels.large, "[PROC] !!Bad weather and not night!!")
         -- bad weather during the day, so disable some NPCs
         for npc in cell:iterateReferences(tes3.objectType.npc) do
             if not checks.isIgnoredNPC(npc) then
@@ -211,13 +220,13 @@ this.processNPCs = function(cell)
         if not common.isEmptyTable(common.runtimeData.movedBadWeatherNPCs) then putNPCsBack(common.runtimeData.movedBadWeatherNPCs) end
         if not common.isEmptyTable(common.runtimeData.disabledBadWeatherNPCs) then reEnableNPCs(common.runtimeData.disabledBadWeatherNPCs) end
     elseif night then
-        log(common.logLevels.medium, "[PROC] !!Good or bad weather and night!!")
+        log(common.logLevels.large, "[PROC] !!Good or bad weather and night!!")
         -- at night, weather doesn't matter, disable everyone
         for npc in cell:iterateReferences(tes3.objectType.npc) do
             if not checks.isIgnoredNPC(npc) then disableOrMove(npc, cell) end
         end
     else
-        log(common.logLevels.medium, "[PROC] !!Good weather and not night!!")
+        log(common.logLevels.large, "[PROC] !!Good weather and not night!!")
         -- put everyone back
         if not common.isEmptyTable(common.runtimeData.movedNPCs) then putNPCsBack(common.runtimeData.movedNPCs) end
         if not common.isEmptyTable(common.runtimeData.movedBadWeatherNPCs) then putNPCsBack(common.runtimeData.movedBadWeatherNPCs) end
