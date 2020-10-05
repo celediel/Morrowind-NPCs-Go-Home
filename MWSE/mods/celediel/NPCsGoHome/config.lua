@@ -4,8 +4,8 @@ local common = require("celediel.NPCsGoHome.common")
 local defaultConfig = {
     -- general settings
     ignored = {
-        ["Balmora, Caius Cosades' House"] = true,
-        ["Publican"] = true -- inns are public
+        ["balmora, caius cosades' house"] = true,
+        ["publican"] = true -- inns are public
     },
     closeTime = 21,
     openTime = 7,

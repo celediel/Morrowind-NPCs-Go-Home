@@ -201,7 +201,7 @@ this.isPublicHouse = function(cell)
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         -- Check for NPCS of ignored classes first
         if not this.isIgnoredNPC(npc) then
-            if npc.object.class and config.ignored[npc.object.class.id] then
+            if npc.object.class and config.ignored[npc.object.class.id:lower()] then
                 log(common.logLevels.medium, "[CHECKS] NPC:\'%s\' of class:\'%s\' made %s public", npc.object.name,
                     npc.object.class and npc.object.class.id or "none", cell.name)
 
@@ -214,14 +214,15 @@ this.isPublicHouse = function(cell)
             local faction = npc.object.faction
 
             if faction then
-                if not npcs.factions[faction.id] then
-                    npcs.factions[faction.id] = {ref = faction, total = 0, percentage = 0}
+                local id = faction.id:lower()
+                if not npcs.factions[id] then
+                    npcs.factions[id] = {ref = faction, total = 0, percentage = 0}
                 end
 
-                if not npcs.factions[faction.id].master or npcs.factions[faction.id].master.object.factionIndex <
-                    npc.object.factionIndex then npcs.factions[faction.id].master = npc end
+                if not npcs.factions[id].master or npcs.factions[id].master.object.factionIndex <
+                    npc.object.factionIndex then npcs.factions[id].master = npc end
 
-                npcs.factions[faction.id].total = npcs.factions[faction.id].total + 1
+                npcs.factions[id].total = npcs.factions[id].total + 1
             end
 
             npcs.total = npcs.total + 1
@@ -229,7 +230,7 @@ this.isPublicHouse = function(cell)
     end
 
     -- Temples are always public
-    if npcs.factions["Temple"] and cell.name:lower():match("temple") then
+    if npcs.factions["temple"] and cell.name:lower():match("temple") then
         local master = npcs.factions["Temple"].master
         log(common.logLevels.medium, "[CHECKS] %s is a temple, and %s, %s is the ranking member", cell.id,
             master.object.name, master.object.class)
@@ -244,13 +245,13 @@ this.isPublicHouse = function(cell)
         info.percentage = (info.total / npcs.total) * 100
         log(common.logLevels.large,
             "[CHECKS] No NPCs of ignored class in %s, checking faction %s (ignored: %s, player joined: %s) with %s (%s%%) vs total %s",
-            cell.name, faction, config.ignored[faction], info.ref.playerJoined, info.total, info.percentage, npcs.total)
+            cell.name, faction, config.ignored[faction:lower()], info.ref.playerJoined, info.total, info.percentage, npcs.total)
 
-        -- log(common.logLevels.large, "[CHECKS] ignored or joined:%s, occupants or blades:%s, faction percent:%s", (config.ignored[faction.id] or faction.playerJoined),
+        -- log(common.logLevels.large, "[CHECKS] ignored or joined:%s, occupants or blades:%s, faction percent:%s", (config.ignored[faction.id:lower()] or faction.playerJoined),
         --     (npcs.total >= config.minimumOccupancy or faction == "Blades"), (info.percentage >= config.factionIgnorePercentage))
 
         -- less than configured amount of NPCs can't be a public house unless it's a Blades house
-        if (config.ignored[faction] or info.ref.playerJoined) and
+        if (config.ignored[faction:lower()] or info.ref.playerJoined) and
             (npcs.total >= config.minimumOccupancy or faction == "Blades") and
             (info.percentage >= config.factionIgnorePercentage) then
             log(common.logLevels.medium, "[CHECKS] %s is %s%% faction %s, marking public.", cell.name, info.percentage,
