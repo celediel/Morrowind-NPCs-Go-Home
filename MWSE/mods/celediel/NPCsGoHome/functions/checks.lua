@@ -231,7 +231,7 @@ this.isPublicHouse = function(cell)
 
     -- Temples are always public
     if npcs.factions["temple"] and cell.name:lower():match("temple") then
-        local master = npcs.factions["Temple"].master
+        local master = npcs.factions["temple"].master
         log(common.logLevels.medium, "[CHECKS] %s is a temple, and %s, %s is the ranking member", cell.id,
             master.object.name, master.object.class)
         dataTables.createPublicHouseTableEntry(cell, master, city, publicHouseName,
