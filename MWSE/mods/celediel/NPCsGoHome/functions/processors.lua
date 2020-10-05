@@ -17,9 +17,11 @@ local function moveNPC(homeData)
     -- add to in memory table
     local badWeather = checks.isBadWeatherNPC(npc)
     if badWeather then
-        table.insert(common.runtimeData.movedBadWeatherNPCs, homeData)
+        -- table.insert(common.runtimeData.movedBadWeatherNPCs, homeData)
+        common.runtimeData.disabledBadWeatherNPCs[npc.id] = homeData
     else
-        table.insert(common.runtimeData.movedNPCs, homeData)
+        -- table.insert(common.runtimeData.movedNPCs, homeData)
+        common.runtimeData.movedNPCs[npc.id] = homeData
     end
     interop.setRuntimeData(common.runtimeData)
 
@@ -62,9 +64,10 @@ local function disableNPC(npc)
 end
 
 local function putNPCsBack(npcData)
-    for i = #npcData, 1, -1 do
-        -- if npcData[i].npc.object then
-            local data = table.remove(npcData, i)
+    -- for i = #npcData, 1, -1 do
+    for id, data in pairs(npcData) do
+        if data.npc.object then
+            -- local data = table.remove(npcData, i)
             log(common.logLevels.medium, "[PROC] Moving %s back outside to %s (%s, %s, %s)", data.npc.object.name,
                 data.ogPlace.id, data.ogPosition.x, data.ogPosition.y, data.ogPosition.z)
 
@@ -78,7 +81,8 @@ local function putNPCsBack(npcData)
                 position = data.ogPosition,
                 orientation = data.ogPlace
             })
-        -- end
+            npcData[id] = nil
+        end
     end
 
     -- reset loaded position data
@@ -151,9 +155,11 @@ local function checkForMovedOrDisabledNPCs(cell)
 
                 -- add to in memory table
                 if badWeather then
-                    table.insert(common.runtimeData.movedBadWeatherNPCs, homeData)
+                    -- table.insert(common.runtimeData.movedBadWeatherNPCs, homeData)
+                    common.runtimeData.disabledBadWeatherNPCs[npc.id] = homeData
                 else
-                    table.insert(common.runtimeData.movedNPCs, homeData)
+                    -- table.insert(common.runtimeData.movedNPCs, homeData)
+                    common.runtimeData.movedNPCs[npc.id] = homeData
                 end
             end
         end
