@@ -299,8 +299,8 @@ this.isIgnoredDoor = function(door, homeCellId)
     local isCantonWorks = common.isCantonWorksCell(dest)
 
     log(common.logLevels.large, "[CHECKS] %s is %s, (%sin a city, is %spublic, %soccupied)", --
-    dest.id, this.isIgnoredCell(dest) and "ignored" or "not ignored", -- destination is ignored
-    inCity and "" or "not ", leadsToPublicCell and "" or "not ", hasOccupants and "" or "un") -- in a city, is public, is ocupado
+        dest.id, this.isIgnoredCell(dest) and "ignored" or "not ignored", -- destination is ignored
+        inCity and "" or "not ", leadsToPublicCell and "" or "not ", hasOccupants and "" or "un") -- in a city, is public, is ocupado
 
     -- LuaFormatter off
     return this.isIgnoredCell(dest) or
