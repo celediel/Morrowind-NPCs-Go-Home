@@ -33,8 +33,8 @@ this.pickInnForNPC = function(npc, city)
     -- temple for commoners and the poorest people
 
     -- but for now pick one at random
-    if common.runtimeData.publicHouses[city] and common.runtimeData.publicHouses[city][common.publicHouseTypes.inns] then
-        local choice = table.choice(common.runtimeData.publicHouses[city][common.publicHouseTypes.inns])
+    if common.runtimeData.publicHouses.byType[city] and common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.inns] then
+        local choice = table.choice(common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.inns])
         if not choice then return nil end
         log(common.logLevels.medium, "[HOUSING] Picking inn %s, %s for %s", choice.city, choice.name, npc.object.name)
         return choice.cell
@@ -43,9 +43,9 @@ end
 
 this.pickPublicHouseForNPC = function(npc, city)
     -- look for wandering guild members
-    if common.runtimeData.publicHouses[city] and
-        common.runtimeData.publicHouses[city][common.publicHouseTypes.guildhalls] then
-        for _, data in pairs(common.runtimeData.publicHouses[city][common.publicHouseTypes.guildhalls]) do
+    if common.runtimeData.publicHouses.byType[city] and
+        common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.guildhalls] then
+        for _, data in pairs(common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.guildhalls]) do
             -- if npc's faction and proprietor's faction match, pick that one
             if npc.object.faction == data.proprietor.object.faction then
                 log(common.logLevels.medium, "[HOUSING] Picking %s for %s based on faction", data.cell.id, npc.object.name)
@@ -55,8 +55,8 @@ this.pickPublicHouseForNPC = function(npc, city)
     end
 
     -- temple members go to the temple
-    if common.runtimeData.publicHouses[city] and common.runtimeData.publicHouses[city][common.publicHouseTypes.temples] then
-        for _, data in pairs(common.runtimeData.publicHouses[city][common.publicHouseTypes.temples]) do
+    if common.runtimeData.publicHouses.byType[city] and common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.temples] then
+        for _, data in pairs(common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.temples]) do
             if npc.object.faction == data.proprietor.object.faction then
                 log(common.logLevels.medium, "[HOUSING] Picking temple %s for %s based on faction", data.cell.id, npc.object.name)
                 return data.cell
@@ -101,9 +101,9 @@ this.pickHomeForNPC = function(cell, npc)
 
         -- if nothing was found, then we'll settle on Canton works cell, if the cell is a Canton
         if common.isCantonCell(cell) then
-            if common.runtimeData.publicHouses[city] and
-                common.runtimeData.publicHouses[city][common.publicHouseTypes.cantonworks] then
-                local canton = table.choice(common.runtimeData.publicHouses[city][common.publicHouseTypes.cantonworks])
+            if common.runtimeData.publicHouses.byType[city] and
+                common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.cantonworks] then
+                local canton = table.choice(common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.cantonworks])
                 log(common.logLevels.medium, "[HOUSING] Picking works %s, %s for %s", canton.city, canton.name, npc.object.name)
 
                 if canton then return dataTables.createHomedNPCTableEntry(npc, canton.cell, cell, false) end

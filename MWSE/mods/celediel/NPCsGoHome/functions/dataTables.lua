@@ -75,21 +75,25 @@ this.createPublicHouseTableEntry = function(publicCell, proprietor, city, name, 
 
     local proprietorName = proprietor and proprietor.object.name or "no one"
 
-    if not common.runtimeData.publicHouses[city] then common.runtimeData.publicHouses[city] = {} end
-    if not common.runtimeData.publicHouses[city][typeOfPub] then
-        common.runtimeData.publicHouses[city][typeOfPub] = {}
-    end
+    local data = {
+        name = name,
+        city = city,
+        cell = publicCell,
+        type = type,
+        proprietor = proprietor,
+        proprietorName = proprietorName,
+        worth = cellWorth,
+        faction = cellFaction
+    }
 
-    common.runtimeData.publicHouses[city][typeOfPub][publicCell.id] =
-        {
-            name = name,
-            city = city,
-            cell = publicCell,
-            proprietor = proprietor,
-            proprietorName = proprietorName,
-            worth = cellWorth,
-            faction = cellFaction
-        }
+    -- create by type
+    if not common.runtimeData.publicHouses.byType[city] then common.runtimeData.publicHouses.byType[city] = {} end
+    if not common.runtimeData.publicHouses.byType[city][typeOfPub] then common.runtimeData.publicHouses.byType[city][typeOfPub] = {} end
+    common.runtimeData.publicHouses.byType[city][typeOfPub][publicCell.id] = data
+
+    -- create by name
+    if not common.runtimeData.publicHouses.byName[city] then common.runtimeData.publicHouses.byName[city] = {} end
+    common.runtimeData.publicHouses.byName[city][publicCell.id] = data
 
     interop.setRuntimeData(common.runtimeData)
 end

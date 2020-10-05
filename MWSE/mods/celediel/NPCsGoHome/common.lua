@@ -18,25 +18,20 @@ this.publicHouseTypes = {
     inns = "Inns",
     guildhalls = "Guildhalls",
     temples = "Temples",
-    houses = "Houses",
+    homes = "Homes",
     cantonworks = "Cantonworks"
 }
-
--- Canton string matches
--- move NPCs into waistworks
-this.waistworks = "[Ww]aistworks"
--- don't lock canalworks
-this.canalworks = "[Cc]analworks"
--- doors to underworks should be ignored
--- but NPCs in underworks should not be disabled
-this.underworks = "[Uu]nderworks"
-
 -- }}}
 
 -- {{{ Filled at runtime
 this.runtimeData = {
     -- cells marked as public
-    publicHouses = {},
+    publicHouses = {
+        -- used for caching public houses to avoid reiterating NPCs
+        byName = {},
+        -- used for picking cells to move NPCs to
+        byType = {}
+    },
     -- homes picked for NPCs
     homes = {
         -- used for caching homes to avoid reiterating NPCs
@@ -94,14 +89,15 @@ end
 
 -- todo: pick this better
 this.pickPublicHouseType = function(cell)
-    if cell.id:match("Guild") then
+    local id = cell.id:lower()
+    if id:match("guild") then
         return this.publicHouseTypes.guildhalls
-    elseif cell.id:match("Temple") then
+    elseif id:match("temple") then
         return this.publicHouseTypes.temples
-    elseif cell.id:match(this.canalworks) or cell.id:match(this.waistworks) then
+    elseif id:match("canalworks") or cell.id:match("waistworks") then
         return this.publicHouseTypes.cantonworks
-    -- elseif cell.id:match("House") then
-    --     return publicHouseTypes.houses
+    elseif id:match("house") or id:match("manor") or id:match("tower") then
+        return this.publicHouseTypes.homes
     else
         return this.publicHouseTypes.inns
     end
@@ -125,7 +121,8 @@ end
 
 this.isCantonWorksCell = function(cell)
     -- for _, str in pairs(waistworks) do if cell.id:match(str) then return true end end
-    return cell.id:match(this.waistworks) or cell.id:match(this.canalworks) or cell.id:match(this.underworks)
+    local id = cell.id:lower()
+    return id:match("waistworks") or id:match("canalworks") or id:match("underworks")
 end
 
 this.isCantonCell = function(cell)

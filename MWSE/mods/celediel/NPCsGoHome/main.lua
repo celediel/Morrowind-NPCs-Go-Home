@@ -45,8 +45,7 @@ end
 local function checkEnteredPublicHouse(cell, city)
     local typeOfPub = common.pickPublicHouseType(cell)
 
-    local publicHouse = common.runtimeData.publicHouses[city] and
-                            (common.runtimeData.publicHouses[city][typeOfPub] and common.runtimeData.publicHouses[city][typeOfPub][cell.name])
+    local publicHouse = common.runtimeData.publicHouses.byName[city] and common.runtimeData.publicHouses.byName[city][cell.id]
 
     if publicHouse then
         local msg = string.format("Entering public space %s, a%s %s in the town of %s.", publicHouse.name,

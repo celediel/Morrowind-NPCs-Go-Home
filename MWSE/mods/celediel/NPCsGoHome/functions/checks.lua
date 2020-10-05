@@ -172,7 +172,6 @@ this.isPublicHouse = function(cell)
     if not this.isInteriorCell(cell) then return false end
 
     -- gather some data about the cell
-    local typeOfPub = common.pickPublicHouseType(cell)
     local city, publicHouseName
 
     if cell.name and string.match(cell.name, ",") then
@@ -184,16 +183,16 @@ this.isPublicHouse = function(cell)
     end
 
     -- don't iterate NPCs in the cell if we've already marked it public
-    if common.runtimeData.publicHouses[city] and
-        (common.runtimeData.publicHouses[city][typeOfPub] and common.runtimeData.publicHouses[city][typeOfPub][cell.id]) then
+    if common.runtimeData.publicHouses.byName[city] and common.runtimeData.publicHouses.byName[city][cell.id] then
         return true
     end
 
     -- if it's a waistworks cell, it's public, with no proprietor
-    if config.waistWorks == common.waist.public and cell.id:match(common.waistworks) then
+    if config.waistWorks == common.waist.public and cell.id:match("waistworks") then
         dataTables.createPublicHouseTableEntry(cell, nil, city, publicHouseName,
                                                cellEvaluators.calculateCellWorth(cell),
-                                               cellEvaluators.pickCellFaction(cell))
+                                               cellEvaluators.pickCellFaction(cell),
+                                               common.publicHouseTypes.cantonworks)
         return true
     end
 
@@ -236,7 +235,8 @@ this.isPublicHouse = function(cell)
             master.object.name, master.object.class)
         dataTables.createPublicHouseTableEntry(cell, master, city, publicHouseName,
                                                cellEvaluators.calculateCellWorth(cell),
-                                               cellEvaluators.pickCellFaction(cell))
+                                               cellEvaluators.pickCellFaction(cell),
+                                               common.publicHouseTypes.temples)
         return true
     end
 
@@ -254,12 +254,16 @@ this.isPublicHouse = function(cell)
         if (config.ignored[faction:lower()] or info.playerJoined) and
             (npcs.total >= config.minimumOccupancy or faction == "Blades") and
             (info.percentage >= config.factionIgnorePercentage) then
-            log(common.logLevels.medium, "[CHECKS] %s is %s%% faction %s, marking public.", cell.name, info.percentage,
-                faction)
+            log(common.logLevels.medium, "[CHECKS] %s is %s%% faction %s, marking public.", cell.name, info.percentage, faction)
+
+            -- try id based categorization, but fallback on guildhall
+            local type = common.pickPublicHouseType(cell)
+            if type == common.publicHouseTypes.inns then type = common.publicHouseTypes.guildhalls end
 
             dataTables.createPublicHouseTableEntry(cell, npcs.factions[faction].master, city, publicHouseName,
                                                    cellEvaluators.calculateCellWorth(cell),
-                                                   cellEvaluators.pickCellFaction(cell))
+                                                   cellEvaluators.pickCellFaction(cell),
+                                                   common.publicHouseTypes.guildhalls)
             return true
         end
     end
