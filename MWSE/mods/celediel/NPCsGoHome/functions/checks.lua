@@ -302,9 +302,13 @@ this.isIgnoredDoor = function(door, homeCellId)
     dest.id, this.isIgnoredCell(dest) and "ignored" or "not ignored", -- destination is ignored
     inCity and "" or "not ", leadsToPublicCell and "" or "not ", hasOccupants and "" or "un") -- in a city, is public, is ocupado
 
-    return
-        this.isIgnoredCell(dest) or not this.isInteriorCell(dest) or isCantonWorks or not inCity or leadsToPublicCell or
-            not hasOccupants
+    -- LuaFormatter off
+    return this.isIgnoredCell(dest) or
+           not this.isInteriorCell(dest) or
+           isCantonWorks or
+           not inCity or
+           leadsToPublicCell or
+           not hasOccupants
 end
 
 this.isNight = function()
@@ -314,6 +318,7 @@ this.isNight = function()
         tes3.worldController.hour.value, atNight and "" or "not ", config.closeTime, config.openTime)
 
     return atNight
+    -- LuaFormatter on
 end
 
 -- inclement weather
