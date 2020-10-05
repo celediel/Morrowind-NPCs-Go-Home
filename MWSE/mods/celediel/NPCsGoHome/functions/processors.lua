@@ -17,10 +17,8 @@ local function moveNPC(homeData)
     -- add to in memory table
     local badWeather = checks.isBadWeatherNPC(npc)
     if badWeather then
-        -- table.insert(common.runtimeData.movedBadWeatherNPCs, homeData)
         common.runtimeData.disabledBadWeatherNPCs[npc.id] = homeData
     else
-        -- table.insert(common.runtimeData.movedNPCs, homeData)
         common.runtimeData.movedNPCs[npc.id] = homeData
     end
     interop.setRuntimeData(common.runtimeData)
@@ -47,10 +45,8 @@ local function disableNPC(npc)
     -- same thing as moveNPC, but disables instead
     -- add to runtimeData
     if checks.isBadWeatherNPC(npc) then
-        -- table.insert(common.runtimeData.disabledBadWeatherNPCs, npc)
         common.runtimeData.disabledBadWeatherNPCs[npc.id] = npc
     else
-        -- table.insert(common.runtimeData.disabledNPCs, npc)
         common.runtimeData.disabledNPCs[npc.id] = npc
     end
     -- set NPC data
@@ -141,10 +137,8 @@ local function checkForMovedOrDisabledNPCs(cell)
                 -- disabled NPC
                 if badWeather then
                     common.runtimeData.disabledBadWeatherNPCs[npc.id] = npc
-                    -- table.insert(common.runtimeData.disabledBadWeatherNPCs, npc)
                 else
                     common.runtimeData.disabledNPCs[npc.id] = npc
-                    -- table.insert(common.runtimeData.disabledNPCs, npc)
                 end
             else
                 -- homed NPC
@@ -155,10 +149,8 @@ local function checkForMovedOrDisabledNPCs(cell)
 
                 -- add to in memory table
                 if badWeather then
-                    -- table.insert(common.runtimeData.movedBadWeatherNPCs, homeData)
                     common.runtimeData.disabledBadWeatherNPCs[npc.id] = homeData
                 else
-                    -- table.insert(common.runtimeData.movedNPCs, homeData)
                     common.runtimeData.movedNPCs[npc.id] = homeData
                 end
             end

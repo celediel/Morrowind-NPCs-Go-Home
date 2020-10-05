@@ -247,9 +247,6 @@ this.isPublicHouse = function(cell)
             "[CHECKS] No NPCs of ignored class in %s, checking faction %s (ignored: %s, player joined: %s) with %s (%s%%) vs total %s",
             cell.name, faction, config.ignored[faction:lower()], info.playerJoined, info.total, info.percentage, npcs.total)
 
-        -- log(common.logLevels.large, "[CHECKS] ignored or joined:%s, occupants or blades:%s, faction percent:%s", (config.ignored[faction.id:lower()] or faction.playerJoined),
-        --     (npcs.total >= config.minimumOccupancy or faction == "Blades"), (info.percentage >= config.factionIgnorePercentage))
-
         -- less than configured amount of NPCs can't be a public house unless it's a Blades house
         if (config.ignored[faction:lower()] or info.playerJoined) and
             (npcs.total >= config.minimumOccupancy or faction == "Blades") and

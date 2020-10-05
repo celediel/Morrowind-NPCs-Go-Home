@@ -55,6 +55,8 @@ this.runtimeData = {
 -- }}}
 
 -- {{{ Functions
+this.log = function(...) mwse.log("[%s] %s", this.logString, string.format(...)) end
+
 this.split = function(input, sep)
     if not input then return end
     if not sep then sep = "%s" end
@@ -63,14 +65,10 @@ this.split = function(input, sep)
     return output
 end
 
-this.log = function(...) mwse.log("[%s] %s", this.logString, string.format(...)) end
-
 this.vowel = function(word)
     local s = string.sub(word, 1, 1)
     local n = ""
-
     if string.match(s, "[AOEUIaoeui]") then n = "n" end
-
     return n
 end
 
@@ -120,7 +118,6 @@ this.checkModdedCell = function(cellId)
 end
 
 this.isCantonWorksCell = function(cell)
-    -- for _, str in pairs(waistworks) do if cell.id:match(str) then return true end end
     local id = cell.id:lower()
     return id:match("waistworks") or id:match("canalworks") or id:match("underworks")
 end
