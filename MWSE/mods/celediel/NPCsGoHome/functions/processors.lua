@@ -90,10 +90,8 @@ end
 
 local function reEnableNPCs(npcs)
     for id, ref in pairs(npcs) do
-        -- if the player moves too far away, trying to enable NPCs causes crashes
-        -- leave them in the runtimeData until they can be re-enabled
-        if ref and ref.object then
-            log(common.logLevels.medium, "[PROC] Enabling homeless %s", ref.object.name)
+        if ref.object and ref.disabled then
+            log(common.logLevels.medium, "[PROC] Enabling homeless %s", id)
 
             -- ref:enable()
             mwscript.enable({reference = ref})
