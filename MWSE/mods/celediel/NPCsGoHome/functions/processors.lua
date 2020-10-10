@@ -239,7 +239,7 @@ end
 this.processSiltStriders = function(cell)
     if not config.disableNPCs then return end
 
-    log(common.logLevels.small, "[PROC] Looking for silt striders to process in cell:%s", cell.name)
+    log(common.logLevels.small, "[PROC] Looking for silt striders to process in cell:%s", cell.id)
     for activator in cell:iterateReferences(tes3.objectType.activator) do
         log(common.logLevels.large, "[PROC] Is %s a silt strider??", activator.object.id)
         if activator.object.id:match("siltstrider") then
@@ -269,7 +269,7 @@ this.processPets = function(cell)
     local night = checks.isNight()
     local badWeather = checks.isInclementWeather()
 
-    log(common.logLevels.small, "[PROC] Looking for NPC pets to process in cell:%s", cell.name)
+    log(common.logLevels.small, "[PROC] Looking for NPC pets to process in cell:%s", cell.id)
 
     for creature in cell:iterateReferences(tes3.objectType.creature) do
         local isPet, linkedToTravel = checks.isNPCPet(creature)
