@@ -2,7 +2,6 @@
 local common = require("celediel.NPCsGoHome.common")
 local config = require("celediel.NPCsGoHome.config").getConfig()
 local checks = require("celediel.NPCsGoHome.functions.checks")
-local interop = require("celediel.NPCsGoHome.interop")
 local housing = require("celediel.NPCsGoHome.functions.housing")
 local dataTables = require("celediel.NPCsGoHome.functions.dataTables")
 local positions = require("celediel.NPCsGoHome.data.positions")
@@ -17,11 +16,12 @@ local function moveNPC(homeData)
     -- add to in memory table
     local badWeather = checks.isBadWeatherNPC(npc)
     if badWeather then
-        common.runtimeData.movedBadWeatherNPCs[npc.id] = homeData
+        common.runtimeData.movedBadWeatherNPCs[homeData.ogPlaceName] = common.runtimeData.movedBadWeatherNPCs[homeData.ogPlaceName] or {}
+        common.runtimeData.movedBadWeatherNPCs[homeData.ogPlaceName][npc.id] = homeData
     else
-        common.runtimeData.movedNPCs[npc.id] = homeData
+        common.runtimeData.movedNPCs[homeData.ogPlaceName] = common.runtimeData.movedNPCs[homeData.ogPlaceName] or {}
+        common.runtimeData.movedNPCs[homeData.ogPlaceName][npc.id] = homeData
     end
-    interop.setRuntimeData(common.runtimeData)
 
     -- set npc data, so we can move NPCs back after a load
     npc.data.NPCsGoHome = {
@@ -41,13 +41,15 @@ local function moveNPC(homeData)
         homeData.homePosition.x, homeData.homePosition.y, homeData.homePosition.z)
 end
 
-local function disableNPC(npc)
+local function disableNPC(npc, cell)
     -- same thing as moveNPC, but disables instead
     -- add to runtimeData
     if checks.isBadWeatherNPC(npc) then
-        common.runtimeData.disabledBadWeatherNPCs[npc.id] = npc
+        common.runtimeData.disabledBadWeatherNPCs[cell.id] = common.runtimeData.disabledBadWeatherNPCs[cell.id] or {}
+        common.runtimeData.disabledBadWeatherNPCs[cell.id][npc.id] = npc
     else
-        common.runtimeData.disabledNPCs[npc.id] = npc
+        common.runtimeData.disabledNPCs[cell.id] = common.runtimeData.disabledNPCs[cell.id] or {}
+        common.runtimeData.disabledNPCs[cell.id][npc.id] = npc
     end
     -- set NPC data
     npc.data.NPCsGoHome = {disabled = true}
@@ -84,8 +86,6 @@ local function putNPCsBack(npcData)
     -- reset loaded position data
     common.runtimeData.positions = {}
     this.searchCellsForPositions()
-
-    interop.setRuntimeData(common.runtimeData)
 end
 
 local function reEnableNPCs(npcs)
@@ -99,8 +99,6 @@ local function reEnableNPCs(npcs)
             npcs[id] = nil
         end
     end
-
-    interop.setRuntimeData(common.runtimeData)
 end
 
 local function disableOrMove(npc, cell)
@@ -109,7 +107,7 @@ local function disableOrMove(npc, cell)
     if npcHome then
         moveNPC(npcHome)
     else
-        disableNPC(npc)
+        disableNPC(npc, cell)
     end
 end
 
@@ -134,9 +132,11 @@ local function checkForMovedOrDisabledNPCs(cell)
             if npc.data.NPCsGoHome.disabled then
                 -- disabled NPC
                 if badWeather then
-                    common.runtimeData.disabledBadWeatherNPCs[npc.id] = npc
+                    common.runtimeData.disabledBadWeatherNPCs[cell.id] = common.runtimeData.disabledBadWeatherNPCs[cell.id] or {}
+                    common.runtimeData.disabledBadWeatherNPCs[cell.id][npc.id] = npc
                 else
-                    common.runtimeData.disabledNPCs[npc.id] = npc
+                    common.runtimeData.disabledNPCs[cell.id] = common.runtimeData.disabledNPCs[cell.id] or {}
+                    common.runtimeData.disabledNPCs[cell.id][npc.id] = npc
                 end
             else
                 -- homed NPC
@@ -147,9 +147,11 @@ local function checkForMovedOrDisabledNPCs(cell)
 
                 -- add to in memory table
                 if badWeather then
-                    common.runtimeData.movedBadWeatherNPCs[npc.id] = homeData
+                    common.runtimeData.movedBadWeatherNPCs[homeData.ogPlaceName] = common.runtimeData.movedBadWeatherNPCs[homeData.ogPlaceName] or {}
+                    common.runtimeData.movedBadWeatherNPCs[cell.id][npc.id] = homeData
                 else
-                    common.runtimeData.movedNPCs[npc.id] = homeData
+                    common.runtimeData.movedNPCs[homeData.ogPlaceName] = common.runtimeData.movedNPCs[homeData.ogPlaceName] or {}
+                    common.runtimeData.movedNPCs[cell.id][npc.id] = homeData
                 end
             end
         end
@@ -214,8 +216,8 @@ this.processNPCs = function(cell)
         -- LuaFormatter off
         -- check for bad weather NPCs that have been disabled, and re-enable them
         if config.keepBadWeatherNPCs then
-            if not common.isEmptyTable(common.runtimeData.movedBadWeatherNPCs) then putNPCsBack(common.runtimeData.movedBadWeatherNPCs) end
-            if not common.isEmptyTable(common.runtimeData.disabledBadWeatherNPCs) then reEnableNPCs(common.runtimeData.disabledBadWeatherNPCs) end
+            if not common.isEmptyTable(common.runtimeData.movedBadWeatherNPCs[cell.id]) then putNPCsBack(common.runtimeData.movedBadWeatherNPCs[cell.id]) end
+            if not common.isEmptyTable(common.runtimeData.disabledBadWeatherNPCs[cell.id]) then reEnableNPCs(common.runtimeData.disabledBadWeatherNPCs[cell.id]) end
         end
     elseif night then
         log(common.logLevels.large, "[PROC] !!Good or bad weather and night!!")
@@ -226,10 +228,10 @@ this.processNPCs = function(cell)
     else
         log(common.logLevels.large, "[PROC] !!Good weather and not night!!")
         -- put everyone back
-        if not common.isEmptyTable(common.runtimeData.movedNPCs) then putNPCsBack(common.runtimeData.movedNPCs) end
-        if not common.isEmptyTable(common.runtimeData.movedBadWeatherNPCs) then putNPCsBack(common.runtimeData.movedBadWeatherNPCs) end
-        if not common.isEmptyTable(common.runtimeData.disabledNPCs) then reEnableNPCs(common.runtimeData.disabledNPCs) end
-        if not common.isEmptyTable(common.runtimeData.disabledBadWeatherNPCs) then reEnableNPCs(common.runtimeData.disabledBadWeatherNPCs) end
+        if not common.isEmptyTable(common.runtimeData.movedNPCs[cell.id]) then putNPCsBack(common.runtimeData.movedNPCs[cell.id]) end
+        if not common.isEmptyTable(common.runtimeData.movedBadWeatherNPCs[cell.id]) then putNPCsBack(common.runtimeData.movedBadWeatherNPCs[cell.id]) end
+        if not common.isEmptyTable(common.runtimeData.disabledNPCs[cell.id]) then reEnableNPCs(common.runtimeData.disabledNPCs[cell.id]) end
+        if not common.isEmptyTable(common.runtimeData.disabledBadWeatherNPCs[cell.id]) then reEnableNPCs(common.runtimeData.disabledBadWeatherNPCs[cell.id]) end
         -- LuaFormatter on
     end
 end

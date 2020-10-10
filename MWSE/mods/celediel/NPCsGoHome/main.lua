@@ -4,6 +4,7 @@ local config = require("celediel.NPCsGoHome.config").getConfig()
 local common = require("celediel.NPCsGoHome.common")
 local checks = require("celediel.NPCsGoHome.functions.checks")
 local processors = require("celediel.NPCsGoHome.functions.processors")
+local interop = require("celediel.NPCsGoHome.interop")
 local inspect = require("inspect")
 -- }}}
 
@@ -49,7 +50,8 @@ end
 local function checkEnteredPublicHouse(cell, city)
     local typeOfPub = common.pickPublicHouseType(cell)
 
-    local publicHouse = common.runtimeData.publicHouses.byName[city] and common.runtimeData.publicHouses.byName[city][cell.id]
+    local publicHouse = common.runtimeData.publicHouses.byName[city] and
+                            common.runtimeData.publicHouses.byName[city][cell.id]
 
     if publicHouse then
         local msg = string.format("Entering public space %s, a%s %s in the town of %s.", publicHouse.name,
@@ -97,8 +99,16 @@ local function updateCells()
 
     for _, cell in pairs(tes3.getActiveCells()) do
         log(common.logLevels.large, "[MAIN] Applying changes to cell %s", cell.id)
+
+        -- initialize runtime data if needed
+        for _, t in pairs({"movedNPCs", "movedBadWeatherNPCs", "disabledNPCs", "disabledBadWeatherNPCs"}) do
+            common.runtimeData[t][cell.id] = common.runtimeData[t][cell.id] or {}
+        end
         applyChanges(cell)
     end
+
+    -- update interop runtime data after changes have been applied
+    interop.setRuntimeData(common.runtimeData)
 end
 
 -- todo: more robust trespass checking... maybe take faction and rank into account?
@@ -134,7 +144,8 @@ eventFunctions.onActivated = function(e)
 
     if tes3.player.data.NPCsGoHome.intruding and not checks.isIgnoredNPC(npc) then
         if npc.disposition and npc.disposition <= config.minimumTrespassDisposition then
-            log(common.logLevels.medium, "Disabling dialogue with %s because trespass and disposition:%s", npc.object.name, npc.disposition)
+            log(common.logLevels.medium, "Disabling dialogue with %s because trespass and disposition:%s",
+                npc.object.name, npc.disposition)
             tes3.messageBox(string.format("%s: Get out before I call the guards!", npc.object.name))
             return false
         end
