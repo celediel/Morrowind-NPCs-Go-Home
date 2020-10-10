@@ -29,6 +29,7 @@ local defaultConfig = {
     minimumOccupancy = 4,
     homelessWanderersToPublicHouses = false, -- move NPCs to public houses if they don't have a home
     disableInteraction = true,
+    minimumTrespassDisposition = 50, -- if player's disposition with NPC is less than this value, interaction is disabled
     -- door settings
     lockDoors = true,
     waistWorks = common.waist.interior,

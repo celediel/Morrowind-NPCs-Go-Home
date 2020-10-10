@@ -122,9 +122,14 @@ local function onActivated(e)
         return
     end
 
-    if tes3.player.data.NPCsGoHome.intruding and not checks.isIgnoredNPC(e.target) then
-        tes3.messageBox(string.format("%s: Get out before I call the guards!", e.target.object.name))
-        return false
+    local npc = e.target
+
+    if tes3.player.data.NPCsGoHome.intruding and not checks.isIgnoredNPC(npc) then
+        if npc.disposition and npc.disposition <= config.minimumTrespassDisposition then
+            log(common.logLevels.medium, "Disabling dialogue with %s because trespass and disposition:%s", npc.object.name, npc.disposition)
+            tes3.messageBox(string.format("%s: Get out before I call the guards!", npc.object.name))
+            return false
+        end
     end
 end
 
