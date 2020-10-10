@@ -17,7 +17,7 @@ local function moveNPC(homeData)
     -- add to in memory table
     local badWeather = checks.isBadWeatherNPC(npc)
     if badWeather then
-        common.runtimeData.disabledBadWeatherNPCs[npc.id] = homeData
+        common.runtimeData.movedBadWeatherNPCs[npc.id] = homeData
     else
         common.runtimeData.movedNPCs[npc.id] = homeData
     end
@@ -309,7 +309,7 @@ this.processDoors = function(cell)
 
             if night then
                 if not door.data.NPCsGoHome.alreadyLocked then
-                    log(common.logLevels.medium, "[PROC] locking: %s to %s", door.object.name, door.destination.cell.id)
+                    log(common.logLevels.medium, "[PROC] Locking: %s to %s", door.object.name, door.destination.cell.id)
 
                     local lockLevel = math.random(25, 100)
                     tes3.lock({reference = door, level = lockLevel})
@@ -323,7 +323,7 @@ this.processDoors = function(cell)
                     tes3.setLockLevel({reference = door, level = 0})
                     tes3.unlock({reference = door})
 
-                    log(common.logLevels.medium, "[PROC] unlocking: %s to %s", door.object.name,
+                    log(common.logLevels.medium, "[PROC] Unlocking: %s to %s", door.object.name,
                         door.destination.cell.id)
                 end
             end
