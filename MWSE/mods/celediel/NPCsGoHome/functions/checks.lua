@@ -53,7 +53,7 @@ end
 this.isCityCell = function(internalCellId, externalCellId)
     -- easy mode
     if string.match(internalCellId, externalCellId) then
-        log(common.logLevels.large, "[CHECKS] easy mode city: %s in %s", internalCellId, externalCellId)
+        log(common.logLevels.large, "[CHECKS] Easy mode city: %s in %s", internalCellId, externalCellId)
         return true
     end
 
@@ -63,12 +63,12 @@ this.isCityCell = function(internalCellId, externalCellId)
     local _, _, externalCity = string.find(externalCellId, cityMatch)
 
     if externalCity and externalCity == internalCity then
-        log(common.logLevels.large, "[CHECKS] hard mode city: %s in %s, %s == %s", internalCellId, externalCellId,
+        log(common.logLevels.large, "[CHECKS] Hard mode city: %s in %s, %s == %s", internalCellId, externalCellId,
             externalCity, internalCity)
         return true
     end
 
-    log(common.logLevels.large, "[CHECKS] hard mode not city: %s not in %s, %s ~= %s or both are nil", internalCellId,
+    log(common.logLevels.large, "[CHECKS] Hard mode not city: %s not in %s, %s ~= %s or both are nil", internalCellId,
         externalCellId, externalCity, internalCity)
     return false
 end
