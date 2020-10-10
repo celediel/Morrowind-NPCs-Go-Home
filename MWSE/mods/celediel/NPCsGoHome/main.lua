@@ -9,8 +9,12 @@ local inspect = require("inspect")
 
 -- {{{ variables and such
 
+-- for rebuilding follower list on dialogue
+local followMatches = {"follow", "together", "travel", "wait", "stay"}
+
 -- timers
 local updateTimer
+local postDialogueTimer
 
 -- }}}
 
@@ -97,6 +101,8 @@ local function updateCells()
     end
 end
 
+-- todo: more robust trespass checking... maybe take faction and rank into account?
+-- todo: maybe re-implement some or all features of Trespasser
 local function updatePlayerTrespass(cell, previousCell)
     cell = cell or tes3.getPlayerCell()
 
@@ -117,7 +123,9 @@ end
 -- }}}
 
 -- {{{ event functions
-local function onActivated(e)
+local eventFunctions = {}
+
+eventFunctions.onActivated = function(e)
     if e.activator ~= tes3.player or e.target.object.objectType ~= tes3.objectType.npc or not config.disableInteraction then
         return
     end
@@ -133,7 +141,7 @@ local function onActivated(e)
     end
 end
 
-local function onLoaded()
+eventFunctions.onLoaded = function()
     tes3.player.data.NPCsGoHome = tes3.player.data.NPCsGoHome or {}
     if tes3.player.cell then processors.searchCellsForNPCs() end
 
@@ -149,7 +157,7 @@ local function onLoaded()
     end
 end
 
-local function onCellChanged(e)
+eventFunctions.onCellChanged = function(e)
     updateCells()
     updatePlayerTrespass(e.cell, e.previousCell)
     checkEnteredNPCHome(e.cell)
@@ -158,8 +166,31 @@ local function onCellChanged(e)
     end
 end
 
+eventFunctions.onInfoResponse = function(e)
+    -- the dialogue option clicked on
+    local dialogue = tostring(e.dialogue):lower()
+    -- what that dialogue option triggers; this will catch AIFollow commands
+    local command = e.command:lower()
+
+    for _, item in pairs(followMatches) do
+        if command:match(item) or dialogue:match(item) then
+            -- wait until game time restarts, and don't set multiple timers
+            if not postDialogueTimer or postDialogueTimer.state ~= timer.active then
+                log(common.logLevels.small, "Found %s in dialogue, rebuilding followers", item)
+                postDialogueTimer = timer.start({
+                    type = timer.simulate,
+                    duration = 0.25,
+                    iteration = 1,
+                    callback = function() common.runtimeData.followers = buildFollowerList() end
+                })
+            end
+        end
+    end
+end
+
 -- debug events
-local function onKeyDown(e)
+eventFunctions.onKeyDown = function(e)
+    if e.keyCode ~= tes3.scanCode.c then return end
     -- if alt log runtimeData
     if e.isAltDown then
         -- ! this crashes my fully modded setup and I dunno why
@@ -173,7 +204,7 @@ local function onKeyDown(e)
         local pos = tostring(tes3.player.position):gsub("%(", "{"):gsub("%)", "}")
         local ori = tostring(tes3.player.orientation):gsub("%(", "{"):gsub("%)", "}")
 
-        log(common.logLevels.none, "[MAIN] {position = %s, orientation = %s},", pos, ori)
+        log(common.logLevels.none, "[POSITIONS] {position = %s, orientation = %s},", pos, ori)
     end
 end
 
@@ -183,12 +214,11 @@ end
 local function onInitialized()
     -- Register events
     log(common.logLevels.small, "[MAIN] Registering events...")
-    event.register("loaded", onLoaded)
-    event.register("cellChanged", onCellChanged)
-    event.register("activate", onActivated)
-
-    -- debug events
-    event.register("keyDown", onKeyDown, { filter = tes3.scanCode.c } )
+    for name, func in pairs(eventFunctions) do
+        local eventName = name:gsub("on(%u)", string.lower)
+        event.register(eventName, func)
+        log(common.logLevels.small, "[MAIN] %s event registered", eventName)
+    end
 
     log(common.logLevels.none, "[MAIN] Successfully initialized")
 end
