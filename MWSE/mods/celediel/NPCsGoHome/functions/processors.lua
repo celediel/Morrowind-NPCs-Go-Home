@@ -147,7 +147,7 @@ local function checkForMovedOrDisabledNPCs(cell)
 
                 -- add to in memory table
                 if badWeather then
-                    common.runtimeData.disabledBadWeatherNPCs[npc.id] = homeData
+                    common.runtimeData.movedBadWeatherNPCs[npc.id] = homeData
                 else
                     common.runtimeData.movedNPCs[npc.id] = homeData
                 end
