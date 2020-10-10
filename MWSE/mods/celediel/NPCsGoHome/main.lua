@@ -145,9 +145,7 @@ local function onLoaded()
 end
 
 local function onCellChanged(e)
-    processors.searchCellsForNPCs()
     updateCells()
-    common.runtimeData.followers = buildFollowerList()
     updatePlayerTrespass(e.cell, e.previousCell)
     checkEnteredNPCHome(e.cell)
     if e.cell.name then -- exterior wilderness cells don't have name
