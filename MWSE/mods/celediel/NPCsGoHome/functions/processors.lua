@@ -151,11 +151,11 @@ local function checkForMovedOrDisabledNPCs(cell)
                 if badWeather then
                     common.runtimeData.NPCs.movedBadWeather[homeData.ogPlaceName] =
                         common.runtimeData.NPCs.movedBadWeather[homeData.ogPlaceName] or {}
-                    common.runtimeData.NPCs.movedBadWeather[cell.id][npc.id] = homeData
+                    common.runtimeData.NPCs.movedBadWeather[homeData.ogPlaceName][npc.id] = homeData
                 else
                     common.runtimeData.NPCs.moved[homeData.ogPlaceName] =
                         common.runtimeData.NPCs.moved[homeData.ogPlaceName] or {}
-                    common.runtimeData.NPCs.moved[cell.id][npc.id] = homeData
+                    common.runtimeData.NPCs.moved[homeData.ogPlaceName][npc.id] = homeData
                 end
             end
         end
