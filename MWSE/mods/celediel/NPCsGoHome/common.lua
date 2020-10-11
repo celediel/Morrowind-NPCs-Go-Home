@@ -94,7 +94,7 @@ this.pickPublicHouseType = function(cell)
         return this.publicHouseTypes.temples
     elseif id:match("canalworks") or cell.id:match("waistworks") then
         return this.publicHouseTypes.cantonworks
-    elseif id:match("house") or id:match("manor") or id:match("tower") then
+    elseif (id:match("house") and not id:match("trade")) or id:match("manor") or id:match("tower") then
         return this.publicHouseTypes.homes
     else
         return this.publicHouseTypes.inns
