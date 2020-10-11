@@ -7,7 +7,7 @@ this.version = "0.0.1"
 this.modInfo = "Move NPCs to their homes, or public houses (or just disable them), lock doors, " ..
                    "and prevent interaction after hours, selectively disable NPCs in inclement weather"
 this.configPath = "NPCSGOHOME"
-this.logString = this.modName:gsub("%s?%b()%s?","")
+this.logString = this.modName:gsub("%s?%b()%s?", "")
 
 -- for config
 this.logLevels = {none = 0, small = 1, medium = 2, large = 3}

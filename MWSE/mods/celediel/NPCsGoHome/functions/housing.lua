@@ -74,7 +74,7 @@ this.pickHomeForNPC = function(cell, npc)
     for _, str in pairs(contextualNPCs) do if npc.object.id:match(str) then return end end
 
     -- time to pick the "home"
-    local name = npc.object.name:gsub(" the .*$","") -- remove "the whatever" from NPCs name
+    local name = npc.object.name:gsub(" the .*$", "") -- remove "the whatever" from NPCs name
     local city = cell.name and common.split(cell.name, ",")[1] or "wilderness"
 
     -- don't need to pick a home if we already have one
