@@ -72,7 +72,7 @@ category:createSlider({
     max = 100,
     step = 5,
     jump = 10,
-    variable = createTableVar("minimumTrespassDisposition "),
+    variable = createTableVar("minimumTrespassDisposition")
 })
 
 category:createDropdown({
