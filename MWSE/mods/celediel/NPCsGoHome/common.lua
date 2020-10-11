@@ -39,14 +39,17 @@ this.runtimeData = {
         -- used for checking when entering wandering NPC's house, will probably remove
         byCell = {}
     },
-    -- NPCs who have been moved
-    movedNPCs = {},
-    -- NPCs who stick around in bad weather and have been moved
-    movedBadWeatherNPCs = {},
-    -- NPCs who have been disabled
-    disabledNPCs = {},
-    -- NPCs who stick around in bad weather and have been disabled
-    disabledBadWeatherNPCs = {},
+    -- holder for all NPC data
+    NPCs = {
+        -- NPCs who have been moved
+        moved = {},
+        -- NPCs who stick around in bad weather and have been moved
+        movedBadWeather = {},
+        -- NPCs who have been disabled
+        disabled = {},
+        -- NPCs who stick around in bad weather and have been disabled
+        disabledBadWeather = {}
+    },
     -- positions that haven't been used
     positions = {},
     -- player companions

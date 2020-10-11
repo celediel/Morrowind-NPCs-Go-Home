@@ -101,9 +101,8 @@ local function updateCells()
         log(common.logLevels.large, "[MAIN] Applying changes to cell %s", cell.id)
 
         -- initialize runtime data if needed
-        for _, t in pairs({"movedNPCs", "movedBadWeatherNPCs", "disabledNPCs", "disabledBadWeatherNPCs"}) do
-            common.runtimeData[t][cell.id] = common.runtimeData[t][cell.id] or {}
-        end
+        for _, t in pairs(common.runtimeData.NPCs) do t[cell.id] = t[cell.id] or {} end
+
         applyChanges(cell)
     end
 
