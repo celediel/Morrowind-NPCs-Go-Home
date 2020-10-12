@@ -107,6 +107,7 @@ this.isIgnoredNPC = function(npc)
     local isDead = false
     local isHostile = false
     local isVampire = false
+    local isWerewolf = false
     -- some TR "Hired Guards" aren't actually "guards", ignore them as well
     local isGuard = obj.isGuard or (obj.name and (obj.name:lower():match("guard") and true or false) or false) -- maybe this should just be an if else
 
@@ -114,6 +115,8 @@ this.isIgnoredNPC = function(npc)
         if npc.mobile.health.current <= 0 or npc.mobile.isDead then isDead = true end
         if npc.mobile.fight > 70 then isHostile = true end
         isVampire = tes3.isAffectedBy({reference = npc, effect = tes3.effect.vampirism})
+        -- todo: non mwscript version of this
+        isWerewolf = mwscript.getSpellEffects({reference = npc, spell = "werewolf vision"})
     else
         -- local fight = getFightFromSpawnedReference(obj.id) -- ! calling this hundreds of times is bad for performance lol
         -- if (fight or 0) > 70 then isHostile = true end
@@ -123,8 +126,6 @@ this.isIgnoredNPC = function(npc)
 
     local isFargothActive = obj.id:match("fargoth") and this.fargothCheck() or false
 
-    -- todo: non mwscript version of this
-    local isWerewolf = mwscript.getSpellEffects({reference = npc, spell = "werewolf vision"})
     -- local isVampire = mwscript.getSpellEffects({reference = npc, spell = "vampire sun damage"})
 
     -- LuaFormatter off
