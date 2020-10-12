@@ -5,7 +5,9 @@ local defaultConfig = {
     -- general settings
     ignored = {
         ["balmora, caius cosades' house"] = true,
-        ["publican"] = true -- inns are public
+        ["publican"] = true, -- inns are public
+        ["abotwhereareallbirdsgoing.esp"] = true, -- ignore abot's creature mods by default
+        ["abotwaterlife.esm"] = true,
     },
     closeTime = 21,
     openTime = 7,
