@@ -5,7 +5,6 @@ local common = require("celediel.NPCsGoHome.common")
 local checks = require("celediel.NPCsGoHome.functions.checks")
 local processors = require("celediel.NPCsGoHome.functions.processors")
 local interop = require("celediel.NPCsGoHome.interop")
-local inspect = require("inspect")
 -- }}}
 
 -- {{{ variables and such
@@ -207,7 +206,7 @@ eventFunctions.onKeyDown = function(e)
         -- ? doesn't crash my barely modded testing setup though
         -- log(common.logLevels.none, json.encode(common.runtimeData, { indent = true }))
         -- inspect handles userdata and tables within tables badly
-        log(common.logLevels.none, inspect(common.runtimeData))
+        log(common.logLevels.none, common.inspect(common.runtimeData))
     end
     -- if ctrl log position data formatted for positions.lua
     if e.isControlDown then

@@ -1,4 +1,5 @@
 local this = {}
+this.inspect = require("inspect")
 
 -- {{{ Variables and such
 this.modName = "NPCs Go Home (At Night)"

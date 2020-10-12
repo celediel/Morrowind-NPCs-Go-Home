@@ -64,7 +64,7 @@ local function disableNPC(npc, cell)
 end
 
 local function putNPCsBack(npcData)
-    log(common.logLevels.large, "[PROC] Moving back NPCs:\n%s", json.encode(npcData))
+    log(common.logLevels.large, "[PROC] Moving back NPCs:\n%s", common.inspect(npcData))
     -- for i = #npcData, 1, -1 do
     for id, data in pairs(npcData) do
         if data.npc.object then
@@ -92,7 +92,7 @@ local function putNPCsBack(npcData)
 end
 
 local function reEnableNPCs(npcs)
-    log(common.logLevels.large, "[PROC] Re-enabling NPCs:\n%s", json.encode(npcs))
+    log(common.logLevels.large, "[PROC] Re-enabling NPCs:\n%s", common.inspect(npcs))
     for id, ref in pairs(npcs) do
         log(common.logLevels.medium, "[PROC] Making attempt at re-enabling %s", id)
         if ref.object and ref.disabled then
@@ -131,7 +131,7 @@ local function checkForMovedOrDisabledNPCs(cell)
     for npc in cell:iterateReferences(tes3.objectType.npc) do
         if npc.data and npc.data.NPCsGoHome then
             log(common.logLevels.large, "[PROC] %s has NPCsGoHome data, deciding if disabled or moved...%s", npc,
-                json.encode(npc.data.NPCsGoHome))
+                common.inspect(npc.data.NPCsGoHome))
             local badWeather = checks.isBadWeatherNPC(npc)
             if npc.data.NPCsGoHome.disabled then
                 -- disabled NPC
