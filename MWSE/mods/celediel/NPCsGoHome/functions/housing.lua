@@ -7,8 +7,8 @@ local dataTables = require("celediel.NPCsGoHome.functions.dataTables")
 
 local function log(level, ...) if config.logLevel >= level then common.log(...) end end
 
--- animated morrowind NPCs are contextual
-local contextualNPCs = {"^AM_"}
+-- don't move NPCs whose ids match these, just disable them
+local contextualNPCs = {"^AM_", "^SF_"}
 
 local this = {}
 
