@@ -165,6 +165,13 @@ this.isNPCPet = function(creature) -- > isPet, isLinkedToTravelNPC
     end
 end
 
+this.isSiltStrider = function(activator)
+    local id = activator.object.id:lower()
+    log(common.logLevels.large, "[PROC] Is %s a silt strider??", id)
+    return id:match("siltstrider") or
+           id:match("kil_silt")
+end
+
 -- checks NPC class and faction in cells for block list and adds to publicHouse list
 -- todo: rewrite this
 this.isPublicHouse = function(cell)

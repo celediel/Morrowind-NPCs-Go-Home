@@ -11,6 +11,10 @@ local function log(level, ...) if config.logLevel >= level then common.log(...) 
 local this = {}
 
 local function moveNPC(homeData)
+    -- do some logging
+    log(common.logLevels.medium, "[PROC] Moving %s to home %s (%s, %s, %s)", homeData.npc.object.name, homeData.home.id,
+        homeData.homePosition.x, homeData.homePosition.y, homeData.homePosition.z)
+
     local npc = homeData.npc
 
     -- add to in memory table
@@ -31,19 +35,18 @@ local function moveNPC(homeData)
         cell = homeData.ogPlaceName
     }
 
+    -- do the move
     tes3.positionCell({
         cell = homeData.home,
         reference = homeData.npc,
         position = homeData.homePosition,
         orientation = homeData.homeOrientation
     })
-
-    log(common.logLevels.medium, "[PROC] Moving %s to home %s (%s, %s, %s)", homeData.npc.object.name, homeData.home.id,
-        homeData.homePosition.x, homeData.homePosition.y, homeData.homePosition.z)
 end
 
 local function disableNPC(npc, cell)
-    -- same thing as moveNPC, but disables instead
+    -- do some logging
+    log(common.logLevels.medium, "[PROC] Disabling un-homed %s", npc.name and npc.name or npc.id)
     -- add to runtimeData
     if checks.isBadWeatherNPC(npc) then
         common.runtimeData.NPCs.disabledBadWeather[cell.id] = common.runtimeData.NPCs.disabledBadWeather[cell.id] or {}
@@ -58,11 +61,10 @@ local function disableNPC(npc, cell)
     -- npc:disable() -- ! this one sometimes causes crashes
     mwscript.disable({reference = npc}) -- ! this one is deprecated
     -- tes3.setEnabled({reference = npc, enabled = false}) -- ! but this one causes crashes too
-    -- do some logging
-    log(common.logLevels.medium, "[PROC] Disabling un-homed %s", npc.name and npc.name or npc.id)
 end
 
 local function putNPCsBack(npcData)
+    log(common.logLevels.large, "[PROC] Moving back NPCs:\n%s", json.encode(npcData))
     -- for i = #npcData, 1, -1 do
     for id, data in pairs(npcData) do
         if data.npc.object then
@@ -90,9 +92,10 @@ local function putNPCsBack(npcData)
 end
 
 local function reEnableNPCs(npcs)
+    log(common.logLevels.large, "[PROC] Re-enabling NPCs:\n%s", json.encode(npcs))
     for id, ref in pairs(npcs) do
+        log(common.logLevels.medium, "[PROC] Making attempt at re-enabling %s", id)
         if ref.object and ref.disabled then
-            log(common.logLevels.medium, "[PROC] Enabling homeless %s", id)
 
             -- ref:enable()
             mwscript.enable({reference = ref})
@@ -245,8 +248,7 @@ this.processSiltStriders = function(cell)
 
     log(common.logLevels.small, "[PROC] Looking for silt striders to process in cell:%s", cell.id)
     for activator in cell:iterateReferences(tes3.objectType.activator) do
-        log(common.logLevels.large, "[PROC] Is %s a silt strider??", activator.object.id)
-        if activator.object.id:match("siltstrider") then
+        if checks.isSiltStrider(activator) then
             if checks.isNight() or (checks.isInclementWeather() and not config.keepBadWeatherNPCs) then
                 if not activator.disabled then
                     log(common.logLevels.medium, "[PROC] Disabling silt strider %s!", activator.object.name)
