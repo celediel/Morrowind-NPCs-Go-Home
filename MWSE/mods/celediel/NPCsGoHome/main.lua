@@ -229,7 +229,7 @@ local function onInitialized()
         log(common.logLevels.small, "[MAIN] %s event registered", eventName)
     end
 
-    log(common.logLevels.none, "[MAIN] Successfully initialized")
+    log(common.logLevels.none, "Successfully initialized")
 end
 
 event.register("initialized", onInitialized)
