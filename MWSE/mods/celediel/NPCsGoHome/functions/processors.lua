@@ -317,6 +317,12 @@ this.processPets = function(cell)
 
     log(common.logLevels.small, "[PROC:PETS] Looking for NPC pets to process in cell:%s", cell.id)
 
+    if not cell.name and not config.disableNPCsInWilderness then
+        log(common.logLevels.medium, "[PROC:PETS] Shitty hack ACTIVATE! It's now not night, and the weather is great.")
+        night = false
+        badWeather = false
+    end
+
     -- for creature in cell:iterateReferences(tes3.objectType.creature) do
     for pet, linkedToTravel in iteratePets(cell) do
         -- this is becoming too much lol
