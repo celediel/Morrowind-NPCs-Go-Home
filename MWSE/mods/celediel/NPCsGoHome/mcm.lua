@@ -198,7 +198,7 @@ template:createExclusionsPage({
 template:createExclusionsPage({
     label = "Inclement Weather Classes/Races",
     description = "Classes and races on this list will not be disabled or moved during configured inclement weather." ..
-        "All NPCs that offer travel services are ignored during inclement weather regardless of race or class, ".. 
+        "All NPCs that offer travel services are ignored during inclement weather regardless of race or class, " ..
         "if configured to do so.",
     showAllBlocked = false,
     variable = createTableVar("badWeatherClassRace"),

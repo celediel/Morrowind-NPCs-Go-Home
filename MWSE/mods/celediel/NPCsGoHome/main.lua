@@ -27,6 +27,7 @@ local function buildFollowerList()
     local f = {}
     -- build our followers list
     for friend in tes3.iterate(tes3.mobilePlayer.friendlyActors) do
+        -- todo: check for ignored NPCs if followers list is ever used for anything other than part of checks.ignoredNPC()
         if friend ~= tes3.mobilePlayer then -- ? why is the player friendly towards the player ?
             f[friend.object.id] = true
             log(common.logLevels.large, "[MAIN] %s is follower", friend.object.id)
@@ -142,7 +143,7 @@ eventFunctions.onActivated = function(e)
 
     if tes3.player.data.NPCsGoHome.intruding and not checks.isIgnoredNPC(npc) then
         if npc.disposition and npc.disposition <= config.minimumTrespassDisposition then
-            log(common.logLevels.medium, "Disabling dialogue with %s because trespass and disposition:%s",
+            log(common.logLevels.medium, "[MAIN] Disabling dialogue with %s because trespass and disposition:%s",
                 npc.object.name, npc.disposition)
             tes3.messageBox(string.format("%s: Get out before I call the guards!", npc.object.name))
             return false

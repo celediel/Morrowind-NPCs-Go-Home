@@ -200,6 +200,8 @@ this.processNPCs = function(cell)
     local night = checks.isNight()
     local badWeather = checks.isInclementWeather()
 
+    log(common.logLevels.small, "[PROC] Looking for NPCs to process in cell:%s", cell.id)
+
     if not cell.name and not config.disableNPCsInWilderness then
         -- shitty way of implementing this config option and re-enabling NPCs when it gets turned off
         -- but at least it's better than trying to keep track of NPCs that have been disabled in the wilderness
@@ -207,8 +209,6 @@ this.processNPCs = function(cell)
         night = false
         badWeather = false
     end
-
-    log(common.logLevels.small, "[PROC] Looking for NPCs to process in cell:%s", cell.id)
 
     if config.disableNPCs and badWeather and not night then
         log(common.logLevels.large, "[PROC] !!Bad weather and not night!!")
