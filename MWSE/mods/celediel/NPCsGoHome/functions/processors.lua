@@ -189,7 +189,9 @@ this.searchCellsForPositions = function()
                 updatePositions(door.destination.cell)
                 -- one more time
                 for internalDoor in door.destination.cell:iterateReferences(tes3.objectType.door) do
-                    if internalDoor.destination then updatePositions(internalDoor.destination.cell) end
+                    if internalDoor.destination and internalDoor.destination.cell ~= cell then
+                        updatePositions(internalDoor.destination.cell)
+                    end
                 end
             end
         end
