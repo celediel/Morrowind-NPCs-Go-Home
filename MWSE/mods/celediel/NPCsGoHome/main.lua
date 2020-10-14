@@ -96,7 +96,6 @@ local function updateCells()
 
     common.runtimeData.followers = buildFollowerList()
     processors.searchCellsForNPCs()
-    processors.searchCellsForPositions()
 
     for _, cell in pairs(tes3.getActiveCells()) do
         log(common.logLevels.large, "[MAIN] Applying changes to cell %s", cell.id)
@@ -170,6 +169,7 @@ end
 
 eventFunctions.onCellChanged = function(e)
     updateCells()
+    processors.searchCellsForPositions()
     updatePlayerTrespass(e.cell, e.previousCell)
     checkEnteredNPCHome(e.cell)
     if e.cell.name then -- exterior wilderness cells don't have name
