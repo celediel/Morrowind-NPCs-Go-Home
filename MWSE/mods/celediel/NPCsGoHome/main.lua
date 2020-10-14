@@ -95,6 +95,7 @@ local function updateCells()
     log(common.logLevels.medium, "[MAIN] Updating active cells!")
 
     common.runtimeData.followers = buildFollowerList()
+    processors.searchCellsForNPCs()
     processors.searchCellsForPositions()
 
     for _, cell in pairs(tes3.getActiveCells()) do
