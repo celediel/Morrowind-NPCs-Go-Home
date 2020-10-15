@@ -80,7 +80,6 @@ this.isIgnoredCell = function(cell)
     return config.ignored[cell.id:lower()] -- or config.ignored[cell.sourceMod:lower()] -- or wilderness
 end
 
--- ! this one depends on tes3 ! --
 this.fargothCheck = function()
     local fargothJournal = tes3.getJournalIndex({id = "MS_Lookout"})
     if not fargothJournal then return false end
@@ -195,12 +194,12 @@ this.isPublicHouse = function(cell)
         return true
     end
 
-    -- if it's a waistworks cell, it's public, with no proprietor
-    if config.waistWorks == common.waist.public and cell.id:match("waistworks") then
+    -- if it's a waistworks or plaza cell, it's public, with no proprietor
+    if config.cantonCells == common.canton.public and common.isPublicCantonCell(cell) then
         dataTables.createPublicHouseTableEntry(cell, nil, city, publicHouseName,
                                                cellEvaluators.calculateCellWorth(cell),
                                                cellEvaluators.pickCellFaction(cell),
-                                               common.publicHouseTypes.cantonworks)
+                                               common.publicHouseTypes.cantons)
         return true
     end
 
@@ -344,11 +343,12 @@ end
 
 -- travel agents, their steeds, and argonians stick around
 this.isBadWeatherNPC = function(npc)
-    log(common.logLevels.large, "[CHECKS] NPC Inclement Weather: %s is %s%s", npc.object.name, npc.object.race.id,
-        this.offersTravel(npc) and ", travel agent" or "")
+    local is = this.offersTravel(npc) or config.badWeatherClassRace[npc.object.race.id] or
+                   config.badWeatherClassRace[npc.object.class.id]
+    log(common.logLevels.large, "[CHECKS] %s, %s%s is inclement weather NPC? %s", npc.object.name, npc.object.race.id,
+        this.offersTravel(npc) and ", travel agent" or "", is)
 
-    return this.offersTravel(npc) or config.badWeatherClassRace[npc.object.race.id] or
-               config.badWeatherClassRace[npc.object.class.id]
+    return is
 end
 
 return this

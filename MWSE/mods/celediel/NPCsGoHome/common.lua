@@ -12,7 +12,7 @@ this.logString = this.modName:gsub("%s?%b()%s?", "")
 
 -- for config
 this.logLevels = {none = 0, small = 1, medium = 2, large = 3}
-this.waist = {neither = 0, exterior = 1, public = 2}
+this.canton = {neither = 0, exterior = 1, public = 2}
 
 -- for runtime data
 this.publicHouseTypes = {
@@ -20,7 +20,7 @@ this.publicHouseTypes = {
     guildhalls = "Guildhalls",
     temples = "Temples",
     homes = "Homes",
-    cantonworks = "Cantonworks"
+    cantons = "Cantons"
 }
 -- }}}
 
@@ -97,7 +97,7 @@ this.pickPublicHouseType = function(cell)
     elseif id:match("temple") then
         return this.publicHouseTypes.temples
     elseif id:match("canalworks") or cell.id:match("waistworks") then
-        return this.publicHouseTypes.cantonworks
+        return this.publicHouseTypes.cantons
     elseif (id:match("house") and not id:match("trade")) or id:match("manor") or id:match("tower") then
         return this.publicHouseTypes.homes
     else
@@ -121,9 +121,24 @@ this.checkModdedCell = function(cellId)
     return id
 end
 
+-- waistworks and plaza
+this.isPublicCantonCell = function(cell)
+    -- (cell.id:lower():match("waistworks") or cell.id:lower():match(""))
+    local id = cell.id:lower()
+
+    -- hardcoded for now to avoid too many false positives
+    return id:match("waistworks") or
+           id:match("vivec, .* plaza") or -- vvardenfell
+           id:match("almas thirr, plaza") or -- mainland
+           id:match("molag mar, plaza") -- no-frills closed molag mar
+end
+
+-- any interior canton cell
 this.isCantonWorksCell = function(cell)
     local id = cell.id:lower()
-    return id:match("waistworks") or id:match("canalworks") or id:match("underworks")
+    return this.isPublicCantonCell(cell) or
+           id:match("canalworks") or
+           id:match("underworks")
 end
 
 this.isCantonCell = function(cell)

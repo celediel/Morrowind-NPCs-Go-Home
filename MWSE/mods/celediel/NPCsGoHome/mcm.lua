@@ -76,17 +76,17 @@ category:createSlider({
 })
 
 category:createDropdown({
-    label = "Treat Canton waistworks as exteriors, public spaces, or neither",
+    label = "Treat canton plaza and waistworks cells as exteriors, public spaces, or neither",
     description = "If canton cells are treated as exterior, inside NPCs will be disabled, and doors will be locked.\n" ..
         "If they're treated as public spaces, inside NPCs won't be disabled, and homeless NPCs will be moved inside " ..
         "(if configured to do so).\n\nIf neither, canton cells will be treated as any other.",
     options = {
-        {label = "Neither", value = common.waist.neither},
-        {label = "Exterior", value = common.waist.exterior},
-        {label = "Public", value = common.waist.public}
+        {label = "Neither", value = common.canton.neither},
+        {label = "Exterior", value = common.canton.exterior},
+        {label = "Public", value = common.canton.public}
     },
-    defaultSetting = common.waist.neither,
-    variable = createTableVar("waistWorks")
+    defaultSetting = common.canton.neither,
+    variable = createTableVar("cantonCells")
 })
 
 category:createYesNoButton({

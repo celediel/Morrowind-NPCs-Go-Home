@@ -34,7 +34,7 @@ local defaultConfig = {
     minimumTrespassDisposition = 50, -- if player's disposition with NPC is less than this value, interaction is disabled
     -- door settings
     lockDoors = true,
-    waistWorks = common.waist.interior,
+    cantonCells = common.canton.interior,
     -- debug settings
     logLevel = common.logLevels.none
 }

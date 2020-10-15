@@ -102,8 +102,8 @@ this.pickHomeForNPC = function(cell, npc)
         -- if nothing was found, then we'll settle on Canton works cell, if the cell is a Canton
         if common.isCantonCell(cell) then
             if common.runtimeData.publicHouses.byType[city] and
-                common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.cantonworks] then
-                local canton = table.choice(common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.cantonworks])
+                common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.cantons] then
+                local canton = table.choice(common.runtimeData.publicHouses.byType[city][common.publicHouseTypes.cantons])
                 log(common.logLevels.medium, "[HOUSING] Picking works %s, %s for %s", canton.city, canton.name, npc.object.name)
 
                 if canton then return dataTables.createHomedNPCTableEntry(npc, canton.cell, cell, false) end
