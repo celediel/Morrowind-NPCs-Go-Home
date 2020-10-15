@@ -9,9 +9,6 @@ local interop = require("celediel.NPCsGoHome.interop")
 
 -- {{{ variables and such
 
--- for rebuilding follower list on dialogue
-local followMatches = {"follow", "together", "travel", "wait", "stay"}
-
 -- timers
 local updateTimer
 local postDialogueTimer
@@ -183,7 +180,7 @@ eventFunctions.onInfoResponse = function(e)
     -- what that dialogue option triggers; this will catch AIFollow commands
     local command = e.command:lower()
 
-    for _, item in pairs(followMatches) do
+    for _, item in pairs({"follow", "together", "travel", "wait", "stay"}) do
         if command:match(item) or dialogue:match(item) then
             -- wait until game time restarts, and don't set multiple timers
             if not postDialogueTimer or postDialogueTimer.state ~= timer.active then
