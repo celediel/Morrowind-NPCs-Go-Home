@@ -537,6 +537,29 @@ return {
             {position = {250.84, -696.10, -382.00}, orientation = {0.00, 0.00, 1.20}},
             {position = {114.37, -710.82, -126.00}, orientation = {0.00, 0.00, 1.18}}
         },
+        ["Vivec, The Lizard's Head"] = {
+            {position = {-145.16, 274.20, -126.00}, orientation = {0.00, 0.00, 1.49}},
+            {position = {-153.10, 130.57, -126.00}, orientation = {0.00, 0.00, 1.28}},
+            {position = {-96.05, 59.22, -126.00}, orientation = {0.00, 0.00, 0.52}},
+            {position = {81.40, 79.43, -126.00}, orientation = {0.00, 0.00, 0.28}},
+            {position = {260.94, 56.80, -126.00}, orientation = {0.00, 0.00, 0.12}},
+            {position = {302.22, -265.87, -126.00}, orientation = {0.00, 0.00, -1.41}},
+            {position = {-257.91, 168.65, -126.00}, orientation = {0.00, 0.00, -0.58}},
+            {position = {-402.93, 162.48, -126.00}, orientation = {0.00, 0.00, 0.72}},
+            {position = {-392.11, -10.23, -126.00}, orientation = {0.00, 0.00, -1.54}},
+            {position = {-503.30, 91.35, -126.00}, orientation = {0.00, 0.00, 3.06}},
+            {position = {-565.73, 0.13, -126.00}, orientation = {0.00, 0.00, 1.41}},
+            {position = {-735.39, 163.16, -126.00}, orientation = {0.00, 0.00, 0.68}},
+            {position = {-748.16, 264.75, -126.00}, orientation = {0.00, 0.00, 2.35}},
+            {position = {-597.12, 180.15, -126.00}, orientation = {0.00, 0.00, -0.53}},
+            {position = {-307.58, -94.86, -382.00}, orientation = {0.00, 0.00, 0.77}},
+            {position = {-100.65, -304.70, -382.00}, orientation = {0.00, 0.00, 0.08}},
+            {position = {36.83, -81.81, -382.00}, orientation = {0.00, 0.00, 1.41}},
+            {position = {139.59, -279.10, -382.00}, orientation = {0.00, 0.00, 0.76}},
+            {position = {350.68, 44.09, -382.00}, orientation = {0.00, 0.00, 1.56}},
+            {position = {406.83, -178.19, -382.00}, orientation = {0.00, 0.00, 2.33}},
+            {position = {563.19, -164.41, -382.00}, orientation = {0.00, 0.00, -2.22}}
+        },
         ["Vivec, St. Delyn Waistworks"] = {
             {position = {310.29, -755.88, -126.00}, orientation = {0.00, 0.00, -0.01}},
             {position = {705.58, -770.98, -126.00}, orientation = {0.00, 0.00, -0.13}},
@@ -581,6 +604,25 @@ return {
             {position = {657.09, 276.60, -318.00}, orientation = {0.00, 0.00, -3.06}},
             {position = {634.31, 85.01, -318.00}, orientation = {0.00, 0.00, 0.18}},
             {position = {465.71, 99.84, -318.00}, orientation = {0.00, 0.00, -0.91}}
+        },
+        -- }}}
+        -- {{{ Tel Branora
+        ["Tel Branora, Sethan's Tradehouse"] = {
+            {position = {954.64, -383.53, 126.00}, orientation = {0.00, 0.00, 3.10}},
+            {position = {1100.52, -375.34, 126.00}, orientation = {0.00, 0.00, -2.77}},
+            {position = {859.14, -381.51, 126.00}, orientation = {0.00, 0.00, -3.02}},
+            {position = {646.57, -339.34, 126.00}, orientation = {0.00, 0.00, 2.56}},
+            {position = {713.03, -140.13, -120.64}, orientation = {0.00, 0.00, 2.44}},
+            {position = {845.70, -155.80, -120.64}, orientation = {0.00, 0.00, -2.39}},
+            {position = {742.58, -462.46, -111.52}, orientation = {0.00, 0.00, 1.82}},
+            {position = {963.98, -475.44, -116.36}, orientation = {0.00, 0.00, -1.28}},
+            {position = {892.90, 89.38, -120.64}, orientation = {0.00, 0.00, 1.96}},
+            {position = {985.63, -45.38, -120.64}, orientation = {0.00, 0.00, 0.20}},
+            {position = {2126.10, -265.88, 136.43}, orientation = {0.00, 0.00, 2.13}},
+            {position = {2218.85, -199.15, 136.43}, orientation = {0.00, 0.00, 3.11}},
+            {position = {2316.64, -274.34, 136.43}, orientation = {0.00, 0.00, -1.88}},
+            {position = {2456.51, -166.26, 134.22}, orientation = {0.00, 0.00, 2.85}},
+            {position = {2201.99, -67.93, 134.73}, orientation = {0.00, 0.00, -2.21}}
         },
         -- }}}
         -- }}}
