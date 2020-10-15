@@ -31,7 +31,7 @@ A no-longer-lightweight fork of [OEA's Lightweight Lua Scheduling](https://www.n
 ### Debug / Devel Stuff ###
 
 - data/positions.lua contains positions used for NPC placement in homes and public houses
-- it's tedious work, so I haven't done many, so I've added debug some debug keybinds to help:
+- I haven't done many as it's tedious work, so I've added debug some debug keybinds to help:
   - ctrl + c prints to mwse.log position data sorta properly formatted for positions.lua
   - alt + c prints to mwse.log all the current runtime data, found in common.runtimeData
     - includes: public houses and homes found for NPCs: cells that NPCs will be moved to, needing position data

@@ -11,6 +11,7 @@ local function log(level, ...) if config.logLevel >= level then common.log(...) 
 local this = {}
 
 -- iterators
+-- in common maybe?
 local function iterateNPCs(cell)
     local function iterator()
         for npc in cell:iterateReferences(tes3.objectType.npc) do
@@ -373,7 +374,7 @@ this.processDoors = function(cell)
             log(common.logLevels.large, "[PROC:DOOR] Now locked Status: %s", tes3.getLocked({reference = door}))
         end
     else
-        -- unlock
+        -- unlock, don't need all the extra overhead that comes along with checks.isIgnoredDoor here
         for door in cell:iterateReferences(tes3.objectType.door) do
             -- only unlock doors that we locked before
             if door.data.NPCsGoHome and door.data.NPCsGoHome.modified then

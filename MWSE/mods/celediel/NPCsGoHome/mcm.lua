@@ -67,7 +67,7 @@ category:createYesNoButton({
 category:createSlider({
     label = "NPC Disposition at which dialogue is prevented.",
     description = "If the player's disposition with an NPC is less than this value, dialogue will be prevented " ..
-        "(if configured to do so). Set to 0 to disable disposition checking, and disable dialogue for all NPCs when applicable.",
+        "(if configured to do so). Set to 0 to effectively disable disposition checking, and disable dialogue for all NPCs when applicable.",
     min = 0,
     max = 100,
     step = 5,
