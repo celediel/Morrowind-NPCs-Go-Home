@@ -74,7 +74,7 @@ local function applyChanges(cell)
 
     -- Interior cell, except Canton cells, don't do anything
     if checks.isInteriorCell(cell) and
-        not (config.waistWorks == common.waist.exterior and common.isCantonWorksCell(cell)) then return end
+        not (config.cantonCells == common.canton.exterior and common.isCantonWorksCell(cell)) then return end
 
     -- don't do anything to public houses
     if checks.isPublicHouse(cell) then return end
