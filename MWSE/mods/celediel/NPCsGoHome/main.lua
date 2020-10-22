@@ -149,9 +149,6 @@ end
 
 eventFunctions.onLoaded = function()
     tes3.player.data.NPCsGoHome = tes3.player.data.NPCsGoHome or {}
-    if tes3.player.cell then processors.searchCellsForNPCs() end
-
-    common.runtimeData.followers = buildFollowerList()
 
     if not updateTimer or (updateTimer and updateTimer.state ~= timer.active) then
         updateTimer = timer.start({
