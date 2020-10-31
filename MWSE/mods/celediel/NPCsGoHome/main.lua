@@ -150,7 +150,7 @@ end
 eventFunctions.onLoaded = function()
     tes3.player.data.NPCsGoHome = tes3.player.data.NPCsGoHome or {}
 
-    if not updateTimer or (updateTimer and updateTimer.state ~= timer.active) then
+    if not updateTimer or updateTimer.state ~= timer.active then
         updateTimer = timer.start({
             type = timer.simulate,
             duration = config.timerInterval,
