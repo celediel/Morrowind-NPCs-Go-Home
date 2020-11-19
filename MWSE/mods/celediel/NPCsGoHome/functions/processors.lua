@@ -292,7 +292,7 @@ this.processSiltStriders = function(cell)
     local night = checks.isNight()
     local badWeather = checks.isInclementWeather()
 
-    -- I don't think there are any silt striders in Region cells so not bothering with config.disableNPCsInWilderness
+    -- I don't think there are any silt striders in wilderness cells so not bothering with config.disableNPCsInWilderness
 
     if config.disableNPCs and (night or (badWeather and not config.keepBadWeatherNPCs)) then
         -- disable

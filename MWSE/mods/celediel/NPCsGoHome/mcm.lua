@@ -40,7 +40,7 @@ category:createYesNoButton({label = "Disable non-Guard NPCs at night?", variable
 
 category:createYesNoButton({
     label = "Disable NPCs in wilderness?",
-    description = "Cells that don't have a specific name (i.e. Region cells) are 'wilderness' cells.",
+    description = "Cells that are legal to rest in are considered 'wilderness' cells.",
     variable = createTableVar("disableNPCsInWilderness")
 })
 
