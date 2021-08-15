@@ -278,6 +278,9 @@ end
 
 -- doors that lead to ignored, exterior, canton, unoccupied, or public cells, and doors that aren't in cities
 this.isIgnoredDoor = function(door, homeCellId)
+    -- don't lock prison markers
+    if door.id == "PrisonMarker" then return true end
+
     -- don't lock non-cell change doors
     if not door.destination then
         log(common.logLevels.large, "[CHECKS] Non-Cell-change door %s, ignoring", door.id)
