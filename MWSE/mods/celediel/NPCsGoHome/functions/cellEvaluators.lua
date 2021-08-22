@@ -17,7 +17,8 @@ local function isIgnoredNPCLite(npc)
     return config.ignored[obj.id:lower()] or
            config.ignored[obj.sourceMod:lower()] or
            isGuard or
-           isVampire
+           isVampire or
+           common.runtimeData.followers[npc.object.id]
 end
 
 -- cell worth is combined worth of all NPCs
