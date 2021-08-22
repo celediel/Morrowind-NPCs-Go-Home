@@ -61,6 +61,7 @@ this.runtimeData = {
 -- {{{ Functions
 this.log = function(...) mwse.log("[%s] %s", this.logString, string.format(...)) end
 
+-- splits string 'input' for every instance of 'sep'
 this.split = function(input, sep)
     if not input then return end
     if not sep then sep = "%s" end
@@ -69,6 +70,7 @@ this.split = function(input, sep)
     return output
 end
 
+-- returns "n" if "a" needs to become "an" for the word in question
 this.vowel = function(word)
     local s = string.sub(word, 1, 1)
     local n = ""
@@ -108,11 +110,11 @@ end
 this.checkModdedCell = function(cellId)
     local id
 
-    if cellId == "Balmora, South Wall Cornerclub" and tes3.isModActive("South Wall.ESP") then
+    if cellId == "Balmora, South Wall Cornerclub" and (tes3.isModActive("South Wall.ESP") or tes3.isModActive("South Wall_RP.ESP")) then
         id = "Balmora, South Wall Den Of Iniquity"
-    elseif cellId == "Balmora, Eight Plates" and tes3.isModActive("Eight Plates.esp") then
+    elseif cellId == "Balmora, Eight Plates" and (tes3.isModActive("Eight Plates.esp") or tes3.isModActive("Beautiful cities of Morrowind.ESP")) then
         id = "Balmora, Seedy Eight Plates"
-    elseif cellId == "Hla Oad, Fatleg's Drop Off" and tes3.isModActive("Clean DR115_TheDropoff_HlaOadDocks.ESP") then
+    elseif cellId == "Hla Oad, Fatleg's Drop Off" and (tes3.isModActive("Clean DR115_TheDropoff_HlaOadDocks.ESP") or tes3.isModActive("Beautiful cities of Morrowind.ESP")) then
         id = "Hla Oad, The Drop Off"
     else
         id = cellId
