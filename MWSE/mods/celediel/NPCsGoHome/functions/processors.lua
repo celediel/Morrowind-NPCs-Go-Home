@@ -377,7 +377,7 @@ this.processDoors = function(cell)
         -- unlock, don't need all the extra overhead that comes along with checks.isIgnoredDoor here
         for door in cell:iterateReferences(tes3.objectType.door) do
             -- only unlock doors that we locked before
-            if door.data.NPCsGoHome and door.data.NPCsGoHome.modified then
+            if door.data and door.data.NPCsGoHome and door.data.NPCsGoHome.modified then
                 door.data.NPCsGoHome.modified = false
 
                 tes3.setLockLevel({reference = door, level = 0})
