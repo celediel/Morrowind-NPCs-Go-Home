@@ -54,7 +54,8 @@ local function checkEnteredPublicHouse(cell, city)
         local msg = string.format("Entering public space %s, a%s %s in the town of %s.", publicHouse.name,
                                   common.vowel(typeOfPub), typeOfPub:gsub("s$", ""), publicHouse.city)
 
-        if publicHouse.proprietor then
+        -- todo: check for more servicers, not just proprietor
+        if publicHouse.proprietor and checks.isServicer(publicHouse.proprietor) then
             msg = msg ..
                       string.format(" Talk to %s, %s for services.", publicHouse.proprietor.object.name,
                                     publicHouse.proprietor.object.class)
@@ -107,6 +108,9 @@ local function updateCells()
 end
 
 -- todo: more robust trespass checking... maybe take faction and rank into account?
+-- maybe something like faction members you outrank don't mind you being in their house
+-- also whether guildhalls are public or not, members can come and go as they please
+-- todo maybe an esp with keys for guildhalls that are added when player joins or reaches a certain rank?
 -- todo: maybe re-implement some or all features of Trespasser
 local function updatePlayerTrespass(cell, previousCell)
     cell = cell or tes3.getPlayerCell()

@@ -354,6 +354,21 @@ this.isBadWeatherNPC = function(npc)
     return is
 end
 
+-- returns true if NPC offers any kind of service, otherwise false
+this.isServicer = function(npc)
+    if not npc or not npc.mobile then return false end
+
+    for service, value in pairs(tes3.merchantService) do
+        if tes3.checkMerchantOffersService(npc.mobile, value) then
+            log(common.logLevels.medium, "[CHECKS] %s offers service \"%s\"", npc.object.name, service)
+            return true
+        end
+    end
+
+    log(common.logLevels.large, "[CHECKS] %s doesn't offer services", npc.object.name)
+    return false
+end
+
 return this
 
 -- vim:set fdm=marker
