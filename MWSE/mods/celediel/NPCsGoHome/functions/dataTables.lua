@@ -39,7 +39,7 @@ this.createHomedNPCTableEntry = function(npc, home, startingPlace, isHome, posit
     pickedPosition = tes3vector3.new(pos[1], pos[2], pos[3])
     pickedOrientation = tes3vector3.new(ori[1], ori[2], ori[3])
 
-    log(common.logLevels.large, "[DTAB] Settled on position:%s, orientation:%s for %s in %s",
+    log(common.logLevels.large, "[DTAB] Settled on position: %s, orientation: %s for %s in %s",
         pickedPosition,pickedOrientation, npc.object.name, id)
 
     local ogPosition = position and (tes3vector3.new(position.x, position.y, position.z)) or

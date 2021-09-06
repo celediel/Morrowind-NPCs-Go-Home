@@ -101,8 +101,8 @@ local function disableNPC(npc, cell)
     npc.data.NPCsGoHome = {disabled = true}
     -- disable NPC
     -- npc:disable() -- ! this one sometimes causes crashes
-    mwscript.disable({reference = npc}) -- ! this one is deprecated
-    -- tes3.setEnabled({reference = npc, enabled = false}) -- ! but this one causes crashes too
+    -- mwscript.disable({reference = npc}) -- ! this one is deprecated
+    tes3.setEnabled({reference = npc, enabled = false}) -- ! but this one causes crashes too
 end
 
 local function putNPCsBack(npcData)
@@ -137,10 +137,11 @@ local function reEnableNPCs(npcs)
     log(common.logLevels.medium, "[PROC:NPCS] Re-enabling NPCs:\n%s", common.inspect(npcs))
     for id, ref in pairs(npcs) do
         log(common.logLevels.medium, "[PROC:NPCS] Making attempt at re-enabling %s", id)
-        if ref.object and ref.disabled then
+        if ref.object then
 
             -- ref:enable()
-            mwscript.enable({reference = ref})
+            -- mwscript.enable({reference = ref})
+            if ref.disabled then tes3.setEnabled({reference = ref, enabled = true}) end
             ref.data.NPCsGoHome = nil
             npcs[id] = nil
         end
@@ -241,7 +242,7 @@ this.searchCellsForPositions = function()
 end
 
 this.processNPCs = function(cell)
-    log(common.logLevels.small, "[PROC:NPCS] Looking for NPCs to process in cell:%s", cell.id)
+    log(common.logLevels.small, "[PROC:NPCS] Looking for NPCs to process in cell: %s", cell.id)
 
     local night = checks.isNight()
     local badWeather = checks.isInclementWeather()
@@ -287,7 +288,7 @@ end
 -- todo: would have to check for them on load/cell change as well
 -- todo: doors is already half done
 this.processSiltStriders = function(cell)
-    log(common.logLevels.small, "[PROC:SILT] Looking for silt striders to process in cell:%s", cell.id)
+    log(common.logLevels.small, "[PROC:SILT] Looking for silt striders to process in cell: %s", cell.id)
 
     local night = checks.isNight()
     local badWeather = checks.isInclementWeather()
@@ -298,13 +299,15 @@ this.processSiltStriders = function(cell)
         -- disable
         for silt in iterateSilts(cell) do
             log(common.logLevels.medium, "[PROC:SILT] Disabling silt strider %s!", silt.object.name)
-            mwscript.disable({reference = silt})
+            -- mwscript.disable({reference = silt})
+            tes3.setEnabled({reference = silt, enabled = false})
         end
     else
         -- re-enable
         for silt in iterateSilts(cell) do
             log(common.logLevels.medium, "[PROC:SILT] Enabling silt strider %s!", silt.object.name)
-            mwscript.enable({reference = silt})
+            -- mwscript.enable({reference = silt})
+            tes3.setEnabled({reference = silt, enabled = true})
         end
     end
     log(common.logLevels.large, "[PROC:SILT] Done with silt striders")
@@ -316,7 +319,7 @@ this.processPets = function(cell)
     local night = checks.isNight()
     local badWeather = checks.isInclementWeather()
 
-    log(common.logLevels.small, "[PROC:PETS] Looking for NPC pets to process in cell:%s", cell.id)
+    log(common.logLevels.small, "[PROC:PETS] Looking for NPC pets to process in cell: %s", cell.id)
 
     if not cell.restingIsIllegal and not config.disableNPCsInWilderness then
         log(common.logLevels.medium, "[PROC:PETS] Shitty hack ACTIVATE! It's now not night, and the weather is great.")
@@ -332,20 +335,22 @@ this.processPets = function(cell)
             -- disable
             if not pet.disabled then
                 log(common.logLevels.medium, "[PROC:PETS] Disabling NPC Pet %s!", pet.object.id)
-                mwscript.disable({reference = pet})
+                -- mwscript.disable({reference = pet})
+                tes3.setEnabled({reference = pet, enabled = false})
             end
         else
             -- enable
             if pet.disabled then
                 log(common.logLevels.medium, "[PROC:PETS] Enabling NPC Pet %s!", pet.object.id)
-                mwscript.enable({reference = pet})
+                -- mwscript.enable({reference = pet})
+                tes3.setEnabled({reference = pet, enabled = true})
             end
         end
     end
 end
 
 this.processDoors = function(cell)
-    log(common.logLevels.small, "[PROC:DOOR] Looking for doors to process in cell:%s", cell.id)
+    log(common.logLevels.small, "[PROC:DOOR] Looking for doors to process in cell: %s", cell.id)
 
     local night = checks.isNight()
 

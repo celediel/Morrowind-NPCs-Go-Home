@@ -18,7 +18,7 @@ end
 local function getFightFromSpawnedReference(id)
     -- Spawn a reference of the given id in toddtest
     local toddTest = tes3.getCell({id = "toddtest"})
-    log(common.logLevels.medium, "[CHECKS] Spawning %s in %s", id, toddTest.id)
+    log(common.logLevels.medium, "[CHECKS:TODD] Spawning %s in %s", id, toddTest.id)
 
     local ref = tes3.createReference({
         object = id,
@@ -31,7 +31,7 @@ local function getFightFromSpawnedReference(id)
 
     local fight = ref.mobile.fight
 
-    log(common.logLevels.medium, "[CHECKS] Got fight of %s, time to yeet %s", fight, id)
+    log(common.logLevels.medium, "[CHECKS:TODD] Got fight of %s, time to yeet %s", fight, id)
 
     yeet(ref)
 
@@ -44,7 +44,7 @@ local this = {}
 this.isInteriorCell = function(cell)
     if not cell then return end
 
-    log(common.logLevels.large, "[CHECKS] Cell %s: interior: %s, behaves as exterior: %s therefore returning %s",
+    log(common.logLevels.large, "[CHECKS:INT] Cell %s: interior: %s, behaves as exterior: %s therefore returning %s",
         cell.id, cell.isInterior, cell.behavesAsExterior, cell.isInterior and not cell.behavesAsExterior)
 
     return cell.isInterior and not cell.behavesAsExterior
@@ -53,7 +53,7 @@ end
 this.isCityCell = function(internalCellId, externalCellId)
     -- easy mode
     if string.match(internalCellId, externalCellId) then
-        log(common.logLevels.large, "[CHECKS] Easy mode city: %s in %s", internalCellId, externalCellId)
+        log(common.logLevels.large, "[CHECKS:CITY] Easy mode city: %s in %s", internalCellId, externalCellId)
         return true
     end
 
@@ -63,32 +63,34 @@ this.isCityCell = function(internalCellId, externalCellId)
     local _, _, externalCity = string.find(externalCellId, cityMatch)
 
     if externalCity and externalCity == internalCity then
-        log(common.logLevels.large, "[CHECKS] Hard mode city: %s in %s, %s == %s", internalCellId, externalCellId,
+        log(common.logLevels.large, "[CHECKS:CITY] Hard mode city: %s in %s, %s == %s", internalCellId, externalCellId,
             externalCity, internalCity)
         return true
     end
 
-    log(common.logLevels.large, "[CHECKS] Hard mode not city: %s not in %s, %s ~= %s or both are nil", internalCellId,
+    log(common.logLevels.large, "[CHECKS:CITY] Hard mode not city: %s not in %s, %s ~= %s or both are nil", internalCellId,
         externalCellId, externalCity, internalCity)
     return false
 end
 
 this.isIgnoredCell = function(cell)
-    log(common.logLevels.large, "[CHECKS] %s is %s", cell.id,
+    log(common.logLevels.large, "[CHECKS:CELL] %s is %s", cell.id,
         config.ignored[cell.id:lower()] and "ignored" or "not ignored")
 
     return config.ignored[cell.id:lower()] -- or config.ignored[cell.sourceMod:lower()] -- or wilderness
 end
 
+-- todo: more quest aware checks like this
 this.fargothCheck = function()
     local fargothJournal = tes3.getJournalIndex({id = "MS_Lookout"})
     if not fargothJournal then return false end
 
     -- only disable Fargoth before speaking to Hrisskar, and after observing Fargoth sneak
-    log(common.logLevels.large, "[CHECKS] Fargoth journal check %s: %s", fargothJournal,
-        fargothJournal > 10 and fargothJournal <= 30)
+    local isActive = fargothJournal > 10 and fargothJournal <= 30
 
-    return fargothJournal > 10 and fargothJournal <= 30
+    log(common.logLevels.large, "[CHECKS:FARG] Fargoth journal check, %s is active: %s", fargothJournal, isActive)
+
+    return isActive
 end
 
 this.offersTravel = function(npc)
@@ -123,19 +125,20 @@ this.isIgnoredNPC = function(npc)
         if obj.id:match("[Dd]ead") or obj.name:match("[Dd]ead") then isDead = true end
     end
 
-    local isFargothActive = obj.id:match("fargoth") and this.fargothCheck() or false
+    local isFargoth = obj.id:match("fargoth")
+    local isFargothActive = isFargoth and this.fargothCheck() or false
 
     -- local isVampire = mwscript.getSpellEffects({reference = npc, spell = "vampire sun damage"})
 
     -- LuaFormatter off
     -- this just keeps getting uglier but it's debug logging so whatever I don't care
-    log(common.logLevels.large, ("[CHECKS] Checking NPC:%s (%s or %s): id blocked:%s, %s blocked:%s " ..
-        "guard:%s dead:%s vampire:%s werewolf:%s dreamer:%s follower:%s hostile:%s %s%s"),
+    log(common.logLevels.large, ("[CHECKS:NPC] Checking NPC: %s (%s or %s): id blocked: %s, %s blocked: %s, " ..
+        "guard: %s, dead: %s, vampire: %s, werewolf: %s, dreamer: %s, follower: %s, hostile: %s%s%s"),
         obj.name, npc.object.id, npc.object.baseObject and npc.object.baseObject.id or "nil",
         config.ignored[obj.id:lower()], obj.sourceMod, config.ignored[obj.sourceMod:lower()],
         isGuard, isDead, isVampire, isWerewolf, (obj.class and obj.class.id == "Dreamers"),
-        common.runtimeData.followers[npc.object.id], isHostile, obj.id:match("fargoth") and "fargoth:" or "",
-        obj.id:match("fargoth") and isFargothActive or "")
+        common.runtimeData.followers[npc.object.id], isHostile, isFargoth and ", fargoth active: " or "",
+        isFargoth and tostring(isFargothActive) or "")
 
     return config.ignored[obj.id:lower()] or
            config.ignored[obj.sourceMod:lower()] or
@@ -167,7 +170,7 @@ end
 
 this.isSiltStrider = function(activator)
     local id = activator.object.id:lower()
-    log(common.logLevels.large, "[PROC] Is %s a silt strider??", id)
+    log(common.logLevels.large, "[CHECKS:SILT] Is %s a silt strider??", id)
     return id:match("siltstrider") or
            id:match("kil_silt")
 end
@@ -208,7 +211,7 @@ this.isPublicHouse = function(cell)
         -- Check for NPCS of ignored classes first
         if not this.isIgnoredNPC(npc) then
             if npc.object.class and config.ignored[npc.object.class.id:lower()] then
-                log(common.logLevels.medium, "[CHECKS] NPC:\'%s\' of class:\'%s\' made %s public", npc.object.name,
+                log(common.logLevels.medium, "[CHECKS:PUB] \'%s\' of class:\'%s\' made %s public", npc.object.name,
                     npc.object.class and npc.object.class.id or "none", cell.name)
 
                 dataTables.createPublicHouseTableEntry(cell, npc, city, publicHouseName,
@@ -238,7 +241,7 @@ this.isPublicHouse = function(cell)
     -- Temples are always public
     if npcs.factions["temple"] and cell.name:lower():match("temple") then
         local master = npcs.factions["temple"].master
-        log(common.logLevels.medium, "[CHECKS] %s is a temple, and %s, %s is the ranking member", cell.id,
+        log(common.logLevels.medium, "[CHECKS:PUB] %s is a temple, and %s, %s is the ranking member", cell.id,
             master.object.name, master.object.class)
         dataTables.createPublicHouseTableEntry(cell, master, city, publicHouseName,
                                                cellEvaluators.calculateCellWorth(cell),
@@ -251,14 +254,14 @@ this.isPublicHouse = function(cell)
     for faction, info in pairs(npcs.factions) do
         info.percentage = (info.total / npcs.total) * 100
         log(common.logLevels.large,
-            "[CHECKS] No NPCs of ignored class in %s, checking faction %s (ignored: %s, player joined: %s) with %s (%s%%) vs total %s",
+            "[CHECKS:PUB] No NPCs of ignored class in %s, checking faction %s (ignored: %s, player joined: %s) with %s (%s%%) vs total %s",
             cell.name, faction, config.ignored[faction], info.playerJoined, info.total, info.percentage, npcs.total)
 
         -- less than configured amount of NPCs can't be a public house unless it's a Blades house
         if (config.ignored[faction] or info.playerJoined) and
             (npcs.total >= config.minimumOccupancy or faction == "Blades") and
             (info.percentage >= config.factionIgnorePercentage) then
-            log(common.logLevels.medium, "[CHECKS] %s is %s%% faction %s, marking public.", cell.name, info.percentage, faction)
+            log(common.logLevels.medium, "[CHECKS:PUB] %s is %s%% faction %s, marking public.", cell.name, info.percentage, faction)
 
             -- try id based categorization, but fallback on guildhall
             local type = common.pickPublicHouseType(cell)
@@ -272,7 +275,7 @@ this.isPublicHouse = function(cell)
         end
     end
 
-    log(common.logLevels.large, "[CHECKS] %s isn't public", cell.name)
+    log(common.logLevels.large, "[CHECKS:PUB] %s isn't public", cell.name)
     return false
 end
 
@@ -283,7 +286,7 @@ this.isIgnoredDoor = function(door, homeCellId)
 
     -- don't lock non-cell change doors
     if not door.destination then
-        log(common.logLevels.large, "[CHECKS] Non-Cell-change door %s, ignoring", door.id)
+        log(common.logLevels.large, "[CHECKS:DOOR] Non-Cell-change door %s, ignoring", door.id)
         return true
     end
 
@@ -309,7 +312,7 @@ this.isIgnoredDoor = function(door, homeCellId)
     local isCantonWorks = common.isCantonWorksCell(dest)
 
     -- LuaFormatter off
-    log(common.logLevels.large, "[CHECKS] %s is %s, (%sin a city, is %spublic, %soccupied)",
+    log(common.logLevels.large, "[CHECKS:DOOR] %s is %s, (%sin a city, is %spublic, %soccupied)",
         dest.id, this.isIgnoredCell(dest) and "ignored" or "not ignored",
         inCity and "" or "not ", leadsToPublicCell and "" or "not ", hasOccupants and "" or "un")
 
@@ -324,7 +327,7 @@ end
 this.isNight = function()
     local atNight = tes3.worldController.hour.value >= config.closeTime or -- AT NIGHT
                     tes3.worldController.hour.value <= config.openTime
-    log(common.logLevels.large, "[CHECKS] Current time is %.2f (%snight), things are closed between %s and %s",
+    log(common.logLevels.large, "[CHECKS:NOC] Current time is %.2f (%snight), things are closed between %s and %s",
         tes3.worldController.hour.value, atNight and "" or "not ", config.closeTime, config.openTime)
 
     return atNight
@@ -337,9 +340,10 @@ this.isInclementWeather = function()
 
     local index = tes3.getCurrentWeather().index
     local isBad = index >= config.worstWeather
+    local region = tes3.getRegion()
 
-    log(common.logLevels.large, "[CHECKS] Weather in %s: current:%s >= configured worst:%s, weather is %s",
-        tes3.getRegion().id, index, config.worstWeather, isBad and "bad" or "great")
+    log(common.logLevels.large, "[CHECKS:WEA] Weather in %s: current: %s >= configured worst: %s, weather is %s",
+        region and region.id or "somewhere", index, config.worstWeather, isBad and "bad" or "great")
 
     return isBad
 end
@@ -348,7 +352,7 @@ end
 this.isBadWeatherNPC = function(npc)
     local is = this.offersTravel(npc) or config.badWeatherClassRace[npc.object.race.id] or
                    config.badWeatherClassRace[npc.object.class.id]
-    log(common.logLevels.large, "[CHECKS] %s, %s%s is inclement weather NPC? %s", npc.object.name, npc.object.race.id,
+    log(common.logLevels.large, "[CHECKS:BADWEA] %s, %s%s is inclement weather NPC? %s", npc.object.name, npc.object.race.id,
         this.offersTravel(npc) and ", travel agent" or "", is)
 
     return is
@@ -360,12 +364,12 @@ this.isServicer = function(npc)
 
     for service, value in pairs(tes3.merchantService) do
         if tes3.checkMerchantOffersService(npc.mobile, value) then
-            log(common.logLevels.medium, "[CHECKS] %s offers service \"%s\"", npc.object.name, service)
+            log(common.logLevels.medium, "[CHECKS:SERV] %s offers service \"%s\"", npc.object.name, service)
             return true
         end
     end
 
-    log(common.logLevels.large, "[CHECKS] %s doesn't offer services", npc.object.name)
+    log(common.logLevels.large, "[CHECKS:SERV] %s doesn't offer services", npc.object.name)
     return false
 end
 

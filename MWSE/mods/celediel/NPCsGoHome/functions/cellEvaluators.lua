@@ -30,7 +30,7 @@ this.calculateCellWorth = function(cell, proprietor)
         if not isIgnoredNPCLite(innard) then
             local total = npcEvaluators.calculateNPCWorth(innard, innard == proprietor and cell or nil).total
             worth = worth + total
-            msg = msg .. string.format("%s worth:%s, ", innard.object.name, total)
+            msg = msg .. string.format("%s worth: %s, ", innard.object.name, total)
         end
     end
 
