@@ -80,7 +80,7 @@ local function applyChanges(cell)
     -- don't do anything to public houses
     if checks.isPublicHouse(cell) then return end
 
-    -- Deal with NPCs and mounts in cell
+    -- Deal with NPCs and mounts/pets in cell
     processors.processNPCs(cell)
     processors.processPets(cell)
     processors.processSiltStriders(cell)
@@ -134,7 +134,7 @@ end
 -- {{{ event functions
 local eventFunctions = {}
 
-eventFunctions.onActivated = function(e)
+eventFunctions.onActivate = function(e)
     if e.activator ~= tes3.player or e.target.object.objectType ~= tes3.objectType.npc or not config.disableInteraction then
         return
     end
@@ -142,9 +142,9 @@ eventFunctions.onActivated = function(e)
     local npc = e.target
 
     if tes3.player.data.NPCsGoHome.intruding and not checks.isIgnoredNPC(npc) then
-        if npc.disposition and npc.disposition <= config.minimumTrespassDisposition then
-            log(common.logLevels.medium, "[MAIN] Disabling dialogue with %s because trespass and disposition:%s",
-                npc.object.name, npc.disposition)
+        if npc.object.disposition and npc.object.disposition <= config.minimumTrespassDisposition then
+            log(common.logLevels.medium, "[MAIN] Disabling dialogue with %s because trespass and disposition: %s",
+                npc.object.name, npc.object.disposition)
             tes3.messageBox(string.format("%s: Get out before I call the guards!", npc.object.name))
             return false
         end
